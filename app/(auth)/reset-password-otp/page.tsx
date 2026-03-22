@@ -50,7 +50,7 @@ export default function ResetPasswordOTPPage() {
 
       setSuccess('OTP verified successfully!');
       setTimeout(() => {
-        router.push(`/auth/reset-password?email=${encodeURIComponent(email)}&step=newpassword&verified=true`);
+        router.push(`/reset-password?email=${encodeURIComponent(email)}&step=newpassword&verified=true`);
       }, 1500);
     } catch (err) {
       setError('Network error. Please try again.');
@@ -167,7 +167,7 @@ export default function ResetPasswordOTPPage() {
             </div>
 
             <div className="mt-4 text-center">
-              <Link href="/auth/reset-password" className="text-slate-400 hover:text-slate-300 text-sm transition">
+              <Link href="/reset-password" className="text-slate-400 hover:text-slate-300 text-sm transition">
                 ← Back to reset password
               </Link>
             </div>

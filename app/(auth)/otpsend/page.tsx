@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { sendOTP } from '@/lib/api';
 
 export default function OTPSendPage() {
   const [email, setEmail] = useState('');
@@ -15,28 +16,29 @@ export default function OTPSendPage() {
     e.preventDefault();
     setError('');
     setSuccess('');
+    
+    if (!email.trim()) {
+      setError('Please enter your email');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.detail?.error || 'Failed to send OTP');
+      const response = await sendOTP(email.trim());
+      
+      // Check if user already exists
+      if (response.data?.user_exists) {
+        setError('User already exists with this email. Please login instead.');
         return;
       }
 
       setSuccess('OTP sent successfully to your email!');
       setTimeout(() => {
-        router.push(`/auth/verify-otp?email=${encodeURIComponent(email)}&type=register`);
+        router.push(`/verify-otp?email=${encodeURIComponent(email)}&type=register`);
       }, 1500);
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError(err instanceof Error ? err.message : 'Failed to send OTP');
     } finally {
       setLoading(false);
     }
@@ -104,15 +106,9 @@ export default function OTPSendPage() {
             {/* Links */}
             <div className="mt-6 text-center border-t border-slate-700/50 pt-6 space-y-3">
               <p className="text-slate-400 text-sm">
-                Don't have an account?{' '}
-                <Link href="/auth/register" className="text-blue-400 hover:text-blue-300 font-medium transition">
-                  Register here
-                </Link>
-              </p>
-              <p className="text-slate-400 text-sm">
-                Already registered?{' '}
-                <Link href="/auth/register" className="text-cyan-400 hover:text-cyan-300 font-medium transition">
-                  Complete registration
+                Already have an account?{' '}
+                <Link href="/login" className="text-blue-400 hover:text-blue-300 font-medium transition">
+                  Sign in here
                 </Link>
               </p>
             </div>

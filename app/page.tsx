@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -9,12 +10,15 @@ export default function Home() {
           <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
             Interview Coach AI
           </div>
-          <div className="flex gap-6">
+          <div className="flex gap-6 items-center">
             <a href="#features" className="hover:text-blue-400 transition">Features</a>
             <a href="#workflow" className="hover:text-blue-400 transition">Workflow</a>
-            <button className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition">
+            <Link href="/login" className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition">
+              Login
+            </Link>
+            <Link href="/otpsend" className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition">
               Get Started
-            </button>
+            </Link>
           </div>
         </div>
       </nav>
@@ -29,12 +33,12 @@ export default function Home() {
             Get matched with dream jobs, prepare with AI-generated questions, and receive personalized feedback. Your intelligent interview coach powered by advanced LLMs.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-lg font-semibold transition transform hover:scale-105">
+            <Link href="/login" className="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-lg font-semibold transition transform hover:scale-105 text-center">
               Start Free Analysis
-            </button>
-            <button className="border border-cyan-400 hover:bg-cyan-400/10 px-8 py-3 rounded-lg font-semibold transition">
+            </Link>
+            <Link href="/detailsDocu" className="border border-cyan-400 hover:bg-cyan-400/10 px-8 py-3 rounded-lg font-semibold transition text-center">
               View Documentation
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -75,15 +79,15 @@ export default function Home() {
 
             {/* Feature 3 */}
             <div className="bg-slate-700/30 backdrop-blur border border-slate-600/50 rounded-xl p-8 hover:border-blue-400/50 transition">
-              <div className="text-4xl mb-4">👤</div>
-              <h3 className="text-xl font-bold mb-3">Profile Management</h3>
+              <div className="text-4xl mb-4">🎤</div>
+              <h3 className="text-xl font-bold mb-3">Performance Analysis</h3>
               <p className="text-slate-300 mb-4">
-                Store and manage multiple resume versions. Track skills, experience, education, and projects in one centralized location.
+                Practice answering questions and get AI-powered feedback. Receive scores, strengths analysis, and personalized improvement recommendations.
               </p>
               <ul className="text-sm text-slate-400 space-y-2">
-                <li>✓ Multiple resume versions</li>
-                <li>✓ Skill tracking</li>
-                <li>✓ Project portfolio</li>
+                <li>✓ Instant performance scoring</li>
+                <li>✓ Detailed answer feedback</li>
+                <li>✓ Personalized improvement tips</li>
               </ul>
             </div>
           </div>
@@ -95,7 +99,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16">How It Works</h2>
           
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-5 gap-4">
             <div className="text-center">
               <div className="bg-blue-600 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-lg">1</div>
               <h4 className="font-bold mb-2">Upload Resume</h4>
@@ -116,6 +120,11 @@ export default function Home() {
               <h4 className="font-bold mb-2">Practice Questions</h4>
               <p className="text-slate-400 text-sm">Prepare with AI-generated interview questions</p>
             </div>
+            <div className="text-center">
+              <div className="bg-blue-600 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-lg">5</div>
+              <h4 className="font-bold mb-2">Get Analyzed</h4>
+              <p className="text-slate-400 text-sm">Practice answers & receive AI performance scoring</p>
+            </div>
           </div>
         </div>
       </section>
@@ -128,12 +137,12 @@ export default function Home() {
             Join thousands of candidates using Interview Coach AI to prepare smarter, interview better.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 px-8 py-3 rounded-lg font-semibold transition transform hover:scale-105">
+            <Link href="/login" className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 px-8 py-3 rounded-lg font-semibold transition transform hover:scale-105 text-center">
               Begin Free Analysis
-            </button>
-            <button className="border border-slate-400 hover:border-white px-8 py-3 rounded-lg font-semibold transition">
+            </Link>
+            <Link href="/detailsDocu" className="border border-slate-400 hover:border-white px-8 py-3 rounded-lg font-semibold transition text-center">
               Learn More
-            </button>
+            </Link>
           </div>
         </div>
       </section>

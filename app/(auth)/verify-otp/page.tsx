@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { verifyOTP, resendOTP } from '@/lib/api';
 
-export default function ResetPasswordOTPPage() {
+export default function VerifyOTPPage() {
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
@@ -35,56 +36,40 @@ export default function ResetPasswordOTPPage() {
     const type = searchParams.get('type');
 
     try {
-      const response = await fetch('/api/auth/verify-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, otp }),
-      });
+      const response = await verifyOTP(email, otp);
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.detail?.error || 'Invalid OTP');
-        setLoading(false);
-        return;
-      }
+      console.log('✅ OTP verified! Response:', response);
+      console.log('   Token in data:', response.data?.registration_token ? `${response.data.registration_token.substring(0, 20)}...` : 'NOT FOUND');
+      console.log('   Token in response:', response.registration_token ? `${response.registration_token.substring(0, 20)}...` : 'NOT FOUND');
 
       setSuccess('Email verified successfully!');
       setTimeout(() => {
         if (type === 'register') {
-          router.push(`/auth/register?email=${encodeURIComponent(email)}&verified=true`);
+          const token = response.data?.registration_token || response.registration_token || '';
+          console.log('🔗 Redirecting to register with token:', token ? `${token.substring(0, 20)}...` : 'EMPTY');
+          router.push(`/register?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}&verified=true`);
         } else {
-          router.push(`/auth/reset-password?email=${encodeURIComponent(email)}&step=newpassword&verified=true`);
+          router.push(`/reset-password?email=${encodeURIComponent(email)}&step=newpassword&verified=true`);
         }
       }, 1500);
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError(err instanceof Error ? err.message : 'Invalid OTP');
+    } finally {
       setLoading(false);
     }
   };
 
   const handleResendOTP = async () => {
     setError('');
+    setSuccess('');
     setLoading(true);
     setCountdown(60);
-    const type = searchParams.get('type');
 
     try {
-      const endpoint = type === 'register' ? '/api/auth/send-otp' : '/api/auth/request-reset';
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-
-      if (response.ok) {
-        const message = type === 'register' ? 'OTP resent successfully!' : 'Reset code resent successfully!';
-        setSuccess(message);
-      } else {
-        setError('Failed to resend code');
-      }
+      await resendOTP(email);
+      setSuccess('OTP resent successfully!');
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError(err instanceof Error ? err.message : 'Failed to resend OTP');
     } finally {
       setLoading(false);
     }
@@ -178,7 +163,7 @@ export default function ResetPasswordOTPPage() {
 
             <div className="mt-4 text-center">
               <Link 
-                href={searchParams.get('type') === 'register' ? '/auth/otpsend' : '/auth/reset-password'} 
+                href={searchParams.get('type') === 'register' ? '/otpsend' : '/reset-password'}  
                 className="text-slate-400 hover:text-slate-300 text-sm transition"
               >
                 ← Back

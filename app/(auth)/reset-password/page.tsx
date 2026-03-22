@@ -109,7 +109,7 @@ export default function ResetPasswordPage() {
 
       setSuccess('Password reset successful! Redirecting to login...');
       setTimeout(() => {
-        router.push('/auth/login');
+        router.push('/login');
       }, 2000);
     } catch (err) {
       setError('Network error. Please try again.');
@@ -181,7 +181,7 @@ export default function ResetPasswordPage() {
                 <div className="mt-6 text-center border-t border-slate-700/50 pt-6">
                   <p className="text-slate-400 text-sm">
                     Remember your password?{' '}
-                    <Link href="/auth/login" className="text-blue-400 hover:text-blue-300 font-medium transition">
+                    <Link href="/login" className="text-blue-400 hover:text-blue-300 font-medium transition">
                       Sign in here
                     </Link>
                   </p>
@@ -288,7 +288,7 @@ export default function ResetPasswordPage() {
 
                 <div className="mt-6 text-center border-t border-slate-700/50 pt-6">
                   <p className="text-slate-400 text-sm">
-                    <Link href="/auth/login" className="text-blue-400 hover:text-blue-300 font-medium transition">
+                    <Link href="/login" className="text-blue-400 hover:text-blue-300 font-medium transition">
                       ← Back to login
                     </Link>
                   </p>

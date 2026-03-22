@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { loginUser } from '@/lib/api';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -10,7 +11,6 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -31,36 +31,14 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: email.trim(),
-          password,
-          rememberMe,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.detail?.error || 'Login failed. Please check your credentials.');
-        return;
-      }
-
-      if (data.data?.token) {
-        localStorage.setItem('authToken', data.data.token);
-        if (rememberMe) {
-          localStorage.setItem('rememberMe', 'true');
-        }
-      }
+      const data = await loginUser(email.trim(), password);
 
       setSuccess('Login successful! Redirecting...');
       setTimeout(() => {
-        router.push('/dashboard');
+        router.push('/uploadresume');
       }, 1500);
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError(err instanceof Error ? err.message : 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -135,16 +113,7 @@ export default function LoginPage() {
               </div>
 
               <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 rounded bg-slate-700/50 border-slate-600 text-blue-500 focus:ring-2 focus:ring-blue-400 cursor-pointer"
-                  />
-                  <span className="text-sm text-slate-400">Remember me</span>
-                </label>
-                <Link href="/auth/reset-password" className="text-sm text-cyan-400 hover:text-cyan-300 transition">
+                <Link href="/reset-password" className="text-sm text-cyan-400 hover:text-cyan-300 transition">
                   Forgot password?
                 </Link>
               </div>
@@ -175,7 +144,7 @@ export default function LoginPage() {
             </div>
 
             <Link
-              href="/auth/otpsend"
+              href="/otpsend"
               className="w-full flex items-center justify-center px-4 py-3 border border-slate-600 hover:border-blue-400 rounded-lg font-semibold transition text-slate-300 hover:text-blue-300"
             >
               Create Account

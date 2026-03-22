@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { completeRegistration } from '@/lib/api';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -13,19 +14,35 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [passwordStrength, setPasswordStrength] = useState<'weak' | 'medium' | 'strong'>('weak');
+  const [registrationToken, setRegistrationToken] = useState('');
   const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
     const emailParam = searchParams.get('email');
+    const verifiedToken = searchParams.get('token');
     const verified = searchParams.get('verified');
+    
+    console.log('📌 Register page loaded with params:');
+    console.log('   Email:', emailParam);
+    console.log('   Token:', verifiedToken ? `${verifiedToken.substring(0, 20)}...` : 'NOT FOUND');
+    console.log('   Verified:', verified);
     
     if (emailParam) {
       setEmail(decodeURIComponent(emailParam));
     }
     
+    if (verifiedToken) {
+      const decodedToken = decodeURIComponent(verifiedToken);
+      console.log('✅ Token decoded:', decodedToken ? `${decodedToken.substring(0, 20)}...` : 'EMPTY');
+      setRegistrationToken(decodedToken);
+    } else {
+      console.log('❌ No token found in URL!');
+    }
+    
     if (verified !== 'true') {
-      router.push('/auth/otpsend');
+      console.log('⚠️  Not verified, redirecting to /otpsend');
+      router.push('/otpsend');
     }
   }, [searchParams, router]);
 
@@ -61,32 +78,32 @@ export default function RegisterPage() {
       return;
     }
 
+    console.log('🚀 Submitting registration with:');
+    console.log('   Email:', email);
+    console.log('   Full Name:', fullName);
+    console.log('   Token:', registrationToken ? `${registrationToken.substring(0, 20)}...` : 'EMPTY/MISSING');
+
+    if (!registrationToken) {
+      setError('❌ Registration token missing! Please verify your email again.');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          password,
-          fullName: fullName.trim(),
-        }),
-      });
+      await completeRegistration(email, password, fullName.trim(), registrationToken);
 
-      const data = await response.json();
+      console.log('✅ Registration completed!');
+      console.log('   Token in localStorage:', localStorage.getItem('token') ? `${localStorage.getItem('token')!.substring(0, 20)}...` : 'MISSING');
+      console.log('   User ID in localStorage:', localStorage.getItem('user_id'));
 
-      if (!response.ok) {
-        setError(data.detail?.error || 'Registration failed');
-        return;
-      }
-
-      setSuccess('Registration successful! Redirecting to login...');
+      setSuccess('Registration successful! Redirecting to dashboard...');
       setTimeout(() => {
-        router.push('/login');
+        router.push('/uploadresume');
       }, 2000);
     } catch (err) {
-      setError('Network error. Please try again.');
+      console.error('❌ Registration error:', err);
+      setError(err instanceof Error ? err.message : 'Registration failed');
     } finally {
       setLoading(false);
     }
