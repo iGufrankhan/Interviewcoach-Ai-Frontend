@@ -35,7 +35,7 @@ export default function LoginPage() {
 
       setSuccess('Login successful! Redirecting...');
       setTimeout(() => {
-        router.push('/uploadresume');
+        router.push('/dashboard');
       }, 1500);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed. Please check your credentials.');

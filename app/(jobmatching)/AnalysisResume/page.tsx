@@ -2,15 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useAuth } from '@/lib/auth/withProtectedRoute';
 
 interface Resume {
   resume_id: string;
-  filename: string;
-  extracted_data: {
-    name: string;
-    email: string;
-    skills: string[];
-  };
+  name: string;
+  email: string;
+  skills: string[];
+  experience?: string[];
+  education?: string[];
+  projects?: string[];
+  created_at?: string;
 }
 
 interface AnalysisResult {
@@ -28,6 +30,7 @@ interface AnalysisResult {
 }
 
 export default function JobMatchingPage() {
+  const { user, isLoading: authLoading } = useAuth();
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [selectedResume, setSelectedResume] = useState<Resume | null>(null);
   const [jobDescription, setJobDescription] = useState('');
@@ -44,12 +47,18 @@ export default function JobMatchingPage() {
     try {
       setLoadingResumes(true);
       const userId = localStorage.getItem('user_id') || 'default-user';
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       
-      const response = await fetch(`/api/get-resumes/${userId}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-        },
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/resume/api/user-resumes/${userId}`,
+        {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
@@ -57,9 +66,12 @@ export default function JobMatchingPage() {
         if (data.data && data.data.length > 0) {
           setSelectedResume(data.data[0]);
         }
+      } else {
+        setError(data.message || 'Failed to load resumes');
       }
     } catch (err) {
-      console.error('Failed to fetch resumes');
+      console.error('Failed to fetch resumes:', err);
+      setError('Error loading resumes. Please refresh the page.');
     } finally {
       setLoadingResumes(false);
     }
@@ -76,22 +88,26 @@ export default function JobMatchingPage() {
     setResult(null);
 
     try {
-      const response = await fetch('/api/analyseresume', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-        },
-        body: JSON.stringify({
-          resume_id: selectedResume.resume_id,
-          description: jobDescription,
-        }),
-      });
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const response = await fetch(
+        `${API_BASE_URL}/jobmatching/api/analyseresume`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+          },
+          body: JSON.stringify({
+            resume_id: selectedResume.resume_id,
+            description: jobDescription,
+          }),
+        }
+      );
 
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || 'Analysis failed');
+        setError(data.message || data.detail || 'Analysis failed');
       } else {
         setResult(data.data);
       }
@@ -115,6 +131,23 @@ export default function JobMatchingPage() {
     return 'from-red-900/30 to-red-800/30 border-red-600/30';
   };
 
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-950">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
+          <p className="text-slate-300">Verifying access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render if not authenticated (will redirect)
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-black text-white font-sans">
       {/* Navigation */}
@@ -124,10 +157,10 @@ export default function JobMatchingPage() {
             Interview Coach AI
           </Link>
           <div className="flex gap-4 items-center">
-            <Link href="/getresume" className="text-slate-300 hover:text-cyan-400 transition">
+            <Link href="/GetResume" className="text-slate-300 hover:text-cyan-400 transition">
               📂 My Resumes
             </Link>
-            <Link href="/" className="text-slate-300 hover:text-blue-400 transition">
+            <Link href="/dashboard" className="text-slate-300 hover:text-blue-400 transition">
               ← Back
             </Link>
           </div>
@@ -158,7 +191,7 @@ export default function JobMatchingPage() {
               <div className="text-center py-8">
                 <p className="text-slate-300 mb-4">No resumes uploaded yet</p>
                 <Link
-                  href="/uploadresume"
+                  href="/UploadResume"
                   className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition"
                 >
                   Upload Resume →
@@ -176,13 +209,13 @@ export default function JobMatchingPage() {
                         : 'bg-slate-700/20 border-slate-600/50 hover:border-blue-400/50'
                     }`}
                   >
-                    <p className="font-semibold text-slate-300 truncate">📄 {resume.filename}</p>
-                    {resume.extracted_data.name && (
-                      <p className="text-sm text-slate-400 mt-1">👤 {resume.extracted_data.name}</p>
+                    <p className="font-semibold text-slate-300 truncate">📄 {resume.name}</p>
+                    {resume.email && (
+                      <p className="text-sm text-slate-400 mt-1">📧 {resume.email}</p>
                     )}
                     <p className="text-xs text-slate-500 mt-1">
-                      Skills: {resume.extracted_data.skills.slice(0, 3).join(', ')}
-                      {resume.extracted_data.skills.length > 3 ? '...' : ''}
+                      Skills: {resume.skills && resume.skills.slice(0, 3).join(', ')}
+                      {resume.skills && resume.skills.length > 3 ? '...' : ''}
                     </p>
                   </button>
                 ))}
@@ -191,7 +224,7 @@ export default function JobMatchingPage() {
 
             {selectedResume && (
               <div className="mt-6 p-4 bg-green-900/20 border border-green-600/30 rounded-lg">
-                <p className="text-green-400 text-sm">✅ Selected: {selectedResume.filename}</p>
+                <p className="text-green-400 text-sm">✅ Selected: {selectedResume.name}</p>
               </div>
             )}
           </div>
@@ -326,7 +359,7 @@ export default function JobMatchingPage() {
             </div>
 
             {/* Strengths */}
-            {result.strengths.length > 0 && (
+            {result.strengths && Array.isArray(result.strengths) && result.strengths.length > 0 && (
               <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-6">
                 <h3 className="text-2xl font-bold text-green-400 mb-4">✅ Your Strengths</h3>
                 <div className="grid md:grid-cols-2 gap-3">
@@ -341,7 +374,7 @@ export default function JobMatchingPage() {
             )}
 
             {/* Missing Skills */}
-            {result.missingSkills.length > 0 && (
+            {result.missingSkills && Array.isArray(result.missingSkills) && result.missingSkills.length > 0 && (
               <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-6">
                 <h3 className="text-2xl font-bold text-yellow-400 mb-4">⚠️ Skills Gap to Address</h3>
                 <div className="grid md:grid-cols-2 gap-3">
@@ -356,7 +389,7 @@ export default function JobMatchingPage() {
             )}
 
             {/* Improvement Suggestions */}
-            {result.suggestions.length > 0 && (
+            {result.suggestions && Array.isArray(result.suggestions) && result.suggestions.length > 0 && (
               <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-6">
                 <h3 className="text-2xl font-bold text-blue-400 mb-4">💡 Actionable Suggestions</h3>
                 <div className="space-y-3">
@@ -375,7 +408,7 @@ export default function JobMatchingPage() {
               <h3 className="text-2xl font-bold text-cyan-400 mb-4">🎯 Ready to Prepare for Interview?</h3>
               <p className="text-slate-300 mb-6">Get 10 personalized interview questions based on this job and your resume to practice and improve.</p>
               <Link
-                href="/interviewquestions"
+                href="/dashboard"
                 className="inline-block px-6 py-3 bg-cyan-600 hover:bg-cyan-700 rounded-lg font-semibold transition transform hover:scale-105"
               >
                 Generate Interview Questions →

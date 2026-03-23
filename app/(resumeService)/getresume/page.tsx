@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { fetchUserResumes } from '@/lib/api';
+import { useAuth } from '@/lib/auth/withProtectedRoute';
 
 interface Resume {
   id?: string;
@@ -17,14 +19,29 @@ interface Resume {
 }
 
 export default function GetResumePage() {
+  const router = useRouter();
+  const { user, isLoading: authLoading } = useAuth();
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedResume, setSelectedResume] = useState<Resume | null>(null);
 
   useEffect(() => {
-    fetchResumes();
-  }, []);
+    if (!authLoading) {
+      fetchResumes();
+    }
+  }, [authLoading]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-black">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
+          <p className="text-slate-300">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   const fetchResumes = async () => {
     try {
@@ -83,10 +100,10 @@ export default function GetResumePage() {
             Interview Coach AI
           </Link>
           <div className="flex gap-4 items-center">
-            <Link href="/uploadresume" className="text-slate-300 hover:text-blue-400 transition">
+            <Link href="/UploadResume" className="text-slate-300 hover:text-blue-400 transition">
               ➕ Upload
             </Link>
-            <Link href="/" className="text-slate-300 hover:text-blue-400 transition">
+            <Link href="/dashboard" className="text-slate-300 hover:text-blue-400 transition">
               ← Back
             </Link>
           </div>
@@ -119,7 +136,7 @@ export default function GetResumePage() {
             <div className="text-6xl mb-4">📭</div>
             <p className="text-xl text-slate-300 mb-6">You haven't uploaded any resumes yet.</p>
             <Link
-              href="/uploadresume"
+              href="/UploadResume"
               className="inline-block px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition"
             >
               Upload Your First Resume →
@@ -151,7 +168,7 @@ export default function GetResumePage() {
                 ))}
               </div>
               <Link
-                href="/uploadresume"
+                href="/UploadResume"
                 className="w-full mt-4 block px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 rounded-lg font-semibold text-center transition"
               >
                 ➕ Upload New Resume
@@ -234,7 +251,7 @@ export default function GetResumePage() {
 
                   <div className="grid grid-cols-2 gap-3 mt-6">
                     <Link
-                      href="/getdata"
+                      href="/GetResumeData"
                       className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg font-semibold text-center transition text-sm"
                     >
                       ✅ Use for Matching

@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { uploadResume } from '@/lib/api';
+import { useAuth } from '@/lib/auth/withProtectedRoute';
 
 interface UploadResponse {
   message: string;
@@ -23,12 +25,25 @@ interface UploadResponse {
 }
 
 export default function UploadResumePage() {
+  const router = useRouter();
+  const { user, isLoading } = useAuth();
   const [file, setFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadResponse, setUploadResponse] = useState<UploadResponse | null>(null);
   const [error, setError] = useState('');
   const [dragActive, setDragActive] = useState(false);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-black">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
+          <p className="text-slate-300">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   const allowedExtensions = ['.pdf', '.docx', '.txt'];
 
@@ -122,10 +137,10 @@ export default function UploadResumePage() {
             Interview Coach AI
           </Link>
           <div className="flex gap-4 items-center">
-            <Link href="/getresume" className="text-slate-300 hover:text-cyan-400 transition">
+            <Link href="/GetResume" className="text-slate-300 hover:text-cyan-400 transition">
               📂 My Resumes
             </Link>
-            <Link href="/" className="text-slate-300 hover:text-blue-400 transition">
+            <Link href="/dashboard" className="text-slate-300 hover:text-blue-400 transition">
               ← Back
             </Link>
           </div>
@@ -226,7 +241,7 @@ export default function UploadResumePage() {
                 )}
               </div>
             )}
-            <Link href="/getresume" className="inline-block mt-6 px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition">
+            <Link href="/GetResume" className="inline-block mt-6 px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition">
               View All Resumes →
             </Link>
           </div>

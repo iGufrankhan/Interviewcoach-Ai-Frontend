@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/auth/withProtectedRoute';
 
 interface Resume {
   resume_id: string;
@@ -16,6 +17,8 @@ interface Resume {
 }
 
 export default function DeleteResumePage() {
+  const router = useRouter();
+  const { user, isLoading: authLoading } = useAuth();
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -23,11 +26,23 @@ export default function DeleteResumePage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deletedResumes, setDeletedResumes] = useState<string[]>([]);
-  const router = useRouter();
 
   useEffect(() => {
-    fetchResumes();
-  }, []);
+    if (!authLoading) {
+      fetchResumes();
+    }
+  }, [authLoading]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-black">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
+          <p className="text-slate-300">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   const fetchResumes = async () => {
     try {
@@ -92,10 +107,10 @@ export default function DeleteResumePage() {
             Interview Coach AI
           </Link>
           <div className="flex gap-4 items-center">
-            <Link href="/getresume" className="text-slate-300 hover:text-cyan-400 transition">
+            <Link href="/GetResume" className="text-slate-300 hover:text-cyan-400 transition">
               📂 My Resumes
             </Link>
-            <Link href="/" className="text-slate-300 hover:text-blue-400 transition">
+            <Link href="/dashboard" className="text-slate-300 hover:text-blue-400 transition">
               ← Back
             </Link>
           </div>
@@ -128,7 +143,7 @@ export default function DeleteResumePage() {
             <div className="text-6xl mb-4">✨</div>
             <p className="text-xl text-slate-300 mb-6">No resumes to delete. Your collection is clean!</p>
             <Link
-              href="/getresume"
+              href="/GetResume"
               className="inline-block px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition"
             >
               View All Resumes →
@@ -218,7 +233,7 @@ export default function DeleteResumePage() {
 
         <div className="mt-12 text-center">
           <Link
-            href="/getresume"
+            href="/GetResume"
             className="inline-block px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition"
           >
             ← Back to Resumes

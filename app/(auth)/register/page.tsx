@@ -41,8 +41,8 @@ export default function RegisterPage() {
     }
     
     if (verified !== 'true') {
-      console.log('⚠️  Not verified, redirecting to /otpsend');
-      router.push('/otpsend');
+      console.log('⚠️  Not verified, redirecting to /OtpSend');
+      router.push('/OtpSend');
     }
   }, [searchParams, router]);
 
@@ -99,7 +99,7 @@ export default function RegisterPage() {
 
       setSuccess('Registration successful! Redirecting to dashboard...');
       setTimeout(() => {
-        router.push('/uploadresume');
+        router.push('/dashboard');
       }, 2000);
     } catch (err) {
       console.error('❌ Registration error:', err);
