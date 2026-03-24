@@ -8,10 +8,10 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 /**
  * Fetch user's resume data
  */
-export const fetchUserResumes = async (userId: string) => {
+export const fetchUserResumes = async () => {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/resume/api/user-resumes/${userId}`,
+      `${API_BASE_URL}/resume/api/user-resumes`,
       {
         method: 'GET',
         headers: getAuthHeaders(),
@@ -54,41 +54,28 @@ export const getResume = async (resumeId: string) => {
 /**
  * Upload a new resume
  */
-export const uploadResume = async (
-  userId: string,
-  file: File
-) => {
+export const uploadResume = async (file: File) => {
   try {
     const formData = new FormData();
     formData.append('file', file);
 
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    
-    console.log('📤 Uploading resume:');
-    console.log('   User ID:', userId);
-    console.log('   File:', file.name, `(${file.size} bytes)`);
-    console.log('   Token:', token ? `${token.substring(0, 20)}...` : 'MISSING');
-    
     const response = await fetch(
-      `${API_BASE_URL}/resume/api/upload-resume/${userId}`,
+      `${API_BASE_URL}/resume/api/upload-resume`,
       {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token || ''}`,
+          'Authorization': `Bearer ${typeof window !== 'undefined' ? localStorage.getItem('token') : ''}`,
         },
         body: formData,
       }
     );
 
-    console.log('   Response status:', response.status, response.statusText);
-
     await handleApiResponse(response);
 
     const data = await response.json();
-    console.log('✅ Upload successful:', data);
     return data.data;
   } catch (error) {
-    console.error('❌ Error uploading resume:', error);
+    console.error('Error uploading resume:', error);
     throw error;
   }
 };
@@ -99,7 +86,7 @@ export const uploadResume = async (
 export const deleteResume = async (resumeId: string) => {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/resume/api/resume/${resumeId}`,
+      `${API_BASE_URL}/resume/api/delete-resume/${resumeId}`,
       {
         method: 'DELETE',
         headers: getAuthHeaders(),

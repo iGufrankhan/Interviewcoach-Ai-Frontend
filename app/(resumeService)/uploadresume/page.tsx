@@ -36,7 +36,7 @@ export default function UploadResumePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-black">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-900 via-slate-800 to-black">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
           <p className="text-slate-300">Loading...</p>
@@ -108,21 +108,12 @@ export default function UploadResumePage() {
     setError('');
 
     try {
-      const userId = localStorage.getItem('user_id') || 'default-user';
-      
-      console.log('🚀 Starting resume upload:');
-      console.log('   User ID:', userId);
-      console.log('   File:', file.name);
-
-      const result = await uploadResume(userId, file);
-      
-      console.log('✅ Upload successful:', result);
+      const result = await uploadResume(file);
       setUploadResponse({ message: 'Resume uploaded successfully!', data: result });
       setFile(null);
       setFileName('');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to upload resume. Please try again.';
-      console.error('❌ Upload failed:', errorMessage);
       setError(errorMessage);
     } finally {
       setUploading(false);
@@ -130,10 +121,10 @@ export default function UploadResumePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-black text-white font-sans">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-black text-white font-sans">
       <nav className="sticky top-0 z-50 backdrop-blur bg-black/40 border-b border-slate-700/50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+          <Link href="/" className="text-2xl font-bold bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
             Interview Coach AI
           </Link>
           <div className="flex gap-4 items-center">
@@ -149,7 +140,7 @@ export default function UploadResumePage() {
 
       <div className="max-w-2xl mx-auto px-6 py-12">
         <div className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-4">
             📄 Upload Resume
           </h1>
           <p className="text-xl text-slate-300 max-w-xl mx-auto">
@@ -207,7 +198,7 @@ export default function UploadResumePage() {
             className={`w-full mt-8 py-3 rounded-lg font-semibold transition ${
               uploading || !file
                 ? 'bg-slate-600 cursor-not-allowed opacity-50'
-                : 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700'
+                : 'bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700'
             }`}
           >
             {uploading ? '⚙️ Uploading...' : '🚀 Upload Resume'}

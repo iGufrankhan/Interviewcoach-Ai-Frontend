@@ -11,7 +11,7 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-black">
+      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-black">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
           <p className="text-slate-300">Verifying access...</p>
@@ -25,27 +25,17 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-black text-white overflow-x-hidden">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-black text-white overflow-x-hidden">
       {/* Navbar */}
       <nav className="sticky top-0 z-50 backdrop-blur-xl bg-black/70 border-b border-slate-700/50 shadow-lg">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           {/* Logo */}
-          <div className="text-xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
+          <div className="text-xl font-bold bg-linear-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
             🚀 Interview Coach AI
           </div>
           
           {/* Navigation Buttons */}
           <div className="flex gap-3 items-center">
-            {/* User Profile */}
-            <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-slate-700/40 to-slate-600/40 border border-slate-600/50">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-cyan-400 flex items-center justify-center text-slate-900 text-sm font-bold">
-                {user?.email?.[0]?.toUpperCase() || 'U'}
-              </div>
-              <span className="text-sm text-slate-200 font-medium">
-                {user?.email?.split('@')[0] || 'User'}
-              </span>
-            </div>
-
             {/* Logout */}
             <button
               onClick={() => {
@@ -54,7 +44,7 @@ export default function Dashboard() {
                 localStorage.removeItem('userEmail');
                 router.push('/');
               }}
-              className="px-4 py-2 text-sm font-medium bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-lg transition duration-300 shadow-lg hover:shadow-red-500/50"
+              className="px-4 py-2 text-sm font-medium bg-linear-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-lg transition duration-300 shadow-lg hover:shadow-red-500/50"
             >
               Logout
             </button>
@@ -66,12 +56,12 @@ export default function Dashboard() {
       <main className="max-w-7xl mx-auto px-6 py-12">
         {/* Hero Section with Stats */}
         <div className="mb-16">
-          <div className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 border border-slate-600/50 rounded-2xl p-10 backdrop-blur-sm">
+          <div className="bg-linear-to-r from-slate-800/50 to-slate-700/50 border border-slate-600/50 rounded-2xl p-10 backdrop-blur-sm">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <div>
                 <h1 className="text-5xl md:text-6xl font-bold mb-4">
                   Welcome back, <br/>
-                  <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent animate-pulse">
+                  <span className="bg-linear-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent animate-pulse">
                     {user?.email?.split('@')[0] || 'User'}
                   </span>
                 </h1>
@@ -80,21 +70,21 @@ export default function Dashboard() {
                 </p>
                 <Link
                   href="/UploadResume"
-                  className="inline-block px-8 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold rounded-lg shadow-lg hover:shadow-blue-500/50 transition duration-300"
+                  className="inline-block px-8 py-3 bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold rounded-lg shadow-lg hover:shadow-blue-500/50 transition duration-300"
                 >
                   Get Started →
                 </Link>
               </div>
               <div className="grid grid-cols-3 gap-4">
-                <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/10 border border-blue-500/30 rounded-lg p-6 text-center">
+                <div className="bg-linear-to-br from-blue-500/20 to-blue-600/10 border border-blue-500/30 rounded-lg p-6 text-center">
                   <div className="text-3xl font-bold text-blue-400 mb-2">0</div>
                   <div className="text-sm text-slate-300">Resumes</div>
                 </div>
-                <div className="bg-gradient-to-br from-cyan-500/20 to-cyan-600/10 border border-cyan-500/30 rounded-lg p-6 text-center">
+                <div className="bg-linear-to-br from-cyan-500/20 to-cyan-600/10 border border-cyan-500/30 rounded-lg p-6 text-center">
                   <div className="text-3xl font-bold text-cyan-400 mb-2">0</div>
                   <div className="text-sm text-slate-300">Interviews</div>
                 </div>
-                <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/10 border border-purple-500/30 rounded-lg p-6 text-center">
+                <div className="bg-linear-to-br from-purple-500/20 to-purple-600/10 border border-purple-500/30 rounded-lg p-6 text-center">
                   <div className="text-3xl font-bold text-purple-400 mb-2">0</div>
                   <div className="text-sm text-slate-300">Matched</div>
                 </div>
@@ -107,12 +97,12 @@ export default function Dashboard() {
         <div className="mb-16">
           <div className="flex items-center gap-3 mb-6">
             <h2 className="text-3xl font-bold">⚡ Quick Actions</h2>
-            <div className="flex-1 h-px bg-gradient-to-r from-slate-600 to-transparent"></div>
+            <div className="flex-1 h-px bg-linear-to-r from-slate-600 to-transparent"></div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Link
               href="/UploadResume"
-              className="group relative bg-gradient-to-br from-blue-600/20 to-blue-700/10 border border-blue-500/50 hover:border-blue-400 rounded-xl p-6 transition duration-300 hover:shadow-lg hover:shadow-blue-500/30"
+              className="group relative bg-linear-to-br from-blue-600/20 to-blue-700/10 border border-blue-500/50 hover:border-blue-400 rounded-xl p-6 transition duration-300 hover:shadow-lg hover:shadow-blue-500/30"
             >
               <div className="text-4xl mb-3 group-hover:scale-110 transition duration-300">📄</div>
               <h3 className="font-bold text-slate-200 mb-1">Upload Resume</h3>
@@ -121,7 +111,7 @@ export default function Dashboard() {
 
             <Link
               href="/GetResumeData"
-              className="group relative bg-gradient-to-br from-cyan-600/20 to-cyan-700/10 border border-cyan-500/50 hover:border-cyan-400 rounded-xl p-6 transition duration-300 hover:shadow-lg hover:shadow-cyan-500/30"
+              className="group relative bg-linear-to-br from-cyan-600/20 to-cyan-700/10 border border-cyan-500/50 hover:border-cyan-400 rounded-xl p-6 transition duration-300 hover:shadow-lg hover:shadow-cyan-500/30"
             >
               <div className="text-4xl mb-3 group-hover:scale-110 transition duration-300">🔍</div>
               <h3 className="font-bold text-slate-200 mb-1">Job Analysis</h3>
@@ -130,7 +120,7 @@ export default function Dashboard() {
 
             <Link
               href="/GetResume"
-              className="group relative bg-gradient-to-br from-purple-600/20 to-purple-700/10 border border-purple-500/50 hover:border-purple-400 rounded-xl p-6 transition duration-300 hover:shadow-lg hover:shadow-purple-500/30"
+              className="group relative bg-linear-to-br from-purple-600/20 to-purple-700/10 border border-purple-500/50 hover:border-purple-400 rounded-xl p-6 transition duration-300 hover:shadow-lg hover:shadow-purple-500/30"
             >
               <div className="text-4xl mb-3 group-hover:scale-110 transition duration-300">📋</div>
               <h3 className="font-bold text-slate-200 mb-1">My Resumes</h3>
@@ -139,7 +129,7 @@ export default function Dashboard() {
 
             <Link
               href="/interviewprep"
-              className="group relative bg-gradient-to-br from-green-600/20 to-green-700/10 border border-green-500/50 hover:border-green-400 rounded-xl p-6 transition duration-300 hover:shadow-lg hover:shadow-green-500/30"
+              className="group relative bg-linear-to-br from-green-600/20 to-green-700/10 border border-green-500/50 hover:border-green-400 rounded-xl p-6 transition duration-300 hover:shadow-lg hover:shadow-green-500/30"
             >
               <div className="text-4xl mb-3 group-hover:scale-110 transition duration-300">🎤</div>
               <h3 className="font-bold text-slate-200 mb-1">Interview Prep</h3>
@@ -152,16 +142,16 @@ export default function Dashboard() {
         <div className="mb-16">
           <div className="flex items-center gap-3 mb-6">
             <h2 className="text-3xl font-bold">✨ Main Features</h2>
-            <div className="flex-1 h-px bg-gradient-to-r from-slate-600 to-transparent"></div>
+            <div className="flex-1 h-px bg-linear-to-r from-slate-600 to-transparent"></div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
             {/* Resume Analysis */}
             <Link
               href="/GetResumeData"
-              className="group bg-gradient-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-cyan-500/50 rounded-xl p-8 transition duration-300 hover:shadow-xl hover:shadow-cyan-500/20 cursor-pointer overflow-hidden relative"
+              className="group bg-linear-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-cyan-500/50 rounded-xl p-8 transition duration-300 hover:shadow-xl hover:shadow-cyan-500/20 cursor-pointer overflow-hidden relative"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-600/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+              <div className="absolute inset-0 bg-linear-to-br from-cyan-600/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
               <div className="relative z-10">
                 <div className="text-5xl mb-4 group-hover:scale-125 transition duration-300 transform">🎯</div>
                 <h3 className="text-2xl font-bold mb-2 text-slate-100 group-hover:text-cyan-300 transition">Resume Matching</h3>
@@ -175,9 +165,9 @@ export default function Dashboard() {
             {/* Interview Practice */}
             <Link
               href="/interviewprep"
-              className="group bg-gradient-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-green-500/50 rounded-xl p-8 transition duration-300 hover:shadow-xl hover:shadow-green-500/20 cursor-pointer overflow-hidden relative"
+              className="group bg-linear-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-green-500/50 rounded-xl p-8 transition duration-300 hover:shadow-xl hover:shadow-green-500/20 cursor-pointer overflow-hidden relative"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-green-600/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+              <div className="absolute inset-0 bg-linear-to-br from-green-600/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
               <div className="relative z-10">
                 <div className="text-5xl mb-4 group-hover:scale-125 transition duration-300 transform">🚀</div>
                 <h3 className="text-2xl font-bold mb-2 text-slate-100 group-hover:text-green-300 transition">Interview Practice</h3>
@@ -191,9 +181,9 @@ export default function Dashboard() {
             {/* Performance Insights */}
             <Link
               href="/interview-results"
-              className="group bg-gradient-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-yellow-500/50 rounded-xl p-8 transition duration-300 hover:shadow-xl hover:shadow-yellow-500/20 cursor-pointer overflow-hidden relative"
+              className="group bg-linear-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-yellow-500/50 rounded-xl p-8 transition duration-300 hover:shadow-xl hover:shadow-yellow-500/20 cursor-pointer overflow-hidden relative"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-yellow-600/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+              <div className="absolute inset-0 bg-linear-to-br from-yellow-600/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
               <div className="relative z-10">
                 <div className="text-5xl mb-4 group-hover:scale-125 transition duration-300 transform">📊</div>
                 <h3 className="text-2xl font-bold mb-2 text-slate-100 group-hover:text-yellow-300 transition">Performance Insights</h3>
@@ -207,9 +197,9 @@ export default function Dashboard() {
             {/* Job Matches */}
             <Link
               href="/AnalysisResume"
-              className="group bg-gradient-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-indigo-500/50 rounded-xl p-8 transition duration-300 hover:shadow-xl hover:shadow-indigo-500/20 cursor-pointer overflow-hidden relative"
+              className="group bg-linear-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-indigo-500/50 rounded-xl p-8 transition duration-300 hover:shadow-xl hover:shadow-indigo-500/20 cursor-pointer overflow-hidden relative"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+              <div className="absolute inset-0 bg-linear-to-br from-indigo-600/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
               <div className="relative z-10">
                 <div className="text-5xl mb-4 group-hover:scale-125 transition duration-300 transform">💼</div>
                 <h3 className="text-2xl font-bold mb-2 text-slate-100 group-hover:text-indigo-300 transition">Top Job Matches</h3>
@@ -223,9 +213,9 @@ export default function Dashboard() {
             {/* My Resumes */}
             <Link
               href="/GetResume"
-              className="group bg-gradient-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-purple-500/50 rounded-xl p-8 transition duration-300 hover:shadow-xl hover:shadow-purple-500/20 cursor-pointer overflow-hidden relative"
+              className="group bg-linear-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-purple-500/50 rounded-xl p-8 transition duration-300 hover:shadow-xl hover:shadow-purple-500/20 cursor-pointer overflow-hidden relative"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+              <div className="absolute inset-0 bg-linear-to-br from-purple-600/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
               <div className="relative z-10">
                 <div className="text-5xl mb-4 group-hover:scale-125 transition duration-300 transform">📁</div>
                 <h3 className="text-2xl font-bold mb-2 text-slate-100 group-hover:text-purple-300 transition">Resume Library</h3>
@@ -237,8 +227,8 @@ export default function Dashboard() {
             </Link>
 
             {/* Getting Started */}
-            <div className="group bg-gradient-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-blue-500/50 rounded-xl p-8 transition duration-300 hover:shadow-xl hover:shadow-blue-500/20 cursor-pointer overflow-hidden relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+            <div className="group bg-linear-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-blue-500/50 rounded-xl p-8 transition duration-300 hover:shadow-xl hover:shadow-blue-500/20 cursor-pointer overflow-hidden relative">
+              <div className="absolute inset-0 bg-linear-to-br from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
               <div className="relative z-10">
                 <div className="text-5xl mb-4 group-hover:scale-125 transition duration-300 transform">📖</div>
                 <h3 className="text-2xl font-bold mb-2 text-slate-100 group-hover:text-blue-300 transition">Getting Started</h3>
@@ -252,7 +242,7 @@ export default function Dashboard() {
         </div>
 
         {/* Tips & Recommendations */}
-        <div className="bg-gradient-to-r from-slate-800/40 to-slate-700/40 border border-slate-600/50 rounded-2xl p-8 backdrop-blur-sm">
+        <div className="bg-linear-to-r from-slate-800/40 to-slate-700/40 border border-slate-600/50 rounded-2xl p-8 backdrop-blur-sm">
           <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
             💡 Pro Tips for Success
           </h3>

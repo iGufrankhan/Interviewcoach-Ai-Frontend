@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/withProtectedRoute';
+import { fetchUserResumes, deleteResume } from '@/lib/api';
 
 interface Resume {
-  resume_id: string;
+  id: string;
   filename: string;
   created_at: string;
   extracted_data: {
@@ -35,7 +36,7 @@ export default function DeleteResumePage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-black">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-900 via-slate-800 to-black">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
           <p className="text-slate-300">Loading...</p>
@@ -47,22 +48,11 @@ export default function DeleteResumePage() {
   const fetchResumes = async () => {
     try {
       setLoading(true);
-      const userId = localStorage.getItem('user_id') || 'default-user';
-      
-      const response = await fetch(`/api/get-resumes/${userId}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-        },
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        setResumes(data.data || []);
-      } else {
-        setError(data.message || 'Failed to fetch resumes');
-      }
+      const data = await fetchUserResumes();
+      setResumes(data || []);
     } catch (err) {
-      setError('Failed to load resumes.');
+      const errorMsg = err instanceof Error ? err.message : 'Failed to load resumes.';
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -73,37 +63,26 @@ export default function DeleteResumePage() {
 
     setDeleting(true);
     try {
-      const userId = localStorage.getItem('user_id') || 'default-user';
-      
-      const response = await fetch(`/api/delete-resume/${userId}/${selectedForDelete.resume_id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-        },
-      });
-
-      if (response.ok) {
-        setDeletedResumes([...deletedResumes, selectedForDelete.resume_id]);
-        setResumes(resumes.filter(r => r.resume_id !== selectedForDelete.resume_id));
-        setSelectedForDelete(null);
-        setConfirmDelete(false);
-      } else {
-        alert('Failed to delete resume');
-      }
+      await deleteResume(selectedForDelete.id);
+      setDeletedResumes([...deletedResumes, selectedForDelete.id]);
+      setResumes(resumes.filter(r => r.id !== selectedForDelete.id));
+      setSelectedForDelete(null);
+      setConfirmDelete(false);
     } catch (err) {
-      alert('Error deleting resume');
+      const errorMsg = err instanceof Error ? err.message : 'Error deleting resume';
+      alert(errorMsg);
     } finally {
       setDeleting(false);
     }
   };
 
-  const activeResumes = resumes.filter(r => !deletedResumes.includes(r.resume_id));
+  const activeResumes = resumes.filter(r => !deletedResumes.includes(r.id));
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-black text-white font-sans">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-black text-white font-sans">
       <nav className="sticky top-0 z-50 backdrop-blur bg-black/40 border-b border-slate-700/50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+          <Link href="/" className="text-2xl font-bold bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
             Interview Coach AI
           </Link>
           <div className="flex gap-4 items-center">
@@ -119,7 +98,7 @@ export default function DeleteResumePage() {
 
       <div className="max-w-4xl mx-auto px-6 py-12">
         <div className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-red-400 to-pink-400 bg-clip-text text-transparent mb-4">
             🗑️ Delete Resumes
           </h1>
           <p className="text-xl text-slate-300">Manage and delete your resume files.</p>
@@ -154,7 +133,7 @@ export default function DeleteResumePage() {
         {!loading && activeResumes.length > 0 && (
           <div>
             {confirmDelete && selectedForDelete ? (
-              <div className="bg-gradient-to-r from-red-900/40 to-pink-900/40 border border-red-600/50 rounded-xl p-8 max-w-md mx-auto">
+              <div className="bg-linear-to-r from-red-900/40 to-pink-900/40 border border-red-600/50 rounded-xl p-8 max-w-md mx-auto">
                 <h2 className="text-2xl font-bold text-red-400 mb-4">⚠️ Confirm Deletion</h2>
                 
                 <div className="bg-slate-800 rounded-lg p-4 mb-6">
@@ -196,7 +175,7 @@ export default function DeleteResumePage() {
                 
                 {activeResumes.map((resume) => (
                   <div
-                    key={resume.resume_id}
+                    key={resume.id}
                     className="bg-slate-700/30 border border-slate-600/50 rounded-lg p-4 flex items-center justify-between hover:border-red-400/50 transition"
                   >
                     <div className="flex-1">

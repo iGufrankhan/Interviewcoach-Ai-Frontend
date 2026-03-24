@@ -3,12 +3,11 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { fetchUserResumes } from '@/lib/api';
+import { fetchUserResumes, deleteResume } from '@/lib/api';
 import { useAuth } from '@/lib/auth/withProtectedRoute';
 
 interface Resume {
-  id?: string;
-  resume_id?: string;
+  id: string;
   name: string;
   email: string;
   skills: string[];
@@ -34,7 +33,7 @@ export default function GetResumePage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-black">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-900 via-slate-800 to-black">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
           <p className="text-slate-300">Loading...</p>
@@ -47,16 +46,10 @@ export default function GetResumePage() {
     try {
       setLoading(true);
       setError('');
-      const userId = localStorage.getItem('user_id') || 'default-user';
-      
-      console.log('📋 Fetching resumes for user:', userId);
-      
-      const data = await fetchUserResumes(userId);
-      console.log('✅ Resumes fetched:', data);
+      const data = await fetchUserResumes();
       setResumes(data || []);
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Failed to load resumes. Please try again.';
-      console.error('❌ Error fetching resumes:', errorMsg);
       setError(errorMsg);
     } finally {
       setLoading(false);
@@ -67,36 +60,22 @@ export default function GetResumePage() {
     if (!confirm('Are you sure you want to delete this resume?')) return;
 
     try {
-      const userId = localStorage.getItem('user_id') || 'default-user';
-      
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/resume/api/delete-resume/${userId}/${resumeId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-        },
-      });
-
-      if (response.ok) {
-        setResumes(resumes.filter(r => (r.id || r.resume_id) !== resumeId));
-        if (selectedResume?.id === resumeId || selectedResume?.resume_id === resumeId) {
-          setSelectedResume(null);
-        }
-        console.log('✅ Resume deleted successfully');
-      } else {
-        console.error('❌ Failed to delete resume');
-        alert('Failed to delete resume');
+      await deleteResume(resumeId);
+      setResumes(resumes.filter(r => r.id !== resumeId));
+      if (selectedResume?.id === resumeId) {
+        setSelectedResume(null);
       }
     } catch (err) {
-      console.error('❌ Error deleting resume:', err);
-      alert('Failed to delete resume');
+      const errorMsg = err instanceof Error ? err.message : 'Failed to delete resume';
+      alert(errorMsg);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-black text-white font-sans">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-black text-white font-sans">
       <nav className="sticky top-0 z-50 backdrop-blur bg-black/40 border-b border-slate-700/50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+          <Link href="/" className="text-2xl font-bold bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
             Interview Coach AI
           </Link>
           <div className="flex gap-4 items-center">
@@ -112,7 +91,7 @@ export default function GetResumePage() {
 
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-4">
             📂 My Resumes
           </h1>
           <p className="text-xl text-slate-300">View, manage, and use your uploaded resumes for job matching.</p>
@@ -152,10 +131,10 @@ export default function GetResumePage() {
               <div className="space-y-3">
                 {resumes.map((resume) => (
                   <button
-                    key={resume.id || resume.resume_id}
+                    key={resume.id}
                     onClick={() => setSelectedResume(resume)}
                     className={`w-full text-left p-4 rounded-lg border transition ${
-                      selectedResume?.id === resume.id || selectedResume?.resume_id === resume.resume_id
+                      selectedResume?.id === resume.id
                         ? 'bg-blue-900/40 border-blue-600/50'
                         : 'bg-slate-700/30 border-slate-600/50 hover:border-blue-400/50'
                     }`}
@@ -169,7 +148,7 @@ export default function GetResumePage() {
               </div>
               <Link
                 href="/UploadResume"
-                className="w-full mt-4 block px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 rounded-lg font-semibold text-center transition"
+                className="w-full mt-4 block px-4 py-2 bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 rounded-lg font-semibold text-center transition"
               >
                 ➕ Upload New Resume
               </Link>

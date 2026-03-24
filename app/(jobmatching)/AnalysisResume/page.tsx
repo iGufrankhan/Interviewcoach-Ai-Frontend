@@ -149,11 +149,11 @@ export default function JobMatchingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-black text-white font-sans">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-black text-white font-sans">
       {/* Navigation */}
       <nav className="sticky top-0 z-50 backdrop-blur bg-black/40 border-b border-slate-700/50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+          <Link href="/" className="text-2xl font-bold bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
             Interview Coach AI
           </Link>
           <div className="flex gap-4 items-center">
@@ -170,7 +170,7 @@ export default function JobMatchingPage() {
       <div className="max-w-6xl mx-auto px-6 py-12">
         {/* Header */}
         <div className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-4">
             📊 Job Matching Analysis
           </h1>
           <p className="text-xl text-slate-300 max-w-2xl mx-auto">
@@ -263,7 +263,7 @@ export default function JobMatchingPage() {
             className={`px-8 py-4 rounded-lg font-bold text-lg transition transform ${
               analyzing || !selectedResume || !jobDescription.trim()
                 ? 'bg-slate-600 cursor-not-allowed opacity-50'
-                : 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 hover:scale-105'
+                : 'bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 hover:scale-105'
             }`}
           >
             {analyzing ? (
@@ -280,7 +280,7 @@ export default function JobMatchingPage() {
         {result && (
           <div className="space-y-8 animate-fadeIn">
             {/* Overall Score - Large Card */}
-            <div className={`bg-gradient-to-r ${getScoreBgColor(result.overallScore)} border rounded-xl p-8`}>
+            <div className={`bg-linear-to-r ${getScoreBgColor(result.overallScore)} border rounded-xl p-8`}>
               <div className="text-center">
                 <p className="text-slate-300 mb-2">Overall Match Score</p>
                 <p className={`text-7xl font-bold ${getScoreColor(result.overallScore)} mb-4`}>
@@ -404,7 +404,7 @@ export default function JobMatchingPage() {
             )}
 
             {/* Next Steps */}
-            <div className="bg-gradient-to-r from-blue-900/40 to-cyan-900/40 border border-blue-600/30 rounded-xl p-6 text-center">
+            <div className="bg-linear-to-r from-blue-900/40 to-cyan-900/40 border border-blue-600/30 rounded-xl p-6 text-center">
               <h3 className="text-2xl font-bold text-cyan-400 mb-4">🎯 Ready to Prepare for Interview?</h3>
               <p className="text-slate-300 mb-6">Get 10 personalized interview questions based on this job and your resume to practice and improve.</p>
               <Link
