@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/withProtectedRoute';
+import ChatWidget from '@/app/chatbot/ChatWidget';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -99,7 +100,7 @@ export default function Dashboard() {
             <h2 className="text-3xl font-bold">⚡ Quick Actions</h2>
             <div className="flex-1 h-px bg-linear-to-r from-slate-600 to-transparent"></div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <Link
               href="/UploadResume"
               className="group relative bg-linear-to-br from-blue-600/20 to-blue-700/10 border border-blue-500/50 hover:border-blue-400 rounded-xl p-6 transition duration-300 hover:shadow-lg hover:shadow-blue-500/30"
@@ -278,6 +279,9 @@ export default function Dashboard() {
           </div>
         </div>
       </main>
+
+      {/* Chat Widget */}
+      <ChatWidget />
     </div>
   );
 }

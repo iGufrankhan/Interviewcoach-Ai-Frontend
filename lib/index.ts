@@ -18,6 +18,14 @@ export {
   getCurrentUser,
 } from './auth/authApi';
 
+// Forgot Password API exports
+export {
+  requestForgotPassword,
+  verifyForgotPasswordOTP,
+  resendForgotPasswordOTP,
+  resetForgotPassword,
+} from './auth/forgotPasswordApi';
+
 // Resume API exports
 export {
   fetchUserResumes,

@@ -46,11 +46,10 @@ export default function JobMatchingPage() {
   const fetchResumes = async () => {
     try {
       setLoadingResumes(true);
-      const userId = localStorage.getItem('user_id') || 'default-user';
       const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       
       const response = await fetch(
-        `${API_BASE_URL}/resume/api/user-resumes/${userId}`,
+        `${API_BASE_URL}/resume/api/user-resumes`,
         {
           method: 'GET',
           headers: {
@@ -363,7 +362,7 @@ export default function JobMatchingPage() {
               <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-6">
                 <h3 className="text-2xl font-bold text-green-400 mb-4">✅ Your Strengths</h3>
                 <div className="grid md:grid-cols-2 gap-3">
-                  {result.strengths.map((strength, idx) => (
+                  {result.strengths.slice(0, 5).map((strength, idx) => (
                     <div key={idx} className="flex items-start gap-3 bg-green-900/20 border border-green-600/30 rounded-lg p-4">
                       <span className="text-green-400 text-xl mt-1">✓</span>
                       <span className="text-slate-300">{strength}</span>
@@ -391,12 +390,22 @@ export default function JobMatchingPage() {
             {/* Improvement Suggestions */}
             {result.suggestions && Array.isArray(result.suggestions) && result.suggestions.length > 0 && (
               <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-6">
-                <h3 className="text-2xl font-bold text-blue-400 mb-4">💡 Actionable Suggestions</h3>
-                <div className="space-y-3">
-                  {result.suggestions.map((suggestion, idx) => (
-                    <div key={idx} className="flex gap-4 bg-blue-900/20 border border-blue-600/30 rounded-lg p-4">
-                      <span className="text-blue-400 font-bold text-xl min-w-fit">{idx + 1}.</span>
-                      <span className="text-slate-300">{suggestion}</span>
+                <h3 className="text-2xl font-bold text-blue-400 mb-6">💡 Actionable Suggestions</h3>
+                <div className="space-y-4">
+                  {result.suggestions.slice(0, 5).map((suggestion, idx) => (
+                    <div key={idx} className="bg-blue-900/20 border border-blue-600/30 rounded-lg p-5">
+                      <div className="flex gap-4">
+                        <div className="flex-shrink-0">
+                          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-sm">
+                            {idx + 1}
+                          </span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-slate-300 leading-relaxed">
+                            {suggestion}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>

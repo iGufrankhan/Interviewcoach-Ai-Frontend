@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { verifyForgotPasswordOTP, resendForgotPasswordOTP } from '@/lib/auth/forgotPasswordApi';
 
 export default function ResetPasswordOTPPage() {
   const [email, setEmail] = useState('');
@@ -34,26 +35,14 @@ export default function ResetPasswordOTPPage() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/verify-reset-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, otp }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.detail?.error || 'Invalid OTP');
-        setLoading(false);
-        return;
-      }
-
+      const result = await verifyForgotPasswordOTP(email, otp);
       setSuccess('OTP verified successfully!');
       setTimeout(() => {
         router.push(`/reset-password?email=${encodeURIComponent(email)}&step=newpassword&verified=true`);
       }, 1500);
-    } catch (err) {
-      setError('Network error. Please try again.');
+    } catch (err: any) {
+      setError(err.message || 'Invalid OTP');
+    } finally {
       setLoading(false);
     }
   };
@@ -64,19 +53,10 @@ export default function ResetPasswordOTPPage() {
     setCountdown(60);
 
     try {
-      const response = await fetch('/api/auth/request-reset', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-
-      if (response.ok) {
-        setSuccess('Reset code resent successfully!');
-      } else {
-        setError('Failed to resend code');
-      }
-    } catch (err) {
-      setError('Network error. Please try again.');
+      const result = await resendForgotPasswordOTP(email);
+      setSuccess('Reset code resent successfully!');
+    } catch (err: any) {
+      setError(err.message || 'Failed to resend code');
     } finally {
       setLoading(false);
     }
@@ -109,7 +89,7 @@ export default function ResetPasswordOTPPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold mb-2">Verify Reset Code</h1>
+              <h1 className="text-2xl font-bold mb-2">Verify Your Reset Code</h1>
               <p className="text-slate-400">Enter the 6-digit code sent to</p>
               <p className="text-blue-400 font-medium">{email}</p>
             </div>

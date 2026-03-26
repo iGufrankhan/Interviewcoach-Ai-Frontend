@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { requestForgotPassword, resetForgotPassword } from '@/lib/auth/forgotPasswordApi';
 
 type ResetStep = 'email' | 'newpassword';
 
@@ -49,25 +50,13 @@ export default function ResetPasswordPage() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/request-reset', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.detail?.error || 'Failed to send reset code');
-        return;
-      }
-
+      const result = await requestForgotPassword(email);
       setSuccess('Reset code sent! Redirecting to verification...');
       setTimeout(() => {
-        router.push(`/auth/reset-password-otp?email=${encodeURIComponent(email)}`);
+        router.push(`/reset-password-otp?email=${encodeURIComponent(email)}`);
       }, 1500);
-    } catch (err) {
-      setError('Network error. Please try again.');
+    } catch (err: any) {
+      setError(err.message || 'Failed to send reset code');
     } finally {
       setLoading(false);
     }
@@ -91,28 +80,13 @@ export default function ResetPasswordPage() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/reset-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          newPassword,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.detail?.error || 'Failed to reset password');
-        return;
-      }
-
+      const result = await resetForgotPassword(email, newPassword);
       setSuccess('Password reset successful! Redirecting to login...');
       setTimeout(() => {
         router.push('/login');
       }, 2000);
-    } catch (err) {
-      setError('Network error. Please try again.');
+    } catch (err: any) {
+      setError(err.message || 'Failed to reset password');
     } finally {
       setLoading(false);
     }
@@ -137,7 +111,7 @@ export default function ResetPasswordPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </div>
-                  <h1 className="text-2xl font-bold mb-2">Reset Your Password</h1>
+                  <h1 className="text-2xl font-bold mb-2">Forgot Your Password?</h1>
                   <p className="text-slate-400">Enter your email to get started</p>
                 </div>
 
