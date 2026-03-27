@@ -6,6 +6,11 @@ const API_BASE_URL = 'http://localhost:8000/api/chat';
 
 function getAuthHeaders(): Record<string, string> {
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  
+  if (!token) {
+    throw new Error('Authentication token not found. Please log in first.');
+  }
+  
   return {
     'Authorization': `Bearer ${token}`,
   };
