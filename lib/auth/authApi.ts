@@ -77,7 +77,7 @@ export const loginUser = async (
 export const sendOTP = async (email: string): Promise<OTPResponse> => {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/api/auth/send-otp`,
+      `/api/auth/send-otp`,
       {
         method: 'POST',
         headers: {
@@ -109,7 +109,7 @@ export const verifyOTP = async (
 ): Promise<OTPResponse> => {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/api/auth/verify-otp`,
+      `/api/auth/verify-otp`,
       {
         method: 'POST',
         headers: {
@@ -141,7 +141,7 @@ export const verifyOTP = async (
 export const resendOTP = async (email: string): Promise<OTPResponse> => {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/api/auth/resend-otp`,
+      `/api/auth/resend-otp`,
       {
         method: 'POST',
         headers: {

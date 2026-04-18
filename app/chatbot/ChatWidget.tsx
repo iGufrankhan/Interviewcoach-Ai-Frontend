@@ -19,9 +19,42 @@ export default function ChatWidget() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Load session from localStorage on mount
+  useEffect(() => {
+    const savedSessionId = typeof window !== 'undefined' ? localStorage.getItem('currentChatSessionId') : null;
+    if (savedSessionId) {
+      setSessionId(savedSessionId);
+      console.log('[ChatWidget] Restored session from localStorage:', savedSessionId);
+    }
+  }, []);
+
+  // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Load chat history when session ID changes
+  useEffect(() => {
+    const loadHistory = async () => {
+      if (!sessionId) return;
+      
+      try {
+        const history = await getChatHistory(sessionId);
+        const loadedMessages: Message[] = history.map((msg, idx) => ({
+          id: `${sessionId}-${idx}`,
+          role: msg.role,
+          content: msg.content,
+          timestamp: new Date()
+        }));
+        setMessages(loadedMessages);
+        console.log('[ChatWidget] Loaded', loadedMessages.length, 'messages for session:', sessionId);
+      } catch (err) {
+        console.log('[ChatWidget] No history found for session:', sessionId);
+      }
+    };
+
+    loadHistory();
+  }, [sessionId]);
 
   // Load user's sessions when chat opens
   useEffect(() => {
@@ -35,28 +68,21 @@ export default function ChatWidget() {
         const sessions = await getChatSessions();
         
         if (sessions && sessions.length > 0) {
-          // Get the most recent session (should be first)
-          const latestSession = sessions[0];
-          setSessionId(latestSession._id);
-          
-          // Load chat history for this session
-          const history = await getChatHistory(latestSession._id);
-          const loadedMessages: Message[] = history.map((msg, idx) => ({
-            id: `${latestSession._id}-${idx}`,
-            role: msg.role,
-            content: msg.content,
-            timestamp: new Date()
-          }));
-          setMessages(loadedMessages);
-          console.log('Loaded session with', loadedMessages.length, 'messages');
+          // If no session is loaded, load the most recent one
+          if (!sessionId) {
+            const latestSession = sessions[0];
+            setSessionId(latestSession._id);
+            localStorage.setItem('currentChatSessionId', latestSession._id);
+            console.log('[ChatWidget] Loaded latest session:', latestSession._id);
+          }
         }
       } catch (err) {
-        console.log('No previous sessions found, will create new one on first message');
+        console.log('[ChatWidget] No previous sessions found, will create new one on first message');
       }
     };
 
     loadSessions();
-  }, [isOpen]);
+  }, [isOpen, sessionId]);
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString('en-US', { 
@@ -106,14 +132,18 @@ export default function ChatWidget() {
       // Create session if doesn't exist
       let currentSessionId = sessionId;
       if (!currentSessionId) {
-        console.log('Creating new chat session...');
+        console.log('[ChatWidget] Creating new chat session...');
         try {
           const session = await createChatSession('Chat Session');
-          console.log('Session created:', session.session_id);
+          console.log('[ChatWidget] Session created:', session.session_id);
           currentSessionId = session.session_id;
           setSessionId(currentSessionId);
+          // Persist session ID to localStorage
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('currentChatSessionId', currentSessionId);
+          }
         } catch (err) {
-          console.error('Failed to create session:', err);
+          console.error('[ChatWidget] Failed to create session:', err);
           setMessages(prev => [...prev, { 
             id: Date.now() + '-error', 
             role: 'assistant', 
@@ -125,9 +155,9 @@ export default function ChatWidget() {
       }
 
       // Send message with valid session ID
-      console.log('Sending message with session:', currentSessionId);
+      console.log('[ChatWidget] Sending message with session:', currentSessionId);
       const result = await sendChatMessage(currentSessionId, userMessage);
-      console.log('Response:', result);
+      console.log('[ChatWidget] Response:', result);
       setMessages(prev => [...prev, { 
         id: Date.now() + '-assistant', 
         role: 'assistant', 
