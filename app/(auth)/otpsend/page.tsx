@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { sendOTP } from '@/lib/api';
+import { validateEmail } from '@/lib/validators';
 
 export default function OTPSendPage() {
   const [email, setEmail] = useState('');
@@ -17,8 +18,10 @@ export default function OTPSendPage() {
     setError('');
     setSuccess('');
     
-    if (!email.trim()) {
-      setError('Please enter your email');
+    // Validate email using validator
+    const emailError = validateEmail(email);
+    if (emailError) {
+      setError(emailError);
       return;
     }
 

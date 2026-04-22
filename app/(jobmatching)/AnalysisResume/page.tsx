@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth/withProtectedRoute';
+import { validateJobDescription } from '@/lib/validators';
 
 interface Resume {
   resume_id: string;
@@ -78,8 +79,15 @@ export default function JobMatchingPage() {
   };
 
   const handleAnalyze = async () => {
-    if (!selectedResume || !jobDescription.trim()) {
-      setError('Please select a resume and enter a job description');
+    if (!selectedResume) {
+      setError('Please select a resume');
+      return;
+    }
+
+    // Validate job description using validator
+    const jobDescError = validateJobDescription(jobDescription);
+    if (jobDescError) {
+      setError(jobDescError);
       return;
     }
 

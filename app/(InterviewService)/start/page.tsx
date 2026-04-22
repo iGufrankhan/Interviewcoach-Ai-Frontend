@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { startInterview, InterviewSession } from '@/lib/interview/interviewApi';
 import { fetchUserResumes } from '@/lib/resume/resumeApi';
 import { useAuth } from '@/lib/auth/withProtectedRoute';
+import { validateJobDescription } from '@/lib/validators';
 
 interface Resume {
   resume_id: string;
@@ -58,8 +59,10 @@ export default function StartInterviewPage() {
       return;
     }
 
-    if (!jobDescription.trim()) {
-      setError('Please enter a job description');
+    // Validate job description using validator
+    const jobDescError = validateJobDescription(jobDescription);
+    if (jobDescError) {
+      setError(jobDescError);
       return;
     }
 

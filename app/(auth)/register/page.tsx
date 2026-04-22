@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { completeRegistration } from '@/lib/api';
+import { validatePassword, validatePasswordMatch } from '@/lib/validators';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -68,13 +69,16 @@ export default function RegisterPage() {
       return;
     }
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
+    // Use validators for password validation
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      setError(passwordError);
       return;
     }
 
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters');
+    const matchError = validatePasswordMatch(password, confirmPassword);
+    if (matchError) {
+      setError(matchError);
       return;
     }
 

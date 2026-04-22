@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { uploadResume } from '@/lib/api';
 import { useAuth } from '@/lib/auth/withProtectedRoute';
+import { validateResumeFile } from '@/lib/validators';
 
 interface UploadResponse {
   message: string;
@@ -48,18 +49,12 @@ export default function UploadResumePage() {
   const allowedExtensions = ['.pdf', '.docx', '.txt'];
 
   const validateFile = (selectedFile: File): boolean => {
-    const fileExtension = selectedFile.name.substring(selectedFile.name.lastIndexOf('.')).toLowerCase();
-    if (!allowedExtensions.includes(fileExtension)) {
-      setError('Invalid file type. Allowed types are: PDF, DOCX, TXT');
+    // Use the validator function from validators.ts
+    const error = validateResumeFile(selectedFile);
+    if (error) {
+      setError(error);
       return false;
     }
-
-    const maxSize = 10 * 1024 * 1024;
-    if (selectedFile.size > maxSize) {
-      setError('File size exceeds 10MB limit');
-      return false;
-    }
-
     return true;
   };
 

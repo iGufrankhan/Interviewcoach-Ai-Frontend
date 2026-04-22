@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { requestForgotPassword, resetForgotPassword } from '@/lib/auth/forgotPasswordApi';
+import { validateEmail, validatePassword, validatePasswordMatch } from '@/lib/validators';
 
 type ResetStep = 'email' | 'newpassword';
 
@@ -47,6 +48,14 @@ export default function ResetPasswordPage() {
     e.preventDefault();
     setError('');
     setSuccess('');
+
+    // Validate email
+    const emailError = validateEmail(email);
+    if (emailError) {
+      setError(emailError);
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -67,13 +76,17 @@ export default function ResetPasswordPage() {
     setError('');
     setSuccess('');
 
-    if (newPassword !== confirmPassword) {
-      setError('Passwords do not match');
+    // Validate new password
+    const passwordError = validatePassword(newPassword);
+    if (passwordError) {
+      setError(passwordError);
       return;
     }
 
-    if (newPassword.length < 8) {
-      setError('Password must be at least 8 characters');
+    // Validate passwords match
+    const matchError = validatePasswordMatch(newPassword, confirmPassword);
+    if (matchError) {
+      setError(matchError);
       return;
     }
 

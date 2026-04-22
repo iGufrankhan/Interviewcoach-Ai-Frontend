@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { verifyOTP, resendOTP } from '@/lib/api';
+import { validateOTP } from '@/lib/validators';
 
 export default function VerifyOTPPage() {
   const [email, setEmail] = useState('');
@@ -27,8 +28,10 @@ export default function VerifyOTPPage() {
     setError('');
     setSuccess('');
 
-    if (otp.length !== 6) {
-      setError('Please enter a valid 6-digit code');
+    // Validate OTP using validator
+    const otpError = validateOTP(otp);
+    if (otpError) {
+      setError(otpError);
       return;
     }
 

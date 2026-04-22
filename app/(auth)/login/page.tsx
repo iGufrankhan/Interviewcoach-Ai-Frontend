@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { loginUser } from '@/lib/api';
+import { validateLoginForm } from '@/lib/validators';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -18,13 +19,10 @@ export default function LoginPage() {
     setError('');
     setSuccess('');
 
-    if (!email.trim()) {
-      setError('Email is required');
-      return;
-    }
-
-    if (!password) {
-      setError('Password is required');
+    // Validate using validators
+    const validationErrors = validateLoginForm(email, password);
+    if (validationErrors.length > 0) {
+      setError(validationErrors[0].message);
       return;
     }
 
