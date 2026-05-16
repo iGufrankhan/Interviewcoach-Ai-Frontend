@@ -17,21 +17,18 @@ export default function OTPSendPage() {
     e.preventDefault();
     setError('');
     setSuccess('');
-    
-    // Validate email using validator
+
     const emailError = validateEmail(email);
     if (emailError) {
       setError(emailError);
       return;
     }
 
-    setLoading(true);
-
     try {
-      const response = await sendOTP(email.trim());
-      
-      // Check if user already exists
-      if (response.data?.user_exists) {
+      setLoading(true);
+      const response = await sendOTP(email.trim()) as any;
+
+      if (response?.data?.user_exists || response?.user_exists) {
         setError('User already exists with this email. Please login instead.');
         return;
       }
@@ -48,76 +45,263 @@ export default function OTPSendPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-black text-white font-sans">
-      {/* Header */}
-      <nav className="px-6 py-4 border-b border-slate-700/50">
-        <Link href="/" className="text-2xl font-bold bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-          Interview Coach AI
-        </Link>
-      </nav>
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-      {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12">
-        <div className="w-full max-w-md">
-          <div className="bg-slate-800/50 backdrop-blur border border-slate-700/50 rounded-xl p-8">
-            <div className="text-center mb-8">
-              <div className="w-12 h-12 rounded-full bg-blue-500/20 border border-blue-400/50 flex items-center justify-center mx-auto mb-4">
-                <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h1 className="text-2xl font-bold mb-2">Get OTP Code</h1>
-              <p className="text-slate-400">Enter your email to receive verification code</p>
+        .lp-root {
+          min-height: 100vh;
+          font-family: 'DM Sans', sans-serif;
+          background: #080808;
+          position: relative;
+          overflow: hidden;
+        }
+
+        /* ── GRID ── */
+        .lp-grid {
+          position: fixed; inset: 0; z-index: 0; pointer-events: none;
+          background-image:
+            linear-gradient(rgba(185,29,29,0.13) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(185,29,29,0.13) 1px, transparent 1px);
+          background-size: 52px 52px;
+        }
+
+        /* ── RED GLOW ── */
+        .lp-glow {
+          position: fixed; z-index: 0; pointer-events: none;
+          width: 800px; height: 800px; border-radius: 50%;
+          background: radial-gradient(circle,
+            rgba(185,29,29,0.28) 0%,
+            rgba(185,29,29,0.12) 35%,
+            transparent 65%
+          );
+          top: 50%; left: 50%;
+          transform: translate(-50%, -50%);
+        }
+
+        /* ── TOP NAV (Matches Login) ── */
+        .lp-nav {
+          position: relative; z-index: 10;
+          padding: 36px 52px 0;
+          display: flex; flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .lp-brand {
+          font-family: 'Bebas Neue', sans-serif;
+          font-size: 22px; letter-spacing: 4px;
+          color: #fff; text-decoration: none;
+          display: block; margin-bottom: 14px;
+        }
+        .lp-brand em { font-style: normal; color: #b91d1d; }
+
+        .lp-deco {
+          display: flex; align-items: center; gap: 0;
+        }
+        .lp-deco-vline {
+          width: 2px; height: 28px;
+          background: #b91d1d;
+        }
+        .lp-deco-hline {
+          height: 2px; width: 48px;
+          background: linear-gradient(to right, #b91d1d, transparent);
+        }
+
+        /* ── MAIN AREA ── */
+        .lp-main {
+          position: relative; z-index: 5;
+          display: flex; align-items: center; justify-content: center;
+          min-height: calc(100vh - 160px);
+          padding: 40px 20px;
+        }
+
+        /* ── CARD ── */
+        .lp-card {
+          width: 100%; max-width: 520px;
+          background: rgba(14,14,14,0.92);
+          border: 1px solid #222;
+          border-radius: 16px;
+          padding: 44px 48px;
+          backdrop-filter: blur(12px);
+          box-shadow:
+            0 0 0 1px rgba(185,29,29,0.08),
+            0 32px 64px rgba(0,0,0,0.6),
+            0 0 80px rgba(185,29,29,0.1);
+        }
+
+        /* badge */
+        .lp-badge {
+          display: inline-flex; align-items: center; gap: 8px;
+          background: rgba(185,29,29,0.12);
+          border: 1px solid rgba(185,29,29,0.25);
+          border-radius: 20px; padding: 5px 14px;
+          margin-bottom: 20px;
+        }
+        .lp-dot {
+          width: 6px; height: 6px; border-radius: 50%; background: #b91d1d;
+          animation: blink 1.4s ease-in-out infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+        .lp-badge span {
+          font-size: 10px; letter-spacing: 2.5px;
+          text-transform: uppercase; color: #b91d1d; font-weight: 500;
+        }
+
+        /* heading */
+        .lp-card h1 {
+          font-family: 'Bebas Neue', sans-serif;
+          font-size: 62px; letter-spacing: 2px;
+          color: #fff; line-height: 1; margin-bottom: 8px;
+        }
+        .lp-cardsub {
+          font-size: 13.5px; color: #666;
+          font-weight: 300; line-height: 1.65;
+          margin-bottom: 32px;
+        }
+
+        /* alerts */
+        .lp-alert {
+          padding: 12px 14px; border-radius: 8px;
+          font-size: 13px; margin-bottom: 20px;
+          display: flex; align-items: flex-start; gap: 9px; line-height: 1.5;
+        }
+        .lp-alert svg { flex-shrink: 0; margin-top: 1px; }
+        .lp-err { background: rgba(185,29,29,0.1); border: 1px solid rgba(185,29,29,0.3); color: #fca5a5; }
+        .lp-ok  { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25); color: #86efac; }
+
+        /* field */
+        .lp-field { margin-bottom: 20px; }
+        .lp-field label {
+          display: block;
+          font-size: 13px; font-weight: 500;
+          color: #bbb; margin-bottom: 9px;
+        }
+        .lp-inp input {
+          width: 100%; padding: 14px 18px;
+          background: #121212; border: 1px solid #272727;
+          border-radius: 8px; color: #f0f0f0;
+          font-family: 'DM Sans', sans-serif; font-size: 14px;
+          outline: none; transition: border-color .2s, box-shadow .2s;
+        }
+        .lp-inp input::placeholder { color: #3a3a3a; }
+        .lp-inp input:focus {
+          border-color: #b91d1d;
+          box-shadow: 0 0 0 3px rgba(185,29,29,0.12);
+        }
+
+        /* submit btn */
+        .lp-btn {
+          width: 100%; padding: 16px; margin-top: 8px;
+          background: #b91d1d; border: none; border-radius: 8px;
+          color: #fff; font-family: 'Bebas Neue', sans-serif;
+          font-size: 20px; letter-spacing: 3.5px; cursor: pointer;
+          display: flex; align-items: center; justify-content: center; gap: 10px;
+          position: relative; overflow: hidden;
+          transition: background .2s, transform .15s, box-shadow .2s;
+        }
+        .lp-btn::before {
+          content: ''; position: absolute; inset: 0;
+          background: linear-gradient(135deg, rgba(255,255,255,0.09) 0%, transparent 50%);
+        }
+        .lp-btn:hover:not(:disabled) {
+          background: #cc2020; transform: translateY(-1px);
+          box-shadow: 0 10px 30px rgba(185,29,29,0.35);
+        }
+        .lp-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+        .lp-spin {
+          width: 16px; height: 16px; flex-shrink: 0;
+          border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+          border-radius: 50%; animation: spin .7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* foot */
+        .lp-foot {
+          margin-top: 24px; padding-top: 20px;
+          border-top: 1px solid #141414; text-align: center;
+        }
+        .lp-foot p { font-size: 13px; color: #3a3a3a; }
+        .lp-foot a { color: #b91d1d; text-decoration: none; font-weight: 500; transition: opacity .2s; }
+        .lp-foot a:hover { opacity: 0.8; }
+
+        @media (max-width: 600px) {
+          .lp-nav { padding: 28px 24px 0; }
+          .lp-card { padding: 36px 26px; }
+        }
+      `}</style>
+
+      <div className="lp-root">
+        <div className="lp-grid" />
+        <div className="lp-glow" />
+
+        {/* TOP-LEFT NAV (Matches Login UI) */}
+        <nav className="lp-nav">
+          <Link href="/" className="lp-brand">Interview<em>Coach</em> AI</Link>
+          <div className="lp-deco">
+            <div className="lp-deco-vline" />
+            <div className="lp-deco-hline" />
+          </div>
+        </nav>
+
+        {/* CENTERED MAIN AREA */}
+        <main className="lp-main">
+          <div className="lp-card">
+            
+            <div className="lp-badge">
+              <div className="lp-dot" />
+              <span>New Account</span>
             </div>
 
-            {/* Error Message */}
+            <h1>Get OTP</h1>
+            <p className="lp-cardsub">Enter your email to receive a verification code.</p>
+
             {error && (
-              <div className="bg-red-500/10 border border-red-500/50 text-red-300 px-4 py-3 rounded-lg mb-4 text-sm">
+              <div className="lp-alert lp-err">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
                 {error}
               </div>
             )}
 
-            {/* Success Message */}
             {success && (
-              <div className="bg-green-500/10 border border-green-500/50 text-green-300 px-4 py-3 rounded-lg mb-4 text-sm">
+              <div className="lp-alert lp-ok">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
                 {success}
               </div>
             )}
 
-            <form onSubmit={handleSendOTP} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Email Address</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  required
-                  className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 text-white placeholder-slate-400 transition"
-                />
+            <form onSubmit={handleSendOTP}>
+              <div className="lp-field">
+                <label>Email Address</label>
+                <div className="lp-inp">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    required
+                  />
+                </div>
               </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-3 rounded-lg font-semibold transition"
-              >
-                {loading ? 'Sending OTP...' : 'Send OTP Code'}
+              <button type="submit" className="lp-btn" disabled={loading}>
+                {loading ? <><span className="lp-spin" />Sending OTP...</> : 'Send OTP Code'}
               </button>
             </form>
 
-            {/* Links */}
-            <div className="mt-6 text-center border-t border-slate-700/50 pt-6 space-y-3">
-              <p className="text-slate-400 text-sm">
-                Already have an account?{' '}
-                <Link href="/login" className="text-blue-400 hover:text-blue-300 font-medium transition">
-                  Sign in here
-                </Link>
+            <div className="lp-foot">
+              <p>Already have an account?&nbsp;
+                <Link href="/login">Sign in here</Link>
               </p>
             </div>
           </div>
-        </div>
+        </main>
       </div>
-    </div>
+    </>
   );
 }

@@ -8,280 +8,564 @@ import ChatWidget from '@/app/chatbot/ChatWidget';
 
 export default function Dashboard() {
   const router = useRouter();
-  const { user, isLoading } = useAuth();
+ 
+  const { user, isLoading } = useAuth(); 
+  
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-black">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
-          <p className="text-slate-300">Verifying access...</p>
-        </div>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100vh', background:'#080808', flexDirection:'column', gap:'16px' }}>
+        <div style={{ width:'40px', height:'40px', borderRadius:'50%', border:'2px solid rgba(185,29,29,0.2)', borderTopColor:'#b91d1d', animation:'spin .7s linear infinite' }} />
+        <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+        <p style={{ color:'#444', fontFamily:'sans-serif', fontSize:'13px', letterSpacing:'2px', textTransform:'uppercase' }}>Verifying access...</p>
       </div>
     );
   }
 
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
+
+  const username = user?.email?.split('@')[0] || 'User';
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-black text-white overflow-x-hidden">
-      {/* Navbar */}
-      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-black/70 border-b border-slate-700/50 shadow-lg">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          {/* Logo */}
-          <div className="text-xl font-bold bg-linear-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
-            🚀 Interview Coach AI
-          </div>
-          
-          {/* Navigation Buttons */}
-          <div className="flex gap-3 items-center">
-            {/* Logout */}
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        .db-root {
+          min-height: 100vh;
+          background: #000000; 
+          color: #e0e0e0;
+          font-family: 'DM Sans', sans-serif;
+          overflow-x: hidden;
+        }
+
+        /* bg grid */
+        
+        .db-glow {
+          position: fixed;
+          inset: 0;
+          z-index: 0;
+          pointer-events: none;
+          background:
+            radial-gradient(circle at 10% 15%, rgba(185,29,29,0.22) 0%, transparent 40%),
+            radial-gradient(circle at 90% 25%, rgba(185,29,29,0.18) 0%, transparent 35%),
+            radial-gradient(circle at 50% 85%, rgba(185,29,29,0.20) 0%, transparent 39%),
+            radial-gradient(circle at 88% 88%, rgba(185,29,29,0.22) 0%, transparent 38%);
+          filter: blur(90px);
+        }
+
+        /* ── NAV ── */
+        .db-nav {
+          position: sticky; top: 0; z-index: 100;
+          background:  #1a1a1a;
+          backdrop-filter: blur(20px);
+          border-bottom: 1px solid #111;
+          padding: 0 52px;
+        }
+        .db-nav-inner {
+          max-width: 1280px; margin: 0 auto;
+          display: flex; align-items: center; justify-content: space-between;
+          height: 80px; /* Slightly taller for deco */
+        }
+        
+        /* Deco Styles for Logo */
+        .db-logo-wrapper { display: flex; flex-direction: column; align-items: flex-start; }
+        .db-logo {
+          font-family: 'Bebas Neue', sans-serif;
+          font-size: 20px; letter-spacing: 3.5px; color: #fff;
+          text-decoration: none; margin-bottom: 4px;
+        }
+        .db-logo em { font-style: normal; color: #b91d1d; }
+        
+        .db-deco { display: flex; align-items: center; gap: 0; }
+        .db-vline { width: 2px; height: 16px; background: #b91d1d; }
+        .db-hline { height: 2px; width: 32px; background: linear-gradient(to right, #b91d1d, transparent); }
+
+        .db-logout {
+          padding: 8px 22px;
+          background: transparent;
+          border: 1px solid rgba(185,29,29,0.3);
+          border-radius: 7px; color: #b91d1d;
+          font-family: 'DM Sans', sans-serif; font-size: 13px;
+          cursor: pointer; transition: background .2s, border-color .2s;
+          letter-spacing: 0.3px;
+        }
+        .db-logout:hover { background: rgba(185,29,29,0.1); border-color: #b91d1d; }
+
+        /* ── MAIN ── */
+        .db-main {
+          position: relative; z-index: 2;
+          max-width: 1280px; margin: 0 auto;
+          padding: 52px 52px 80px;
+        }
+
+        /* ── HERO STRIP ── */
+        .db-hero {
+          display: flex; align-items: flex-end; justify-content: space-between;
+          gap: 40px; margin-bottom: 64px;
+          padding-bottom: 48px;
+          border-bottom: 1px solid #141414;
+        }
+        .db-hero-eyebrow {
+          font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+          color: #b91d1d; font-weight: 500; margin-bottom: 12px;
+        }
+        .db-hero-text h1 {
+          font-family: 'Bebas Neue', sans-serif;
+          font-size: clamp(48px, 5.5vw, 80px);
+          letter-spacing: 2px; line-height: 1; color: #fff;
+          margin-bottom: 14px;
+        }
+        .db-hero-text h1 span { color: #b91d1d; }
+        .db-hero-text p { font-size: 14px; color: #aaa; font-weight: 300; line-height: 1.7; max-width: 420px; }
+
+        .db-hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 20px; flex-shrink: 0; }
+
+        .db-started {
+          padding: 14px 32px;
+          background: #b91d1d; border: none; border-radius: 8px;
+          color: #fff; font-family: 'Bebas Neue', sans-serif;
+          font-size: 18px; letter-spacing: 2.5px;
+          text-decoration: none; cursor: pointer;
+          position: relative; overflow: hidden;
+          transition: background .2s, transform .15s, box-shadow .2s;
+          display: inline-block;
+        }
+        .db-started::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 55%); }
+        .db-started:hover { background: #cc2020; transform: translateY(-1px); box-shadow: 0 10px 28px rgba(185,29,29,0.3); }
+
+        .db-stats {
+            display: flex;
+            gap: 12px;                 
+            background: transparent;   
+            border: none;
+        }
+         .db-stat:hover {
+             border-color: #b91d1d;
+             transform: translateY(-2px);
+              transition: all 0.2s ease;
+          }
+        .db-stat {
+            flex: 1;
+             padding: 20px 28px;
+             background: #1a1a1a;   /* 👈 gray look */
+               text-align: center;
+              position: relative;
+               border: 1px solid #2a2a2a;   /* 👈 border add */
+                  border-radius: 10px;         /* 👈 smooth look */
+          }
+
+        .db-stat::after { content: ''; position: absolute; right: 0; top: 20%; bottom: 20%; width: 1px; background: #141414; }
+        .db-stat:last-child::after { display: none; }
+        .db-stat-n {
+          font-family: 'Bebas Neue', sans-serif;
+          font-size: 36px; letter-spacing: 1px; color: #b91d1d; line-height: 1;
+        }
+        .db-stat-l { font-size: 10px; color: #9ca3af; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+
+        .db-sec-label {
+          display: flex; align-items: center; gap: 16px;
+          margin-bottom: 24px;
+        }
+        .db-sec-label h2 {
+          font-family: 'Bebas Neue', sans-serif;
+          font-size: 25px; letter-spacing: 4px; text-transform: uppercase;
+          color: #b91d1d; white-space: nowrap;
+        }
+        .db-sec-line { flex: 1; height: 1px; background: linear-gradient(to right, #1a1a1a, transparent); }
+
+        .db-quick { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 64px; }
+
+        .db-qa {
+          display: flex; align-items: center; gap: 10px;
+          padding: 12px 20px;
+          background: #1a1a1a; border: 1px solid rgba(255,255,255,0.15);;
+          border-radius: 40px; text-decoration: none;
+          transition: border-color .2s, background .2s;
+          position: relative; overflow: hidden;
+        }
+        .db-qa::before {
+          content: ''; position: absolute; inset: 0; border-radius: 40px;
+          background: rgba(185,29,29,0.06); opacity: 0; transition: opacity .2s;
+        }
+        .db-qa:hover { border-color: rgba(185,29,29,0.35); }
+        .db-qa:hover::before { opacity: 1; }
+
+        .db-qa-icon { font-size: 18px; line-height: 1; }
+        .db-qa-text { font-size: 13px; color: #888; font-weight: 500; transition: color .2s; white-space: nowrap; }
+        .db-qa:hover .db-qa-text { color: #e0e0e0; }
+
+        .db-features { margin-bottom: 64px; }
+        .db-feat-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+        }
+
+        .db-feat {
+         background: #1a1a1a;  
+         border: 1px solid  #444;
+         border-radius: 14px;
+        padding: 28px;
+          color: #e5e5e5;
+          transition: all 0.25s ease;
+          position: relative;
+          }
+        .db-feat:hover {border-color: #b91d1d;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+          }
+
+        .db-feat::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: 14px;
+  background: linear-gradient(120deg, transparent, rgba(185,29,29,0.15), transparent);
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.db-feat:hover::before {
+  opacity: 1;
+}
+
+        .db-feat-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+        .db-feat-icon { font-size: 28px; }
+        .db-feat-arrow {
+          font-size: 16px; color: #222;
+          transition: color .2s, transform .2s;
+        }
+        .db-feat:hover .db-feat-arrow { color: #b91d1d; transform: translate(2px, -2px); }
+
+        .db-feat h3 {
+          font-family: 'Bebas Neue', sans-serif;
+          font-size: 20px; letter-spacing: 1px; color: #ddd;
+          margin-bottom: 8px;
+          transition: color .2s;
+        }
+        .db-feat:hover h3 { color: #fff; }
+        .db-feat p { font-size: 12.5px; color: #404040; font-weight: 300; line-height: 1.7; flex: 1; }
+
+        .db-feat-tag {
+          display: inline-flex; align-items: center;
+          margin-top: 18px; padding: 4px 12px;
+          background: rgba(185,29,29,0.07); border: 1px solid rgba(185,29,29,0.12);
+          border-radius: 20px;
+          font-size: 10.5px; color: #b91d1d; letter-spacing: 1px;
+          width: fit-content; opacity: 1; transition: opacity .2s;
+        }
+        .db-feat:hover .db-feat-tag { opacity: 1; }
+
+        .db-feat-plain { cursor: default; }
+        .db-feat-plain:hover { border-color: #181818; background: #0e0e0e; }
+        .db-feat-plain::before { display: none; }
+        .db-feat-plain:hover h3 { color: #ddd; }
+        .db-feat-plain:hover .db-feat-arrow { color: #222; transform: none; }
+        .db-feat-plain:hover .db-feat-tag { opacity: 0; }
+
+        .db-tips {
+  background: transparent;   /* 👈 remove box */
+  border: none;
+  padding: 40px 0;
+}
+        .db-tips-grid::before {
+  background: linear-gradient(to right, transparent, #b91d1d, transparent);
+}
+        .db-tips-head {
+          font-family: 'Bebas Neue', sans-serif;
+          font-size: 20px; letter-spacing: 4px; text-transform: uppercase;
+          color: #b91d1d; margin-bottom: 24px;
+        }
+        .db-tips-grid {
+          display: flex;
+          justify-content: space-between;
+          position: relative;
+          margin-top: 40px;
+        }
+
+        /* line */
+        .db-tips-grid::before {
+          content: "";
+          position: absolute;
+          top: 40px;
+          left: 0;
+          right: 0;
+          height: 2px;
+          background: linear-gradient(to right, transparent, #b91d1d, transparent); 
+        }
+         .db-tip {
+          position: relative;
+          z-index: 2;
+
+          width: 90px;
+          height: 90px;
+
+          border-radius: 50%;
+          background: #1a1a1a;
+          border: 2px solid #2a2a2a;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          transition: all 0.3s ease;
+        }
+        .db-tip:hover {
+          transform: translateY(-10px) scale(1.1);
+        }
+        .db-tip-icon {
+          font-size: 24px;
+          color: #b91d1d;   /* 👈 red accent */
+        }
+        .db-tip h4 {
+          position: absolute;
+          top: 95px;
+          width: 120px;
+          text-align: center;
+          font-size: 13px;
+          color: #e5e5e5;   /* 👈 visible */
+        }
+
+        .db-tip p {
+          position: absolute;
+          top: 120px;          
+          width: 140px;
+          font-size: 11px;
+          color: #9ca3af;
+          text-align: center;
+          line-height: 1.4;
+        }
+
+        /* 1st */
+        .db-tip:nth-child(1) {
+          background: #b91d1d;   /* red */
+          border-color: #ef4444;
+        }
+
+        /* 2nd */
+        .db-tip:nth-child(2) {
+          background: #ffffff;   /* white */
+          border-color: #e5e5e5;
+          color: #111;
+        }
+
+        /* 3rd */
+        .db-tip:nth-child(3) {
+          background: #b91d1d;
+        }
+
+        /* 4th */
+        .db-tip:nth-child(4) {
+          background: #ffffff;
+          color: #111;
+        }
+  
+
+        @media (max-width: 1024px) {
+          .db-main { padding: 40px 28px 60px; }
+          .db-nav { padding: 0 28px; }
+          .db-feat-grid { grid-template-columns: repeat(2, 1fr); }
+          .db-hero { flex-direction: column; align-items: flex-start; }
+          .db-hero-right { align-items: flex-start; }
+        }
+        @media (max-width: 640px) {
+          .db-feat-grid { grid-template-columns: 1fr; }
+          .db-tips-grid { grid-template-columns: 1fr 1fr; }
+          .db-stats { flex-direction: column; }
+        }
+      `}</style>
+
+      <div className="db-root">
+        
+        <div className="db-glow" />
+
+        {/* NAV */}
+        <nav className="db-nav">
+          <div className="db-nav-inner">
+            <div className="db-logo-wrapper">
+              <Link href="/" className="db-logo">Interview<em>Coach</em> AI</Link>
+              <div className="db-deco">
+                <div className="db-vline" />
+                <div className="db-hline" />
+              </div>
+            </div>
             <button
+              className="db-logout"
               onClick={() => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('userId');
                 localStorage.removeItem('userEmail');
                 router.push('/');
               }}
-              className="px-4 py-2 text-sm font-medium bg-linear-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white rounded-lg transition duration-300 shadow-lg hover:shadow-red-500/50"
             >
               Logout
             </button>
           </div>
-        </div>
-      </nav>
+        </nav>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-12">
-        {/* Hero Section with Stats */}
-        <div className="mb-16">
-          <div className="bg-linear-to-r from-slate-800/50 to-slate-700/50 border border-slate-600/50 rounded-2xl p-10 backdrop-blur-sm">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              <div>
-                <h1 className="text-5xl md:text-6xl font-bold mb-4">
-                  Welcome back, <br/>
-                  <span className="bg-linear-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent animate-pulse">
-                    {user?.email?.split('@')[0] || 'User'}
-                  </span>
-                </h1>
-                <p className="text-slate-300 text-lg mb-6">
-                  Your AI-powered interview preparation companion is ready to help you ace your next interview.
-                </p>
-                <Link
-                  href="/UploadResume"
-                  className="inline-block px-8 py-3 bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold rounded-lg shadow-lg hover:shadow-blue-500/50 transition duration-300"
-                >
-                  Get Started →
-                </Link>
+        <main className="db-main">
+
+          {/* HERO */}
+          <div className="db-hero">
+            <div className="db-hero-text">
+              <p className="db-hero-eyebrow">Dashboard</p>
+              <h1>Welcome back,<br /><span>{username}</span></h1>
+              <p>Your AI-powered interview preparation companion is ready to help you ace your next interview.</p>
+            </div>
+            <div className="db-hero-right">
+              <div className="db-stats">
+                <div className="db-stat">
+                  <div className="db-stat-n">0</div>
+                  <div className="db-stat-l">Resumes</div>
+                </div>
+                <div className="db-stat">
+                  <div className="db-stat-n">0</div>
+                  <div className="db-stat-l">Interviews</div>
+                </div>
+                <div className="db-stat">
+                  <div className="db-stat-n">0</div>
+                  <div className="db-stat-l">Matched</div>
+                </div>
               </div>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-linear-to-br from-blue-500/20 to-blue-600/10 border border-blue-500/30 rounded-lg p-6 text-center">
-                  <div className="text-3xl font-bold text-blue-400 mb-2">0</div>
-                  <div className="text-sm text-slate-300">Resumes</div>
+              <Link href="/UploadResume" className="db-started">Get Started →</Link>
+            </div>
+          </div>
+
+          {/* QUICK ACTIONS */}
+          <div style={{ marginBottom: '64px' }}>
+            <div className="db-sec-label">
+              <h2>Quick Actions</h2>
+              <div className="db-sec-line" />
+            </div>
+            <div className="db-quick">
+               <Link href="/getresume" className="db-qa">
+                <span className="db-qa-icon">📋</span>
+                <span className="db-qa-text">My Resumes</span>
+              </Link>
+              <Link href="/uploadresume" className="db-qa">
+                <span className="db-qa-icon">📄</span>
+                <span className="db-qa-text">Upload Resume</span>
+              </Link>
+              <Link href="/AnalysisResume" className="db-qa">
+                <span className="db-qa-icon">🔍</span>
+                <span className="db-qa-text">Job Matching Analysis</span>
+              </Link>
+              <Link href="/interviewprep" className="db-qa">
+                <span className="db-qa-icon">🎤</span>
+                <span className="db-qa-text">Interview Prep</span>
+              </Link>
+              <Link href="/interview" className="db-qa">
+                <span className="db-qa-icon">🎤</span>
+                <span className="db-qa-text">TakeInterview</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* FEATURES */}
+          <div className="db-features">
+            <div className="db-sec-label">
+              <h2>Main Features</h2>
+              <div className="db-sec-line" />
+            </div>
+            <div className="db-feat-grid">
+
+               <Link href="/DetailsDocs" className="db-feat">
+                <div className="db-feat-top">
+                  <span className="db-feat-icon">📖</span>
+                  <span className="db-feat-arrow">↗</span>
                 </div>
-                <div className="bg-linear-to-br from-cyan-500/20 to-cyan-600/10 border border-cyan-500/30 rounded-lg p-6 text-center">
-                  <div className="text-3xl font-bold text-cyan-400 mb-2">0</div>
-                  <div className="text-sm text-slate-300">Interviews</div>
+                <h3>Getting Started</h3>
+                <p>Learn the best practices and tips for using Interview Coach AI effectively</p>
+                <span className="db-feat-tag">Documentation →</span>
+              </Link>
+
+              <Link href="/interviewprep" className="db-feat">
+                <div className="db-feat-top">
+                  <span className="db-feat-icon">🚀</span>
+                  <span className="db-feat-arrow">↗</span>
                 </div>
-                <div className="bg-linear-to-br from-purple-500/20 to-purple-600/10 border border-purple-500/30 rounded-lg p-6 text-center">
-                  <div className="text-3xl font-bold text-purple-400 mb-2">0</div>
-                  <div className="text-sm text-slate-300">Matched</div>
+                <h3>Interview Practice</h3>
+                <p>Get AI-generated interview questions and practice your responses with detailed feedback</p>
+                <span className="db-feat-tag">Start Practice →</span>
+              </Link>
+
+              <Link href="/interview" className="db-feat">
+                <div className="db-feat-top">
+                  <span className="db-feat-icon">📊</span>
+                  <span className="db-feat-arrow">↗</span>
                 </div>
+                <h3>Interview Session</h3>
+                <p>Start your interview, answer AI questions, and view results after completion.</p>
+                <span className="db-feat-tag">Start → Take → Result</span>
+              </Link>
+
+              <Link href="/AnalysisResume" className="db-feat">
+                <div className="db-feat-top">
+                  <span className="db-feat-icon">💼</span>
+                  <span className="db-feat-arrow">↗</span>
+                </div>
+                <h3>Top Job Matches</h3>
+                <p>Discover the best job opportunities that align with your skills and experience</p>
+                <span className="db-feat-tag">View Matches →</span>
+              </Link>
+
+              <Link href="/getresume" className="db-feat">
+                <div className="db-feat-top">
+                  <span className="db-feat-icon">📁</span>
+                  <span className="db-feat-arrow">↗</span>
+                </div>
+                <h3>Resume Library</h3>
+                <p>Manage and organize all your resumes in one convenient location</p>
+                <span className="db-feat-tag">Manage →</span>
+              </Link>
+
+
+              <Link href="" className="db-feat">
+                <div className="db-feat-top">
+                  <span className="db-feat-icon">🤖</span>
+                  <span className="db-feat-arrow">↗</span>
+                </div>
+                <h3>AI Chat Assistant</h3>
+                <p>Ask questions, get instant guidance, and chat with your AI interview assistant anytime.</p>
+                
+              </Link>
+
+            </div>
+          </div>
+
+          {/* TIPS */}
+          <div className="db-tips">
+            <div className="db-tips-head">Pro Tips for Success</div>
+            <div className="db-tips-grid">
+              <div className="db-tip">
+                <span className="db-tip-icon">🎯</span>
+                <h4>Update Regularly</h4>
+                <p>Keep your resume updated with latest skills and experiences</p>
+              </div>
+              <div className="db-tip">
+                <span className="db-tip-icon">🎤</span>
+                <h4>Practice Daily</h4>
+                <p>Dedicate time each day to interview practice questions</p>
+              </div>
+              <div className="db-tip">
+                <span className="db-tip-icon">📊</span>
+                <h4>Track Progress</h4>
+                <p>Monitor your improvement through our analytics dashboard</p>
+              </div>
+              <div className="db-tip">
+                <span className="stat-icon">🚀</span>
+                <h4>Apply Smart</h4>
+                <p>Use job matching to find roles that fit your profile</p>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Quick Actions Section */}
-        <div className="mb-16">
-          <div className="flex items-center gap-3 mb-6">
-            <h2 className="text-3xl font-bold">⚡ Quick Actions</h2>
-            <div className="flex-1 h-px bg-linear-to-r from-slate-600 to-transparent"></div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <Link
-              href="/UploadResume"
-              className="group relative bg-linear-to-br from-blue-600/20 to-blue-700/10 border border-blue-500/50 hover:border-blue-400 rounded-xl p-6 transition duration-300 hover:shadow-lg hover:shadow-blue-500/30"
-            >
-              <div className="text-4xl mb-3 group-hover:scale-110 transition duration-300">📄</div>
-              <h3 className="font-bold text-slate-200 mb-1">Upload Resume</h3>
-              <p className="text-sm text-slate-400">Add a new resume</p>
-            </Link>
+        </main>
 
-            <Link
-              href="/GetResumeData"
-              className="group relative bg-linear-to-br from-cyan-600/20 to-cyan-700/10 border border-cyan-500/50 hover:border-cyan-400 rounded-xl p-6 transition duration-300 hover:shadow-lg hover:shadow-cyan-500/30"
-            >
-              <div className="text-4xl mb-3 group-hover:scale-110 transition duration-300">🔍</div>
-              <h3 className="font-bold text-slate-200 mb-1">Job Analysis</h3>
-              <p className="text-sm text-slate-400">Match with jobs</p>
-            </Link>
-
-            <Link
-              href="/GetResume"
-              className="group relative bg-linear-to-br from-purple-600/20 to-purple-700/10 border border-purple-500/50 hover:border-purple-400 rounded-xl p-6 transition duration-300 hover:shadow-lg hover:shadow-purple-500/30"
-            >
-              <div className="text-4xl mb-3 group-hover:scale-110 transition duration-300">📋</div>
-              <h3 className="font-bold text-slate-200 mb-1">My Resumes</h3>
-              <p className="text-sm text-slate-400">View all resumes</p>
-            </Link>
-
-            <Link
-              href="/interviewprep"
-              className="group relative bg-linear-to-br from-green-600/20 to-green-700/10 border border-green-500/50 hover:border-green-400 rounded-xl p-6 transition duration-300 hover:shadow-lg hover:shadow-green-500/30"
-            >
-              <div className="text-4xl mb-3 group-hover:scale-110 transition duration-300">🎤</div>
-              <h3 className="font-bold text-slate-200 mb-1">Interview Prep</h3>
-              <p className="text-sm text-slate-400">Practice questions</p>
-            </Link>
-          </div>
-        </div>
-
-        {/* Main Features Grid */}
-        <div className="mb-16">
-          <div className="flex items-center gap-3 mb-6">
-            <h2 className="text-3xl font-bold">✨ Main Features</h2>
-            <div className="flex-1 h-px bg-linear-to-r from-slate-600 to-transparent"></div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-            {/* Resume Analysis */}
-            <Link
-              href="/GetResumeData"
-              className="group bg-linear-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-cyan-500/50 rounded-xl p-8 transition duration-300 hover:shadow-xl hover:shadow-cyan-500/20 cursor-pointer overflow-hidden relative"
-            >
-              <div className="absolute inset-0 bg-linear-to-br from-cyan-600/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
-              <div className="relative z-10">
-                <div className="text-5xl mb-4 group-hover:scale-125 transition duration-300 transform">🎯</div>
-                <h3 className="text-2xl font-bold mb-2 text-slate-100 group-hover:text-cyan-300 transition">Resume Matching</h3>
-                <p className="text-slate-400 mb-4">Analyze how well your resume matches job descriptions with AI-powered insights</p>
-                <div className="flex items-center gap-2 text-cyan-400 font-semibold">
-                  Explore <span className="group-hover:translate-x-1 transition">→</span>
-                </div>
-              </div>
-            </Link>
-
-            {/* Interview Practice */}
-            <Link
-              href="/interviewprep"
-              className="group bg-linear-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-green-500/50 rounded-xl p-8 transition duration-300 hover:shadow-xl hover:shadow-green-500/20 cursor-pointer overflow-hidden relative"
-            >
-              <div className="absolute inset-0 bg-linear-to-br from-green-600/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
-              <div className="relative z-10">
-                <div className="text-5xl mb-4 group-hover:scale-125 transition duration-300 transform">🚀</div>
-                <h3 className="text-2xl font-bold mb-2 text-slate-100 group-hover:text-green-300 transition">Interview Practice</h3>
-                <p className="text-slate-400 mb-4">Get AI-generated interview questions and practice your responses with detailed feedback</p>
-                <div className="flex items-center gap-2 text-green-400 font-semibold">
-                  Start Practice <span className="group-hover:translate-x-1 transition">→</span>
-                </div>
-              </div>
-            </Link>
-
-            {/* Performance Insights */}
-            <Link
-              href="/interview-results"
-              className="group bg-linear-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-yellow-500/50 rounded-xl p-8 transition duration-300 hover:shadow-xl hover:shadow-yellow-500/20 cursor-pointer overflow-hidden relative"
-            >
-              <div className="absolute inset-0 bg-linear-to-br from-yellow-600/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
-              <div className="relative z-10">
-                <div className="text-5xl mb-4 group-hover:scale-125 transition duration-300 transform">📊</div>
-                <h3 className="text-2xl font-bold mb-2 text-slate-100 group-hover:text-yellow-300 transition">Performance Insights</h3>
-                <p className="text-slate-400 mb-4">Review detailed analytics of your interview sessions and get personalized recommendations</p>
-                <div className="flex items-center gap-2 text-yellow-400 font-semibold">
-                  View Results <span className="group-hover:translate-x-1 transition">→</span>
-                </div>
-              </div>
-            </Link>
-
-            {/* Job Matches */}
-            <Link
-              href="/AnalysisResume"
-              className="group bg-linear-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-indigo-500/50 rounded-xl p-8 transition duration-300 hover:shadow-xl hover:shadow-indigo-500/20 cursor-pointer overflow-hidden relative"
-            >
-              <div className="absolute inset-0 bg-linear-to-br from-indigo-600/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
-              <div className="relative z-10">
-                <div className="text-5xl mb-4 group-hover:scale-125 transition duration-300 transform">💼</div>
-                <h3 className="text-2xl font-bold mb-2 text-slate-100 group-hover:text-indigo-300 transition">Top Job Matches</h3>
-                <p className="text-slate-400 mb-4">Discover the best job opportunities that align with your skills and experience</p>
-                <div className="flex items-center gap-2 text-indigo-400 font-semibold">
-                  View Matches <span className="group-hover:translate-x-1 transition">→</span>
-                </div>
-              </div>
-            </Link>
-
-            {/* My Resumes */}
-            <Link
-              href="/GetResume"
-              className="group bg-linear-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-purple-500/50 rounded-xl p-8 transition duration-300 hover:shadow-xl hover:shadow-purple-500/20 cursor-pointer overflow-hidden relative"
-            >
-              <div className="absolute inset-0 bg-linear-to-br from-purple-600/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
-              <div className="relative z-10">
-                <div className="text-5xl mb-4 group-hover:scale-125 transition duration-300 transform">📁</div>
-                <h3 className="text-2xl font-bold mb-2 text-slate-100 group-hover:text-purple-300 transition">Resume Library</h3>
-                <p className="text-slate-400 mb-4">Manage and organize all your resumes in one convenient location</p>
-                <div className="flex items-center gap-2 text-purple-400 font-semibold">
-                  Manage <span className="group-hover:translate-x-1 transition">→</span>
-                </div>
-              </div>
-            </Link>
-
-            {/* Getting Started */}
-            <div className="group bg-linear-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-blue-500/50 rounded-xl p-8 transition duration-300 hover:shadow-xl hover:shadow-blue-500/20 cursor-pointer overflow-hidden relative">
-              <div className="absolute inset-0 bg-linear-to-br from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
-              <div className="relative z-10">
-                <div className="text-5xl mb-4 group-hover:scale-125 transition duration-300 transform">📖</div>
-                <h3 className="text-2xl font-bold mb-2 text-slate-100 group-hover:text-blue-300 transition">Getting Started</h3>
-                <p className="text-slate-400 mb-4">Learn the best practices and tips for using Interview Coach AI effectively</p>
-                <div className="flex items-center gap-2 text-blue-400 font-semibold cursor-default">
-                  Documentation <span className="group-hover:translate-x-1 transition">→</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Tips & Recommendations */}
-        <div className="bg-linear-to-r from-slate-800/40 to-slate-700/40 border border-slate-600/50 rounded-2xl p-8 backdrop-blur-sm">
-          <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-            💡 Pro Tips for Success
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="flex gap-4">
-              <div className="text-3xl">🎯</div>
-              <div>
-                <h4 className="font-bold text-slate-100 mb-1">Update Regularly</h4>
-                <p className="text-sm text-slate-400">Keep your resume updated with latest skills and experiences</p>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <div className="text-3xl">🎤</div>
-              <div>
-                <h4 className="font-bold text-slate-100 mb-1">Practice Daily</h4>
-                <p className="text-sm text-slate-400">Dedicate time each day to interview practice questions</p>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <div className="text-3xl">📊</div>
-              <div>
-                <h4 className="font-bold text-slate-100 mb-1">Track Progress</h4>
-                <p className="text-sm text-slate-400">Monitor your improvement through our analytics dashboard</p>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <div className="text-3xl">🚀</div>
-              <div>
-                <h4 className="font-bold text-slate-100 mb-1">Apply Smart</h4>
-                <p className="text-sm text-slate-400">Use job matching to find roles that fit your profile</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-
-      {/* Chat Widget */}
-      <ChatWidget />
-    </div>
+        <ChatWidget />
+      </div>
+    </>
   );
 }

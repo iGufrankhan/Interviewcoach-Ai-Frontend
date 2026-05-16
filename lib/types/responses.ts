@@ -15,6 +15,7 @@ export interface LoginResponse {
 }
 
 export interface OTPResponse {
+  data: any;
   message: string;
   registration_token?: string;
 }

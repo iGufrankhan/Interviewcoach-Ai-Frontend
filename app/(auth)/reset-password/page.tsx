@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { requestForgotPassword, resetForgotPassword } from '@/lib/auth/forgotPasswordApi';
@@ -8,11 +8,14 @@ import { validateEmail, validatePassword, validatePasswordMatch } from '@/lib/va
 
 type ResetStep = 'email' | 'newpassword';
 
-export default function ResetPasswordPage() {
+/* ─── inner component uses useSearchParams ─── */
+function ResetPasswordInner() {
   const [step, setStep] = useState<ResetStep>('email');
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -22,50 +25,30 @@ export default function ResetPasswordPage() {
 
   useEffect(() => {
     const emailParam = searchParams.get('email');
-    const stepParam = searchParams.get('step');
-    const verified = searchParams.get('verified');
-
-    if (emailParam) {
-      setEmail(decodeURIComponent(emailParam));
-    }
-
-    if (stepParam === 'newpassword' && verified === 'true') {
-      setStep('newpassword');
-    }
+    const stepParam  = searchParams.get('step');
+    const verified   = searchParams.get('verified');
+    if (emailParam) setEmail(decodeURIComponent(emailParam));
+    if (stepParam === 'newpassword' && verified === 'true') setStep('newpassword');
   }, [searchParams]);
 
   useEffect(() => {
-    if (newPassword.length < 8) {
-      setPasswordStrength('weak');
-    } else if (newPassword.length < 12 || !/[A-Z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {
-      setPasswordStrength('medium');
-    } else {
-      setPasswordStrength('strong');
-    }
+    if (newPassword.length < 8) setPasswordStrength('weak');
+    else if (newPassword.length < 12 || !/[A-Z]/.test(newPassword) || !/[0-9]/.test(newPassword)) setPasswordStrength('medium');
+    else setPasswordStrength('strong');
   }, [newPassword]);
 
   const handleRequestReset = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
-
-    // Validate email
+    setError(''); setSuccess('');
     const emailError = validateEmail(email);
-    if (emailError) {
-      setError(emailError);
-      return;
-    }
-
+    if (emailError) { setError(emailError); return; }
     setLoading(true);
-
     try {
-      const result = await requestForgotPassword(email);
+      await requestForgotPassword(email);
       setSuccess('Reset code sent! Redirecting to verification...');
-      setTimeout(() => {
-        router.push(`/reset-password-otp?email=${encodeURIComponent(email)}`);
-      }, 1500);
+      setTimeout(() => router.push(`/reset-password-otp?email=${encodeURIComponent(email)}`), 1500);
     } catch (err: any) {
-      setError(err.message || 'Failed to send reset code');
+      setError(err?.response?.data?.message || err?.message || 'Failed to send reset code');
     } finally {
       setLoading(false);
     }
@@ -73,218 +56,242 @@ export default function ResetPasswordPage() {
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
-
-    // Validate new password
+    setError(''); setSuccess('');
     const passwordError = validatePassword(newPassword);
-    if (passwordError) {
-      setError(passwordError);
-      return;
-    }
-
-    // Validate passwords match
+    if (passwordError) { setError(passwordError); return; }
     const matchError = validatePasswordMatch(newPassword, confirmPassword);
-    if (matchError) {
-      setError(matchError);
-      return;
-    }
-
+    if (matchError) { setError(matchError); return; }
     setLoading(true);
-
     try {
-      const result = await resetForgotPassword(email, newPassword);
+      await resetForgotPassword(email, newPassword);
       setSuccess('Password reset successful! Redirecting to login...');
-      setTimeout(() => {
-        router.push('/login');
-      }, 2000);
+      setTimeout(() => router.push('/login'), 2000);
     } catch (err: any) {
-      setError(err.message || 'Failed to reset password');
+      setError(err?.response?.data?.message || err?.message || 'Failed to reset password');
     } finally {
       setLoading(false);
     }
   };
 
+  const strengthColor = passwordStrength === 'weak' ? '#ef4444' : passwordStrength === 'medium' ? '#eab308' : '#22c55e';
+  const strengthWidth = passwordStrength === 'weak' ? '33%' : passwordStrength === 'medium' ? '66%' : '100%';
+
   return (
-    <div className="flex flex-col min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-black text-white font-sans">
-      <nav className="px-6 py-4 border-b border-slate-700/50">
-        <Link href="/" className="text-2xl font-bold bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-          Interview Coach AI
-        </Link>
-      </nav>
+    <main className="lp-main">
+      <div className="lp-card">
+        {/* ── STEP 1: EMAIL ── */}
+        {step === 'email' && (
+          <>
+            <div className="lp-badge">
+              <div className="lp-dot" /><span>Forgot Password</span>
+            </div>
+            <h1>Send Reset Code</h1>
+            <p className="lp-cardsub">Enter the email associated with your account.</p>
 
-      <div className="flex-1 flex items-center justify-center px-6 py-12">
-        <div className="w-full max-w-md">
-          <div className="bg-slate-800/50 backdrop-blur border border-slate-700/50 rounded-xl p-8">
-            {step === 'email' && (
-              <>
-                <div className="text-center mb-8">
-                  <div className="w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <h1 className="text-2xl font-bold mb-2">Forgot Your Password?</h1>
-                  <p className="text-slate-400">Enter your email to get started</p>
-                </div>
-
-                {error && (
-                  <div className="bg-red-500/10 border border-red-500/50 text-red-300 px-4 py-3 rounded-lg mb-4 text-sm">
-                    {error}
-                  </div>
-                )}
-
-                {success && (
-                  <div className="bg-green-500/10 border border-green-500/50 text-green-300 px-4 py-3 rounded-lg mb-4 text-sm">
-                    {success}
-                  </div>
-                )}
-
-                <form onSubmit={handleRequestReset} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Email Address</label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="you@example.com"
-                      required
-                      className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 text-white placeholder-slate-400 transition"
-                    />
-                    <p className="text-xs text-slate-400 mt-2">
-                      Enter the email address associated with your account.
-                    </p>
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-3 rounded-lg font-semibold transition"
-                  >
-                    {loading ? 'Sending...' : 'Send Reset Code'}
-                  </button>
-                </form>
-
-                <div className="mt-6 text-center border-t border-slate-700/50 pt-6">
-                  <p className="text-slate-400 text-sm">
-                    Remember your password?{' '}
-                    <Link href="/login" className="text-blue-400 hover:text-blue-300 font-medium transition">
-                      Sign in here
-                    </Link>
-                  </p>
-                </div>
-              </>
+            {error && (
+              <div className="lp-alert lp-err">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" /></svg>
+                {error}
+              </div>
+            )}
+            {success && (
+              <div className="lp-alert lp-ok">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                {success}
+              </div>
             )}
 
-            {step === 'newpassword' && (
-              <>
-                <div className="text-center mb-8">
-                  <div className="w-12 h-12 rounded-full bg-blue-500/20 border border-blue-400/50 flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                  </div>
-                  <h1 className="text-2xl font-bold mb-2">Create New Password</h1>
-                  <p className="text-slate-400">Set a strong new password for your account</p>
+            <form onSubmit={handleRequestReset}>
+              <div className="lp-field">
+                <label>Email Address</label>
+                <div className="lp-inp">
+                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
                 </div>
+              </div>
+              <button type="submit" className="lp-btn" disabled={loading}>
+                {loading ? <><span className="lp-spin" />Sending...</> : 'Send Reset Code'}
+              </button>
+            </form>
 
-                <div className="bg-slate-700/30 border border-slate-600/50 rounded-lg px-4 py-2 mb-6">
-                  <p className="text-xs text-slate-400">Verified Email</p>
-                  <p className="text-white font-medium">{email}</p>
-                </div>
+            <div className="lp-foot">
+              <p>Remember your password? <Link href="/login">Sign in here</Link></p>
+            </div>
+          </>
+        )}
 
-                {error && (
-                  <div className="bg-red-500/10 border border-red-500/50 text-red-300 px-4 py-3 rounded-lg mb-4 text-sm">
-                    {error}
-                  </div>
-                )}
+        {/* ── STEP 2: NEW PASSWORD ── */}
+        {step === 'newpassword' && (
+          <>
+            <div className="lp-badge">
+              <div className="lp-dot" /><span>Create Password</span>
+            </div>
+            <h1>New Password</h1>
+            <p className="lp-cardsub">Set a strong new password for your account.</p>
 
-                {success && (
-                  <div className="bg-green-500/10 border border-green-500/50 text-green-300 px-4 py-3 rounded-lg mb-4 text-sm">
-                    {success}
-                  </div>
-                )}
-
-                <form onSubmit={handleResetPassword} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">New Password</label>
-                    <input
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder="••••••••"
-                      required
-                      className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 text-white placeholder-slate-400 transition"
-                    />
-
-                    {newPassword && (
-                      <div className="mt-2 space-y-2">
-                        <div className="h-1 bg-slate-600/50 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full transition-all ${
-                              passwordStrength === 'weak'
-                                ? 'w-1/3 bg-red-500'
-                                : passwordStrength === 'medium'
-                                ? 'w-2/3 bg-yellow-500'
-                                : 'w-full bg-green-500'
-                            }`}
-                          />
-                        </div>
-                        <p className={`text-xs ${
-                          passwordStrength === 'weak'
-                            ? 'text-red-400'
-                            : passwordStrength === 'medium'
-                            ? 'text-yellow-400'
-                            : 'text-green-400'
-                        }`}>
-                          Strength: {passwordStrength.charAt(0).toUpperCase() + passwordStrength.slice(1)}
-                        </p>
-                      </div>
-                    )}
-
-                    <p className="text-xs text-slate-400 mt-2">
-                      • Minimum 8 characters
-                      <br />
-                      • Use uppercase, numbers for stronger password
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Confirm Password</label>
-                    <input
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="••••••••"
-                      required
-                      className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 text-white placeholder-slate-400 transition"
-                    />
-                    {confirmPassword && newPassword !== confirmPassword && (
-                      <p className="text-xs text-red-400 mt-1">Passwords do not match</p>
-                    )}
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={loading || newPassword !== confirmPassword || newPassword.length < 8}
-                    className="w-full bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-3 rounded-lg font-semibold transition"
-                  >
-                    {loading ? 'Resetting...' : 'Reset Password'}
-                  </button>
-                </form>
-
-                <div className="mt-6 text-center border-t border-slate-700/50 pt-6">
-                  <p className="text-slate-400 text-sm">
-                    <Link href="/login" className="text-blue-400 hover:text-blue-300 font-medium transition">
-                      ← Back to login
-                    </Link>
-                  </p>
-                </div>
-              </>
+            {error && (
+              <div className="lp-alert lp-err">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" /></svg>
+                {error}
+              </div>
             )}
-          </div>
-        </div>
+
+            <form onSubmit={handleResetPassword}>
+              <div className="lp-field">
+                <label>New Password</label>
+                <div className="lp-inp">
+                  <input type={showNew ? 'text' : 'password'} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="••••••••" required style={{ paddingRight: '62px' }} />
+                  <button type="button" className="lp-showhide" onClick={() => setShowNew(p => !p)}>{showNew ? 'Hide' : 'Show'}</button>
+                </div>
+                {newPassword && (
+                  <div className="rp-strength" style={{ marginTop: '10px' }}>
+                    <div style={{ height: '3px', background: '#1e1e1e', borderRadius: '4px', overflow: 'hidden' }}>
+                      <div style={{ width: strengthWidth, background: strengthColor, height: '100%', transition: 'all 0.3s' }} />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="lp-field">
+                <label>Confirm Password</label>
+                <div className="lp-inp">
+                  <input type={showConfirm ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="••••••••" required style={{ paddingRight: '62px' }} />
+                  <button type="button" className="lp-showhide" onClick={() => setShowConfirm(p => !p)}>{showConfirm ? 'Hide' : 'Show'}</button>
+                </div>
+              </div>
+
+              <button type="submit" className="lp-btn" disabled={loading || newPassword !== confirmPassword || newPassword.length < 8}>
+                {loading ? <><span className="lp-spin" />Resetting...</> : 'Reset Password'}
+              </button>
+            </form>
+
+            <div className="lp-foot">
+              <p><Link href="/login">← Back to login</Link></p>
+            </div>
+          </>
+        )}
       </div>
-    </div>
+    </main>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        .lp-root {
+          min-height: 100vh;
+          font-family: 'DM Sans', sans-serif;
+          background: #080808;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .lp-grid {
+          position: fixed; inset: 0; z-index: 0; pointer-events: none;
+          background-image:
+            linear-gradient(rgba(185,29,29,0.13) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(185,29,29,0.13) 1px, transparent 1px);
+          background-size: 52px 52px;
+        }
+
+        .lp-glow {
+          position: fixed; z-index: 0; pointer-events: none;
+          width: 800px; height: 800px; border-radius: 50%;
+          background: radial-gradient(circle, rgba(185,29,29,0.28) 0%, rgba(185,29,29,0.12) 35%, transparent 65%);
+          top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+
+        .lp-nav {
+          position: relative; z-index: 10;
+          padding: 36px 52px 0;
+          display: flex; flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .lp-brand {
+          font-family: 'Bebas Neue', sans-serif;
+          font-size: 22px; letter-spacing: 4px;
+          color: #fff; text-decoration: none;
+          display: block; margin-bottom: 14px;
+        }
+        .lp-brand em { font-style: normal; color: #b91d1d; }
+
+        .lp-deco { display: flex; align-items: center; gap: 0; }
+        .lp-deco-vline { width: 2px; height: 28px; background: #b91d1d; }
+        .lp-deco-hline { height: 2px; width: 48px; background: linear-gradient(to right, #b91d1d, transparent); }
+
+        .lp-main {
+          position: relative; z-index: 5;
+          display: flex; align-items: center; justify-content: center;
+          min-height: calc(100vh - 160px);
+          padding: 40px 20px;
+        }
+
+        .lp-card {
+          width: 100%; max-width: 520px;
+          background: rgba(14,14,14,0.92);
+          border: 1px solid #222;
+          border-radius: 16px;
+          padding: 44px 48px;
+          backdrop-filter: blur(12px);
+          box-shadow: 0 0 0 1px rgba(185,29,29,0.08), 0 32px 64px rgba(0,0,0,0.6), 0 0 80px rgba(185,29,29,0.1);
+        }
+
+        .lp-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(185,29,29,0.12); border: 1px solid rgba(185,29,29,0.25); border-radius: 20px; padding: 5px 14px; margin-bottom: 20px; }
+        .lp-dot { width: 6px; height: 6px; border-radius: 50%; background: #b91d1d; animation: blink 1.4s ease-in-out infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+        .lp-badge span { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: #b91d1d; font-weight: 500; }
+
+        .lp-card h1 { font-family: 'Bebas Neue', sans-serif; font-size: 62px; letter-spacing: 2px; color: #fff; line-height: 1; margin-bottom: 8px; }
+        .lp-cardsub { font-size: 13.5px; color: #666; font-weight: 300; line-height: 1.65; margin-bottom: 32px; }
+
+        .lp-alert { padding: 12px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 9px; line-height: 1.5; }
+        .lp-err { background: rgba(185,29,29,0.1); border: 1px solid rgba(185,29,29,0.3); color: #fca5a5; }
+        .lp-ok  { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25); color: #86efac; }
+
+        .lp-field { margin-bottom: 20px; }
+        .lp-field label { display: block; font-size: 13px; font-weight: 500; color: #bbb; margin-bottom: 9px; }
+        .lp-inp { position: relative; }
+        .lp-inp input { width: 100%; padding: 14px 18px; background: #121212; border: 1px solid #272727; border-radius: 8px; color: #f0f0f0; font-size: 14px; outline: none; transition: all .2s; }
+        .lp-inp input:focus { border-color: #b91d1d; box-shadow: 0 0 0 3px rgba(185,29,29,0.12); }
+        
+        .lp-showhide { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #484848; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; }
+
+        .lp-btn { width: 100%; padding: 16px; margin-top: 8px; background: #b91d1d; border: none; border-radius: 8px; color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 3.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; position: relative; overflow: hidden; transition: all .2s; }
+        .lp-btn:hover:not(:disabled) { background: #cc2020; transform: translateY(-1px); box-shadow: 0 10px 30px rgba(185,29,29,0.35); }
+        .lp-btn:disabled { opacity: .5; cursor: not-allowed; }
+        .lp-spin { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .lp-foot { margin-top: 24px; padding-top: 20px; border-top: 1px solid #141414; text-align: center; }
+        .lp-foot p { font-size: 13px; color: #3a3a3a; }
+        .lp-foot a { color: #b91d1d; text-decoration: none; font-weight: 500; }
+
+        @media (max-width: 600px) {
+          .lp-nav { padding: 28px 24px 0; }
+          .lp-card { padding: 36px 26px; }
+        }
+      `}</style>
+
+      <div className="lp-root">
+        <div className="lp-grid" />
+        <div className="lp-glow" />
+
+        <nav className="lp-nav">
+          <Link href="/" className="lp-brand">Interview<em>Coach</em> AI</Link>
+          <div className="lp-deco">
+            <div className="lp-deco-vline" />
+            <div className="lp-deco-hline" />
+          </div>
+        </nav>
+
+        <Suspense fallback={<div className="lp-main" style={{color:'#444'}}>Loading...</div>}>
+          <ResetPasswordInner />
+        </Suspense>
+      </div>
+    </>
   );
 }

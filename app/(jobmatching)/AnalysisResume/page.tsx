@@ -31,7 +31,9 @@ interface AnalysisResult {
 }
 
 export default function JobMatchingPage() {
-  const { user, isLoading: authLoading } = useAuth();
+   const { user, isLoading: authLoading } = useAuth(); 
+  
+
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [selectedResume, setSelectedResume] = useState<Resume | null>(null);
   const [jobDescription, setJobDescription] = useState('');
@@ -47,31 +49,35 @@ export default function JobMatchingPage() {
   const fetchResumes = async () => {
     try {
       setLoadingResumes(true);
-      const userId = localStorage.getItem('user_id') || 'default-user';
+      
+      const userId = localStorage.getItem('userId');
+      const token = localStorage.getItem('token');
       const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       
-      const response = await fetch(
-        `${API_BASE_URL}/resume/api/user-resumes/${userId}`,
-        {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      if (!userId) {
+        setError('User session not found. Please log in again.');
+        return;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/resume/api/user-resumes/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token || ''}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
       const data = await response.json();
       if (response.ok) {
-        setResumes(data.data || []);
-        if (data.data && data.data.length > 0) {
-          setSelectedResume(data.data[0]);
+        const fetchedResumes = data.data || data || [];
+        setResumes(fetchedResumes);
+        if (fetchedResumes.length > 0) {
+          setSelectedResume(fetchedResumes[0]);
         }
       } else {
         setError(data.message || 'Failed to load resumes');
       }
     } catch (err) {
-      console.error('Failed to fetch resumes:', err);
       setError('Error loading resumes. Please refresh the page.');
     } finally {
       setLoadingResumes(false);
@@ -84,7 +90,6 @@ export default function JobMatchingPage() {
       return;
     }
 
-    // Validate job description using validator
     const jobDescError = validateJobDescription(jobDescription);
     if (jobDescError) {
       setError(jobDescError);
@@ -96,345 +101,359 @@ export default function JobMatchingPage() {
     setResult(null);
 
     try {
+      const token = localStorage.getItem('token');
       const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-      const response = await fetch(
-        `${API_BASE_URL}/jobmatching/api/analyseresume`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-          },
-          body: JSON.stringify({
-            resume_id: selectedResume.resume_id,
-            description: jobDescription,
-          }),
-        }
-      );
+      
+      const response = await fetch(`${API_BASE_URL}/jobmatching/api/analyseresume`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token || ''}`,
+        },
+        body: JSON.stringify({
+          resume_id: selectedResume.resume_id,
+          description: jobDescription,
+        }),
+      });
 
       const data = await response.json();
 
       if (!response.ok) {
         setError(data.message || data.detail || 'Analysis failed');
       } else {
-        setResult(data.data);
+        setResult(data.data || data); 
       }
     } catch (err) {
       setError('Failed to analyze. Please try again.');
-      console.error('Analysis error:', err);
     } finally {
       setAnalyzing(false);
     }
   };
-
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-400';
-    if (score >= 60) return 'text-yellow-400';
-    return 'text-red-400';
+    if (score >= 80) return '#4ade80';
+    if (score >= 60) return '#facc15';
+    return '#f87171';
   };
 
-  const getScoreBgColor = (score: number) => {
-    if (score >= 80) return 'from-green-900/30 to-green-800/30 border-green-600/30';
-    if (score >= 60) return 'from-yellow-900/30 to-yellow-800/30 border-yellow-600/30';
-    return 'from-red-900/30 to-red-800/30 border-red-600/30';
+  const getScoreBarColor = (score: number) => {
+    if (score >= 80) return 'linear-gradient(to right, #14532d, #4ade80)';
+    if (score >= 60) return 'linear-gradient(to right, #713f12, #facc15)';
+    return 'linear-gradient(to right, #7f1d1d, #f87171)';
   };
 
-  // Show loading while checking authentication
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-950">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
-          <p className="text-slate-300">Verifying access...</p>
+      <>
+        <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100vh', background:'#111', flexDirection:'column', gap:'16px' }}>
+          <div style={{ width:'40px', height:'40px', borderRadius:'50%', border:'2px solid rgba(192,57,43,0.3)', borderTopColor:'#c0392b', animation:'spin .7s linear infinite' }} />
+          <p style={{ color:'#666', fontFamily:'sans-serif', fontSize:'13px', letterSpacing:'2px', textTransform:'uppercase' }}>Verifying access...</p>
         </div>
-      </div>
+      </>
     );
   }
 
-  // Don't render if not authenticated (will redirect)
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-black text-white font-sans">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 backdrop-blur bg-black/40 border-b border-slate-700/50">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-            Interview Coach AI
-          </Link>
-          <div className="flex gap-4 items-center">
-            <Link href="/GetResume" className="text-slate-300 hover:text-cyan-400 transition">
-              📂 My Resumes
-            </Link>
-            <Link href="/dashboard" className="text-slate-300 hover:text-blue-400 transition">
-              ← Back
-            </Link>
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        .jm-root {
+          min-height: 100vh;
+          background: #111111;
+          color: #e8e8e8;
+          font-family: 'DM Sans', sans-serif;
+        }
+
+        .jm-bg {
+          position: fixed; inset: 0; z-index: 0; pointer-events: none;
+          background:
+            radial-gradient(ellipse 55% 45% at 75% 10%, rgba(180,30,30,0.1) 0%, transparent 60%),
+            radial-gradient(ellipse 40% 40% at 15% 85%, rgba(140,20,20,0.07) 0%, transparent 60%);
+        }
+
+        /* NAV */
+        .jm-nav {
+          position: sticky; top: 0; z-index: 100;
+          background: rgba(40,40,40,0.98); backdrop-filter: blur(16px);
+          border-bottom: 1px solid #3a3a3a; padding: 0 52px;
+        }
+        .jm-nav-inner {
+          max-width: 1200px; margin: 0 auto;
+          display: flex; align-items: center; justify-content: space-between;
+          height: 64px;
+        }
+        .jm-logo { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 3.5px; color: #f0f0f0; text-decoration: none; }
+        .jm-logo em { font-style: normal; color: #c0392b; }
+        .jm-nav-links { display: flex; align-items: center; gap: 20px; }
+        .jm-nav-link:hover { color: #ddd; }
+        .jm-nav-link,.jm-back {
+          padding: 8px 18px;
+          border-radius: 999px; /* egg shape */
+          border: 1px solid #444;
+          background: transparent;
+          color: #ddd;
+          font-size: 13px;
+          transition: all 0.25s ease;
+        }
+        .jm-nav-link:hover,.jm-back:hover {
+          border-color: #ef4444; /* yellow border */
+          background: rgba(239, 68, 68, 0.1);
+
+          color: #fff;
+          transform: translateY(-1px);
+        }
+
+        /* MAIN */
+        .jm-main {
+          position: relative; z-index: 2;
+          max-width: 1160px; margin: 0 auto;
+          padding: 56px 40px 80px;
+        }
+
+        .jm-header { text-align: center; margin-bottom: 52px; }
+        .jm-eyebrow {
+          display: inline-flex; align-items: center; gap: 8px;
+          background: rgba(192,57,43,0.1); border: 1px solid rgba(192,57,43,0.22);
+          border-radius: 20px; padding: 5px 16px; margin-bottom: 20px;
+        }
+        .jm-eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: #c0392b; animation: blink 1.4s ease-in-out infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+        .jm-eyebrow span { font-size: 10.5px; letter-spacing: 3px; text-transform: uppercase; color: #c0392b; font-weight: 500; }
+        .jm-header h1 {
+          font-family: 'Bebas Neue', sans-serif;
+          font-size: clamp(42px, 5.5vw, 68px);
+          letter-spacing: 2.5px; line-height: 1; color: #f5f5f5; margin-bottom: 14px;
+        }
+        .jm-header h1 span { color: #c0392b; }
+        .jm-header p { font-size: 14.5px; color: #666; font-weight: 300; line-height: 1.75; max-width: 520px; margin: 0 auto; }
+
+        .jm-input-grid {
+          display: grid; grid-template-columns: 1fr 1fr;
+          gap: 16px; margin-bottom: 20px;
+        }
+
+        .jm-step-label {
+          font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+          color: #c0392b; font-weight: 600; margin-bottom: 20px;
+          display: flex; align-items: center; gap: 8px;
+        }
+        .jm-step-label::before { content: ''; width: 16px; height: 1px; background: #c0392b; }
+
+        .jm-resume-btn {
+          background: #1a1a1a; border: 1px solid #facc15; border-radius: 999px;
+          padding: 12px 18px; display: flex; align-items: center; justify-content: space-between;
+          transition: all 0.25s ease; cursor: pointer; color: white; width: 100%; margin-bottom: 8px;
+        }
+        .jm-resume-btn.selected { background: linear-gradient(90deg, rgba(250,204,21,0.28), rgba(250,204,21,0.15)); border: 1px solid #facc15; box-shadow: 0 0 14px rgba(250, 204, 21, 0.45); }
+        .jm-resume-name { font-size: 13.5px; font-weight: 500; }
+
+        .jm-textarea {
+          width: 100%; height: 220px; padding: 14px 16px;
+          background: #161616; border: 1px solid #facc15;
+          border-radius: 10px; color: #ddd; font-family: 'DM Sans', sans-serif;
+          font-size: 13.5px; line-height: 1.75; outline: none; resize: none;
+        }
+
+        .jm-analyze-wrap { text-align: center; margin-bottom: 52px; }
+        .jm-analyze-btn {
+          padding: 17px 48px; background: linear-gradient(135deg, #ef4444, #b91c1c);
+          border: none; border-radius: 40px; color: #fff; font-family: 'Bebas Neue', sans-serif;
+          font-size: 20px; letter-spacing: 3px; cursor: pointer;
+          display: inline-flex; align-items: center; gap: 12px; transition: 0.25s;
+        }
+        .jm-analyze-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 35px rgba(185,29,29,0.4); }
+
+        /* ─── NEW RESULTS SECTION ─── */
+        .jm-results { margin-top: 40px; animation: fadeUp .6s ease-out forwards; }
+        
+        /* Side by Side Header: Circle Score & Strengths */
+        .jm-results-summary { display: flex; align-items: center; gap: 60px; padding-bottom: 40px; }
+
+        .jm-score-col { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .jm-score-circle { position: relative; width: 240px; height: 240px; display: flex; align-items: center; justify-content: center; }
+        .jm-circle-inner { width: 200px; height: 200px; background: #2a2a2a; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 2; }
+        .jm-revolving-border { position: absolute; inset: 0; border-radius: 50%; border: 4px solid transparent; border-top-color: #facc15; animation: rotateCircle 3s linear infinite; }
+        @keyframes rotateCircle { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .jm-score-num { font-family: 'Bebas Neue', sans-serif; font-size: 84px; color: #4ade80; }
+
+        .jm-clean-strengths { flex: 1; margin-left: 90px;  }
+        .jm-clean-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; color: #fff; margin-bottom: 20px; }
+        .jm-clean-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+        .jm-clean-item { display: flex; align-items: flex-start; gap: 12px; font-size: 14.5px; color: #888; line-height: 1.6; }
+        .jm-clean-item b { color: #4ade80; font-size: 18px; }
+
+        /* ─── RESTORING ORIGINAL CARDS FOR IMPROVE & SUGGESTIONS ─── */
+        .jm-res-card { background: #181818; border: 1px solid #242424; border-radius: 14px; padding: 28px 30px; position: relative; overflow: hidden; margin-bottom: 14px; }
+        .jm-res-card.yellow::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(to right, transparent, #facc15 40%, transparent); }
+        .jm-res-head { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .jm-res-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+        .jm-res-icon.yellow { background: rgba(250,204,21,0.1); border: 1px solid rgba(250,204,21,0.2); }
+        .jm-res-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1.5px; color: #facc15; }
+        .jm-res-item { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 8px; font-size: 13px; color: #aaa; background: rgba(250,204,21,0.05); border: 1px solid rgba(250,204,21,0.1); margin-bottom: 10px; }
+
+        .jm-suggestions { background: #181818; border: 1px solid #242424; border-radius: 14px; padding: 28px 30px; position: relative; overflow: hidden; }
+        .jm-suggestions::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(to right, transparent, #60a5fa 40%, transparent); }
+        .jm-sug-head { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .jm-sug-icon { width: 36px; height: 36px; border-radius: 50%; background: rgba(96,165,250,0.1); border: 1px solid rgba(96,165,250,0.2); display: flex; align-items: center; justify-content: center; font-size: 15px; }
+        .jm-suggestions h3 { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1.5px; color: #60a5fa; }
+        .jm-sug-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .jm-sug-item { padding: 14px 16px; background: rgba(96,165,250,0.04); border: 1px solid rgba(96,165,250,0.1); border-radius: 10px; font-size: 13px; color: #aaa; }
+        .jm-sug-num { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 1px; color: #60a5fa; margin-bottom: 6px; }
+
+        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+        @media (max-width: 900px) {
+          .jm-input-grid { grid-template-columns: 1fr; }
+          .jm-results-summary { flex-direction: column; text-align: center; }
+          .jm-sug-grid { grid-template-columns: 1fr; }
+        }
+      `}</style>
+
+      <div className="jm-root">
+        <div className="jm-bg" />
+
+        {/* NAV */}
+        <nav className="jm-nav">
+          <div className="jm-nav-inner">
+            <Link href="/" className="jm-logo">Interview<em>Coach</em> AI</Link>
+            <div className="jm-nav-links">
+              <Link href="/getresume" className="jm-nav-link">📂 My Resumes</Link>
+              <Link href="/dashboard" className="jm-back">← Back</Link>
+            </div>
           </div>
-        </div>
-      </nav>
+        </nav>
 
-      <div className="max-w-6xl mx-auto px-6 py-12">
-        {/* Header */}
-        <div className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-4">
-            📊 Job Matching Analysis
-          </h1>
-          <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-            Analyze how your resume matches any job description. Get detailed scoring, identify skill gaps, and receive personalized improvement suggestions.
-          </p>
-        </div>
+        <main className="jm-main">
 
-        <div className="grid lg:grid-cols-2 gap-8 mb-8">
-          {/* Resume Selection */}
-          <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-8">
-            <h2 className="text-2xl font-bold text-blue-400 mb-6">Step 1: Select Your Resume</h2>
-            
-            {loadingResumes ? (
-              <div className="text-center py-8">
-                <p className="text-slate-300">⚙️ Loading resumes...</p>
-              </div>
-            ) : resumes.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-slate-300 mb-4">No resumes uploaded yet</p>
-                <Link
-                  href="/UploadResume"
-                  className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition"
-                >
-                  Upload Resume →
-                </Link>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {resumes.map((resume) => (
-                  <button
-                    key={resume.resume_id}
-                    onClick={() => setSelectedResume(resume)}
-                    className={`w-full text-left p-4 rounded-lg border transition ${
-                      selectedResume?.resume_id === resume.resume_id
-                        ? 'bg-blue-900/40 border-blue-600/50'
-                        : 'bg-slate-700/20 border-slate-600/50 hover:border-blue-400/50'
-                    }`}
-                  >
-                    <p className="font-semibold text-slate-300 truncate">📄 {resume.name}</p>
-                    {resume.email && (
-                      <p className="text-sm text-slate-400 mt-1">📧 {resume.email}</p>
-                    )}
-                    <p className="text-xs text-slate-500 mt-1">
-                      Skills: {resume.skills && resume.skills.slice(0, 3).join(', ')}
-                      {resume.skills && resume.skills.length > 3 ? '...' : ''}
-                    </p>
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {selectedResume && (
-              <div className="mt-6 p-4 bg-green-900/20 border border-green-600/30 rounded-lg">
-                <p className="text-green-400 text-sm">✅ Selected: {selectedResume.name}</p>
-              </div>
-            )}
+          <div className="jm-header">
+            <div className="jm-eyebrow">
+              <span className="jm-eyebrow-dot" />
+              <span>Resume Analysis</span>
+            </div>
+            <h1>Job Matching <span>Analysis.</span></h1>
+            <p>Analyze how your resume matches any job description. Get detailed scoring and identify skill gaps.</p>
           </div>
 
-          {/* Job Description Input */}
-          <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-8">
-            <h2 className="text-2xl font-bold text-cyan-400 mb-6">Step 2: Paste Job Description</h2>
-            
-            <div className="space-y-4">
+          <div className="jm-input-grid">
+            {/* STEP 1 */}
+            <div className="jm-step-card">
+              <p className="jm-step-label">Step 1 — Select Resume</p>
+              {loadingResumes ? (
+                <div className="jm-loading-resumes"><div className="jm-load-spin" /></div>
+              ) : (
+                <div className="jm-resume-list">
+                  {resumes.map((resume) => (
+                    <button
+                      key={resume.resume_id}
+                      onClick={() => setSelectedResume(resume)}
+                      className={`jm-resume-btn${selectedResume?.resume_id === resume.resume_id ? ' selected' : ''}`}
+                    >
+                      <p className="jm-resume-name">📄 {resume.name}</p><span>→</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* STEP 2 */}
+            <div className="jm-step-card">
+              <p className="jm-step-label">Step 2 — Paste Job Description</p>
               <textarea
                 value={jobDescription}
                 onChange={(e) => setJobDescription(e.target.value)}
                 placeholder="Paste the complete job description here..."
-                className="w-full h-64 bg-slate-800 border border-slate-600 rounded-lg p-4 text-slate-300 placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 resize-none"
+                className="jm-textarea"
               />
-
-              <div className="text-sm text-slate-400">
-                {jobDescription.length > 0 && `${jobDescription.length} characters`}
-              </div>
             </div>
           </div>
-        </div>
 
-        {/* Error Message */}
-        {error && (
-          <div className="bg-red-900/30 border border-red-600/50 rounded-lg p-4 mb-8 text-red-300">
-            ❌ {error}
+          {error && <div className="jm-error"><p>{error}</p></div>}
+
+          <div className="jm-analyze-wrap">
+            <button
+              onClick={handleAnalyze}
+              disabled={analyzing || !selectedResume || !jobDescription.trim()}
+              className="jm-analyze-btn"
+            >
+              {analyzing ? <><div className="jm-a-spin" />Analyzing...</> : 'Analyze Match Now'}
+            </button>
           </div>
-        )}
 
-        {/* Analyze Button */}
-        <div className="flex justify-center mb-12">
-          <button
-            onClick={handleAnalyze}
-            disabled={analyzing || !selectedResume || !jobDescription.trim()}
-            className={`px-8 py-4 rounded-lg font-bold text-lg transition transform ${
-              analyzing || !selectedResume || !jobDescription.trim()
-                ? 'bg-slate-600 cursor-not-allowed opacity-50'
-                : 'bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 hover:scale-105'
-            }`}
-          >
-            {analyzing ? (
-              <span className="flex items-center gap-2">
-                <span className="animate-spin">⚙️</span> Analyzing...
-              </span>
-            ) : (
-              '🔍 Analyze Match'
-            )}
-          </button>
-        </div>
-
-        {/* Results Section */}
-        {result && (
-          <div className="space-y-8 animate-fadeIn">
-            {/* Overall Score - Large Card */}
-            <div className={`bg-linear-to-r ${getScoreBgColor(result.overallScore)} border rounded-xl p-8`}>
-              <div className="text-center">
-                <p className="text-slate-300 mb-2">Overall Match Score</p>
-                <p className={`text-7xl font-bold ${getScoreColor(result.overallScore)} mb-4`}>
-                  {result.overallScore}/100
-                </p>
-                <p className="text-slate-300 text-lg">
-                  {result.overallScore >= 80 && '🎉 Excellent match! You\'re a very strong fit for this role.'}
-                  {result.overallScore >= 60 && result.overallScore < 80 && '👍 Good match! You have most of the required qualifications.'}
-                  {result.overallScore >= 40 && result.overallScore < 60 && '⚠️ Moderate match. Consider addressing the key gaps below.'}
-                  {result.overallScore < 40 && '📚 Significant gap. Focus on developing the missing skills.'}
-                </p>
-              </div>
-            </div>
-
-            {/* Detailed Score Breakdown */}
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-6">
-                <p className="text-slate-300 mb-2">Experience Fit</p>
-                <p className={`text-4xl font-bold ${getScoreColor(result.experienceFit)}`}>
-                  {result.experienceFit}%
-                </p>
-                <div className="mt-4 w-full bg-slate-800 rounded-full h-3">
-                  <div
-                    className={`h-3 rounded-full transition-all ${
-                      result.experienceFit >= 80
-                        ? 'bg-green-500'
-                        : result.experienceFit >= 60
-                        ? 'bg-yellow-500'
-                        : 'bg-red-500'
-                    }`}
-                    style={{ width: `${result.experienceFit}%` }}
-                  />
+          {/* RESULTS */}
+          {result && (
+            <div className="jm-results">
+              
+              {/* TOP: Score Circle Left + Strengths Right (No Boxes) */}
+              <div className="jm-results-summary">
+                <div className="jm-score-col">
+                  <span style={{fontFamily:'Bebas Neue', letterSpacing:'3px', fontSize:'14px', color:'#aaa'}}> MATCH SCORE</span>
+                  <div className="jm-score-circle">
+                    <div className="jm-revolving-border"></div>
+                    <div className="jm-circle-inner">
+                      <div className="jm-score-num">{result.overallScore}%</div>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-xs text-slate-400 mt-2">How well your experience matches</p>
-              </div>
 
-              <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-6">
-                <p className="text-slate-300 mb-2">Skills Match</p>
-                <p className={`text-4xl font-bold ${getScoreColor(result.skillsMatch)}`}>
-                  {result.skillsMatch}%
-                </p>
-                <div className="mt-4 w-full bg-slate-800 rounded-full h-3">
-                  <div
-                    className={`h-3 rounded-full transition-all ${
-                      result.skillsMatch >= 80
-                        ? 'bg-green-500'
-                        : result.skillsMatch >= 60
-                        ? 'bg-yellow-500'
-                        : 'bg-red-500'
-                    }`}
-                    style={{ width: `${result.skillsMatch}%` }}
-                  />
+                <div className="jm-clean-strengths">
+                  <h2 className="jm-clean-title">✅ Key Strengths</h2>
+                  <ul className="jm-clean-list">
+                    {result.strengths.map((s, i) => (
+                      <li key={i} className="jm-clean-item">
+                        <b>✓</b> {s}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <p className="text-xs text-slate-400 mt-2">Technical skills alignment</p>
               </div>
 
-              <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-6">
-                <p className="text-slate-300 mb-2">Role Compatibility</p>
-                <p className={`text-4xl font-bold ${getScoreColor(result.overallScore)}`}>
-                  {Math.round((result.overallScore + result.experienceFit + result.skillsMatch) / 3)}%
-                </p>
-                <div className="mt-4 w-full bg-slate-800 rounded-full h-3">
-                  <div
-                    className={`h-3 rounded-full transition-all ${
-                      Math.round((result.overallScore + result.experienceFit + result.skillsMatch) / 3) >= 80
-                        ? 'bg-green-500'
-                        : Math.round((result.overallScore + result.experienceFit + result.skillsMatch) / 3) >= 60
-                        ? 'bg-yellow-500'
-                        : 'bg-red-500'
-                    }`}
-                    style={{ width: `${Math.round((result.overallScore + result.experienceFit + result.skillsMatch) / 3)}%` }}
-                  />
+              {/* BOTTOM: RESTORED ORIGINAL BOXES */}
+              
+              {/* Areas to Improve (Original Yellow Box) */}
+              <div className="jm-res-card yellow">
+                <div className="jm-res-head">
+                  <div className="jm-res-icon yellow">⚠️</div>
+                  <h3>Areas to Improve</h3>
                 </div>
-                <p className="text-xs text-slate-400 mt-2">Overall fit for the position</p>
-              </div>
-            </div>
-
-            {/* Strengths */}
-            {result.strengths && Array.isArray(result.strengths) && result.strengths.length > 0 && (
-              <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-6">
-                <h3 className="text-2xl font-bold text-green-400 mb-4">✅ Your Strengths</h3>
-                <div className="grid md:grid-cols-2 gap-3">
-                  {result.strengths.map((strength, idx) => (
-                    <div key={idx} className="flex items-start gap-3 bg-green-900/20 border border-green-600/30 rounded-lg p-4">
-                      <span className="text-green-400 text-xl mt-1">✓</span>
-                      <span className="text-slate-300">{strength}</span>
+                <div className="jm-res-list">
+                  {result.missingSkills.map((s, i) => (
+                    <div key={i} className="jm-res-item">
+                      <span style={{color:'#facc15'}}>•</span> {s}
                     </div>
                   ))}
                 </div>
               </div>
-            )}
 
-            {/* Missing Skills */}
-            {result.missingSkills && Array.isArray(result.missingSkills) && result.missingSkills.length > 0 && (
-              <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-6">
-                <h3 className="text-2xl font-bold text-yellow-400 mb-4">⚠️ Skills Gap to Address</h3>
-                <div className="grid md:grid-cols-2 gap-3">
-                  {result.missingSkills.map((skill, idx) => (
-                    <div key={idx} className="flex items-start gap-3 bg-yellow-900/20 border border-yellow-600/30 rounded-lg p-4">
-                      <span className="text-yellow-400 text-xl mt-1">•</span>
-                      <span className="text-slate-300">{skill}</span>
+              {/* Suggestions (Original Blue Box) */}
+              <div className="jm-suggestions">
+                <div className="jm-sug-head">
+                  <div className="jm-sug-icon">💡</div>
+                  <h3>Expert Suggestions</h3>
+                </div>
+                <div className="jm-sug-grid">
+                  {result.suggestions.map((s, i) => (
+                    <div key={i} className="jm-sug-item">
+                      <p className="jm-sug-num">Tip {i + 1}</p>
+                      {s}
                     </div>
                   ))}
                 </div>
               </div>
-            )}
 
-            {/* Improvement Suggestions */}
-            {result.suggestions && Array.isArray(result.suggestions) && result.suggestions.length > 0 && (
-              <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-6">
-                <h3 className="text-2xl font-bold text-blue-400 mb-4">💡 Actionable Suggestions</h3>
-                <div className="space-y-3">
-                  {result.suggestions.map((suggestion, idx) => (
-                    <div key={idx} className="flex gap-4 bg-blue-900/20 border border-blue-600/30 rounded-lg p-4">
-                      <span className="text-blue-400 font-bold text-xl min-w-fit">{idx + 1}.</span>
-                      <span className="text-slate-300">{suggestion}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Next Steps */}
-            <div className="bg-linear-to-r from-blue-900/40 to-cyan-900/40 border border-blue-600/30 rounded-xl p-6 text-center">
-              <h3 className="text-2xl font-bold text-cyan-400 mb-4">🎯 Ready to Prepare for Interview?</h3>
-              <p className="text-slate-300 mb-6">Get 10 personalized interview questions based on this job and your resume to practice and improve.</p>
-              <Link
-                href="/dashboard"
-                className="inline-block px-6 py-3 bg-cyan-600 hover:bg-cyan-700 rounded-lg font-semibold transition transform hover:scale-105"
-              >
-                Generate Interview Questions →
-              </Link>
             </div>
-          </div>
-        )}
+          )}
+
+        </main>
       </div>
 
       <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.5s ease-out;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fadeIn { animation: fadeIn 0.8s ease-out forwards; }
       `}</style>
-    </div>
+    </>
   );
 }
