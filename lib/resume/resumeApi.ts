@@ -11,7 +11,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 export const fetchUserResumes = async () => {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/resume/api/user-resumes`,
+      `${API_BASE_URL}/api/resume/user-resumes`,
       {
         method: 'GET',
         headers: getAuthHeaders(),
@@ -34,7 +34,7 @@ export const fetchUserResumes = async () => {
 export const getResume = async (resumeId: string) => {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/resume/api/resume/${resumeId}`,
+      `${API_BASE_URL}/api/resume/resume/${resumeId}`,
       {
         method: 'GET',
         headers: getAuthHeaders(),
@@ -60,7 +60,7 @@ export const uploadResume = async (file: File) => {
     formData.append('file', file);
 
     const response = await fetch(
-      `${API_BASE_URL}/resume/api/upload-resume`,
+      `${API_BASE_URL}/api/resume/upload-resume`,
       {
         method: 'POST',
         headers: {
@@ -86,7 +86,7 @@ export const uploadResume = async (file: File) => {
 export const deleteResume = async (resumeId: string) => {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/resume/api/delete-resume/${resumeId}`,
+      `${API_BASE_URL}/api/resume/delete-resume/${resumeId}`,
       {
         method: 'DELETE',
         headers: getAuthHeaders(),

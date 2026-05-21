@@ -14,7 +14,7 @@ export const analyzeJobMatch = async (
 ) => {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/jobmatching/api/analyseresume?resume_id=${resumeId}&description=${encodeURIComponent(jobDescription)}`,
+      `${API_BASE_URL}/api/jobmatching/analyseresume?resume_id=${resumeId}&description=${encodeURIComponent(jobDescription)}`,
       {
         method: 'POST',
         headers: getAuthHeaders(),

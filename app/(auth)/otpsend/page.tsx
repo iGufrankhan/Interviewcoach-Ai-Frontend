@@ -48,72 +48,80 @@ export default function OTPSendPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-black text-white font-sans">
+    <div className="relative flex flex-col min-h-screen bg-[#030014] text-white font-sans overflow-hidden">
+      {/* Background ambient glows */}
+      <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-violet-600/20 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-600/20 blur-[120px] pointer-events-none" />
+
       {/* Header */}
-      <nav className="px-6 py-4 border-b border-slate-700/50">
-        <Link href="/" className="text-2xl font-bold bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-          Interview Coach AI
+      <nav className="relative z-10 px-6 py-4 border-b border-white/[0.05] bg-[#030014]/60 backdrop-blur-md">
+        <Link href="/" className="text-2xl font-extrabold tracking-tighter bg-linear-to-r from-white via-violet-200 to-violet-400 bg-clip-text text-transparent">
+          InterviewCoach<span className="text-violet-500">.ai</span>
         </Link>
       </nav>
 
       {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12">
+      <div className="relative z-10 flex-1 flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-md">
-          <div className="bg-slate-800/50 backdrop-blur border border-slate-700/50 rounded-xl p-8">
-            <div className="text-center mb-8">
-              <div className="w-12 h-12 rounded-full bg-blue-500/20 border border-blue-400/50 flex items-center justify-center mx-auto mb-4">
-                <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-white/[0.02] backdrop-blur-xl border border-white/[0.05] rounded-[2rem] p-8 shadow-2xl relative overflow-hidden">
+            <div className="absolute inset-0 bg-linear-to-br from-violet-500/5 to-transparent pointer-events-none"></div>
+
+            <div className="relative text-center mb-8">
+              <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-violet-500/20 to-indigo-500/20 border border-violet-500/30 flex items-center justify-center mx-auto mb-6 shadow-[0_0_15px_rgba(139,92,246,0.2)]">
+                <svg className="w-7 h-7 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold mb-2">Get OTP Code</h1>
-              <p className="text-slate-400">Enter your email to receive verification code</p>
+              <h1 className="text-3xl font-bold mb-2 tracking-tight">Get OTP Code</h1>
+              <p className="text-zinc-400 text-sm">Enter your email to receive verification code</p>
             </div>
 
-            {/* Error Message */}
-            {error && (
-              <div className="bg-red-500/10 border border-red-500/50 text-red-300 px-4 py-3 rounded-lg mb-4 text-sm">
-                {error}
+            <div className="relative">
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl mb-6 text-sm flex items-start gap-3">
+                  <span>{error}</span>
+                </div>
+              )}
+
+              {/* Success Message */}
+              {success && (
+                <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-3 rounded-xl mb-6 text-sm flex items-start gap-3">
+                  <span>{success}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleSendOTP} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-zinc-300">Email Address</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    required
+                    className="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-xl focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 text-white placeholder-zinc-500 transition-colors"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full group relative inline-flex items-center justify-center px-8 py-3.5 font-bold text-white transition-all duration-300 bg-linear-to-r from-violet-600 to-indigo-600 rounded-xl hover:from-violet-500 hover:to-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 hover:shadow-[0_0_30px_-5px_rgba(139,92,246,0.5)] mt-4"
+                >
+                  {loading ? 'Sending OTP...' : 'Send OTP Code'}
+                </button>
+              </form>
+
+              {/* Links */}
+              <div className="mt-8 text-center border-t border-white/[0.05] pt-6">
+                <p className="text-zinc-500 text-sm">
+                  Already have an account?{' '}
+                  <Link href="/login" className="text-violet-400 hover:text-violet-300 font-medium transition-colors">
+                    Sign in here
+                  </Link>
+                </p>
               </div>
-            )}
-
-            {/* Success Message */}
-            {success && (
-              <div className="bg-green-500/10 border border-green-500/50 text-green-300 px-4 py-3 rounded-lg mb-4 text-sm">
-                {success}
-              </div>
-            )}
-
-            <form onSubmit={handleSendOTP} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Email Address</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  required
-                  className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 text-white placeholder-slate-400 transition"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-3 rounded-lg font-semibold transition"
-              >
-                {loading ? 'Sending OTP...' : 'Send OTP Code'}
-              </button>
-            </form>
-
-            {/* Links */}
-            <div className="mt-6 text-center border-t border-slate-700/50 pt-6 space-y-3">
-              <p className="text-slate-400 text-sm">
-                Already have an account?{' '}
-                <Link href="/login" className="text-blue-400 hover:text-blue-300 font-medium transition">
-                  Sign in here
-                </Link>
-              </p>
             </div>
           </div>
         </div>

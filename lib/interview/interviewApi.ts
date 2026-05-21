@@ -159,9 +159,12 @@ export const getUserInterviews = async (): Promise<SessionDetails[]> => {
 
     await handleApiResponse(response);
     const data = await response.json();
-    return data.data;
+    // Ensure we always return an array
+    const interviews = data.data;
+    return Array.isArray(interviews) ? interviews : [];
   } catch (error) {
     console.error('Error getting interviews:', error);
-    throw error;
+    // Return empty array instead of throwing to prevent page crashes
+    return [];
   }
 };

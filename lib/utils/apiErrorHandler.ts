@@ -22,11 +22,25 @@ export async function handleApiResponse(response: Response) {
   // Handle other errors
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(
-      errorData.message || 
-      errorData.error || 
-      `API Error: ${response.status} ${response.statusText}`
-    );
+    
+    let errorMessage = `API Error: ${response.status} ${response.statusText}`;
+    
+    if (errorData.message) {
+      errorMessage = errorData.message;
+    } else if (errorData.error) {
+      errorMessage = errorData.error;
+    } else if (errorData.detail) {
+      // Handle Pydantic validation errors (detail is often an array)
+      if (Array.isArray(errorData.detail)) {
+        errorMessage = errorData.detail
+          .map((err: any) => err.msg || JSON.stringify(err))
+          .join('; ');
+      } else if (typeof errorData.detail === 'string') {
+        errorMessage = errorData.detail;
+      }
+    }
+    
+    throw new Error(errorMessage);
   }
 
   return response;

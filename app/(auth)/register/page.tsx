@@ -24,25 +24,16 @@ export default function RegisterPage() {
     const verifiedToken = searchParams.get('token');
     const verified = searchParams.get('verified');
     
-    console.log('📌 Register page loaded with params:');
-    console.log('   Email:', emailParam);
-    console.log('   Token:', verifiedToken ? `${verifiedToken.substring(0, 20)}...` : 'NOT FOUND');
-    console.log('   Verified:', verified);
-    
     if (emailParam) {
       setEmail(decodeURIComponent(emailParam));
     }
     
     if (verifiedToken) {
       const decodedToken = decodeURIComponent(verifiedToken);
-      console.log('✅ Token decoded:', decodedToken ? `${decodedToken.substring(0, 20)}...` : 'EMPTY');
       setRegistrationToken(decodedToken);
-    } else {
-      console.log('❌ No token found in URL!');
     }
     
     if (verified !== 'true') {
-      console.log('⚠️  Not verified, redirecting to /OtpSend');
       router.push('/OtpSend');
     }
   }, [searchParams, router]);
@@ -69,7 +60,6 @@ export default function RegisterPage() {
       return;
     }
 
-    // Use validators for password validation
     const passwordError = validatePassword(password);
     if (passwordError) {
       setError(passwordError);
@@ -82,13 +72,8 @@ export default function RegisterPage() {
       return;
     }
 
-    console.log('🚀 Submitting registration with:');
-    console.log('   Email:', email);
-    console.log('   Full Name:', fullName);
-    console.log('   Token:', registrationToken ? `${registrationToken.substring(0, 20)}...` : 'EMPTY/MISSING');
-
     if (!registrationToken) {
-      setError('❌ Registration token missing! Please verify your email again.');
+      setError('Registration token missing! Please verify your email again.');
       return;
     }
 
@@ -97,16 +82,11 @@ export default function RegisterPage() {
     try {
       await completeRegistration(email, password, fullName.trim(), registrationToken);
 
-      console.log('✅ Registration completed!');
-      console.log('   Token in localStorage:', localStorage.getItem('token') ? `${localStorage.getItem('token')!.substring(0, 20)}...` : 'MISSING');
-      console.log('   User ID in localStorage:', localStorage.getItem('user_id'));
-
       setSuccess('Registration successful! Redirecting to dashboard...');
       setTimeout(() => {
         router.push('/dashboard');
       }, 2000);
     } catch (err) {
-      console.error('❌ Registration error:', err);
       setError(err instanceof Error ? err.message : 'Registration failed');
     } finally {
       setLoading(false);
@@ -114,141 +94,142 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-black text-white font-sans">
+    <div className="relative flex flex-col min-h-screen bg-[#030014] text-white font-sans overflow-hidden">
+      {/* Background ambient glows */}
+      <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-violet-600/20 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-600/20 blur-[120px] pointer-events-none" />
+
       {/* Header */}
-      <nav className="px-6 py-4 border-b border-slate-700/50">
-        <Link href="/" className="text-2xl font-bold bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-          Interview Coach AI
+      <nav className="relative z-10 px-6 py-4 border-b border-white/[0.05] bg-[#030014]/60 backdrop-blur-md">
+        <Link href="/" className="text-2xl font-extrabold tracking-tighter bg-linear-to-r from-white via-violet-200 to-violet-400 bg-clip-text text-transparent">
+          InterviewCoach<span className="text-violet-500">.ai</span>
         </Link>
       </nav>
 
       {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12">
+      <div className="relative z-10 flex-1 flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-md">
-          <div className="bg-slate-800/50 backdrop-blur border border-slate-700/50 rounded-xl p-8">
-            <div className="text-center mb-8">
-              <div className="w-12 h-12 rounded-full bg-blue-500/20 border border-blue-400/50 flex items-center justify-center mx-auto mb-4">
-                <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-white/[0.02] backdrop-blur-xl border border-white/[0.05] rounded-[2rem] p-8 shadow-2xl relative overflow-hidden">
+            <div className="absolute inset-0 bg-linear-to-br from-violet-500/5 to-transparent pointer-events-none"></div>
+            
+            <div className="relative text-center mb-8">
+              <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 flex items-center justify-center mx-auto mb-6 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                <svg className="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold mb-2">Complete Your Profile</h1>
-              <p className="text-slate-400">Enter your details to finish registration</p>
+              <h1 className="text-3xl font-bold mb-2 tracking-tight">Complete Your Profile</h1>
+              <p className="text-zinc-400 text-sm">Enter your details to finish registration</p>
             </div>
 
-            {/* Email Display (Read-only) */}
-            <div className="bg-slate-700/30 border border-slate-600/50 rounded-lg px-4 py-2 mb-6">
-              <p className="text-xs text-slate-400">Verified Email</p>
-              <p className="text-white font-medium">{email}</p>
-            </div>
-
-            {/* Error Message */}
-            {error && (
-              <div className="bg-red-500/10 border border-red-500/50 text-red-300 px-4 py-3 rounded-lg mb-4 text-sm">
-                {error}
-              </div>
-            )}
-
-            {/* Success Message */}
-            {success && (
-              <div className="bg-green-500/10 border border-green-500/50 text-green-300 px-4 py-3 rounded-lg mb-4 text-sm">
-                {success}
-              </div>
-            )}
-
-            <form onSubmit={handleCompleteRegistration} className="space-y-4">
-              {/* Full Name Field */}
-              <div>
-                <label className="block text-sm font-medium mb-2">Full Name</label>
-                <input
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="John Doe"
-                  required
-                  className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 text-white placeholder-slate-400 transition"
-                />
+            <div className="relative">
+              {/* Email Display */}
+              <div className="bg-white/[0.03] border border-white/[0.05] rounded-xl px-4 py-3 mb-6 flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider font-semibold text-emerald-400 mb-0.5">Verified Email</p>
+                  <p className="text-white font-medium text-sm">{email}</p>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
               </div>
 
-              {/* Password Field */}
-              <div>
-                <label className="block text-sm font-medium mb-2">Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 text-white placeholder-slate-400 transition"
-                />
-                
-                {/* Password Strength Indicator */}
-                {password && (
-                  <div className="mt-2 space-y-2">
-                    <div className="h-1 bg-slate-600/50 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full transition-all ${
-                          passwordStrength === 'weak'
-                            ? 'w-1/3 bg-red-500'
-                            : passwordStrength === 'medium'
-                            ? 'w-2/3 bg-yellow-500'
-                            : 'w-full bg-green-500'
-                        }`}
-                      />
+              {error && (
+                <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl mb-6 text-sm flex items-start gap-3">
+                  <span>{error}</span>
+                </div>
+              )}
+
+              {success && (
+                <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-3 rounded-xl mb-6 text-sm flex items-start gap-3">
+                  <span>{success}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleCompleteRegistration} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-zinc-300">Full Name</label>
+                  <input
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="John Doe"
+                    required
+                    className="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-xl focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 text-white placeholder-zinc-500 transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-zinc-300">Password</label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    className="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-xl focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 text-white placeholder-zinc-500 transition-colors"
+                  />
+                  
+                  {password && (
+                    <div className="mt-3 space-y-2">
+                      <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full transition-all duration-300 ${
+                            passwordStrength === 'weak'
+                              ? 'w-1/3 bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]'
+                              : passwordStrength === 'medium'
+                              ? 'w-2/3 bg-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.8)]'
+                              : 'w-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)]'
+                          }`}
+                        />
+                      </div>
+                      <p className={`text-xs font-medium ${
+                        passwordStrength === 'weak'
+                          ? 'text-red-400'
+                          : passwordStrength === 'medium'
+                          ? 'text-yellow-400'
+                          : 'text-emerald-400'
+                      }`}>
+                        Strength: {passwordStrength.charAt(0).toUpperCase() + passwordStrength.slice(1)}
+                      </p>
                     </div>
-                    <p className={`text-xs ${
-                      passwordStrength === 'weak'
-                        ? 'text-red-400'
-                        : passwordStrength === 'medium'
-                        ? 'text-yellow-400'
-                        : 'text-green-400'
-                    }`}>
-                      Strength: {passwordStrength.charAt(0).toUpperCase() + passwordStrength.slice(1)}
-                    </p>
-                  </div>
-                )}
-                
-                <p className="text-xs text-slate-400 mt-2">
-                  • Minimum 8 characters
-                  <br />
-                  • Use uppercase, numbers for stronger password
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-zinc-300">Confirm Password</label>
+                  <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    className="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-xl focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 text-white placeholder-zinc-500 transition-colors"
+                  />
+                  {confirmPassword && password !== confirmPassword && (
+                    <p className="text-xs font-medium text-red-400 mt-2">Passwords do not match</p>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading || password !== confirmPassword || password.length < 8 || !fullName.trim()}
+                  className="w-full group relative inline-flex items-center justify-center px-8 py-3.5 font-bold text-white transition-all duration-300 bg-linear-to-r from-violet-600 to-indigo-600 rounded-xl hover:from-violet-500 hover:to-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 hover:shadow-[0_0_30px_-5px_rgba(139,92,246,0.5)] mt-4"
+                >
+                  {loading ? 'Creating Account...' : 'Complete Registration'}
+                </button>
+              </form>
+
+              <div className="mt-8 text-center border-t border-white/[0.05] pt-6">
+                <p className="text-zinc-500 text-sm">
+                  Already have an account?{' '}
+                  <Link href="/login" className="text-violet-400 hover:text-violet-300 font-medium transition-colors">
+                    Sign in here
+                  </Link>
                 </p>
               </div>
-
-              {/* Confirm Password Field */}
-              <div>
-                <label className="block text-sm font-medium mb-2">Confirm Password</label>
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 text-white placeholder-slate-400 transition"
-                />
-                {confirmPassword && password !== confirmPassword && (
-                  <p className="text-xs text-red-400 mt-1">Passwords do not match</p>
-                )}
-              </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={loading || password !== confirmPassword || password.length < 8 || !fullName.trim()}
-                className="w-full bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-3 rounded-lg font-semibold transition"
-              >
-                {loading ? 'Creating Account...' : 'Complete Registration'}
-              </button>
-            </form>
-
-            {/* Login Link */}
-            <div className="mt-6 text-center border-t border-slate-700/50 pt-6">
-              <p className="text-slate-400 text-sm">
-                Already have an account?{' '}
-                <Link href="/login" className="text-blue-400 hover:text-blue-300 font-medium transition">
-                  Sign in here
-                </Link>
-              </p>
             </div>
           </div>
         </div>
