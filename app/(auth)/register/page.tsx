@@ -34,7 +34,7 @@ function RegisterPageContent() {
     }
     
     if (verified !== 'true') {
-      router.push('/OtpSend');
+      router.push('/otp-send');
     }
   }, [searchParams, router]);
 

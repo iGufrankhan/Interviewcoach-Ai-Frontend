@@ -172,7 +172,7 @@ function VerifyOTPPageContent() {
 
               <div className="mt-4 text-center">
                 <Link 
-                  href={searchParams.get('type') === 'register' ? '/OtpSend' : '/reset-password'}  
+                  href={searchParams.get('type') === 'register' ? '/otp-send' : '/reset-password'}  
                   className="text-zinc-500 hover:text-zinc-300 text-sm transition-colors"
                 >
                   ← Back

@@ -145,7 +145,7 @@ export default function LoginPage() {
               </div>
 
               <Link
-                href="/OtpSend"
+                href="/otp-send"
                 className="w-full flex items-center justify-center px-4 py-3.5 bg-white/[0.02] border border-white/10 hover:bg-white/[0.04] hover:border-violet-500/30 rounded-xl font-semibold transition-all text-zinc-300 hover:text-white"
               >
                 Create Account

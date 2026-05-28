@@ -10,7 +10,7 @@ export default function LandingPage() {
 
   useEffect(() => {
     router.prefetch('/login');
-    router.prefetch('/OtpSend');
+    router.prefetch('/otp-send');
 
     // Check if user is authenticated
     const token = localStorage.getItem('token');
@@ -52,7 +52,7 @@ export default function LandingPage() {
             <Link href="/login" prefetch className="hover:text-white transition-colors duration-200">
               Login
             </Link>
-            <Link href="/OtpSend" prefetch className="group relative inline-flex items-center justify-center px-6 py-2.5 font-medium text-white transition-all duration-200 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 hover:scale-105">
+            <Link href="/otp-send" prefetch className="group relative inline-flex items-center justify-center px-6 py-2.5 font-medium text-white transition-all duration-200 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 hover:scale-105">
               <span>Get Started</span>
             </Link>
           </div>
