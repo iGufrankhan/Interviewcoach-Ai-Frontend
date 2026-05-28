@@ -28,12 +28,20 @@ export default function TakeInterviewPage() {
 
   // Load interview session
   useEffect(() => {
+    const currentSessionId = sessionId;
+
+    if (!currentSessionId) {
+      setError('Session ID not found. Please refresh the page.');
+      setLoadingSession(false);
+      return;
+    }
+
     const loadSession = async () => {
       try {
-        const session = await getInterviewSession(sessionId);
+        const session = await getInterviewSession(currentSessionId);
         // We need to fetch questions from a different endpoint or store them
         // For now, we'll reload through startInterview data saved in sessionStorage
-        const savedQuestions = sessionStorage.getItem(`interview_questions_${sessionId}`);
+        const savedQuestions = sessionStorage.getItem(`interview_questions_${currentSessionId}`);
         if (savedQuestions) {
           setQuestions(JSON.parse(savedQuestions));
         }

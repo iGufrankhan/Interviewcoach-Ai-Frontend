@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { verifyForgotPasswordOTP, resendForgotPasswordOTP } from '@/lib/auth/forgotPasswordApi';
 
-export default function ResetPasswordOTPPage() {
+function ResetPasswordOTPPageContent() {
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
@@ -167,5 +167,13 @@ export default function ResetPasswordOTPPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordOTPPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#030014]" />}>
+      <ResetPasswordOTPPageContent />
+    </Suspense>
   );
 }

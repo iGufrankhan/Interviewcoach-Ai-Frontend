@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { verifyOTP, resendOTP } from '@/lib/api';
 import { validateOTP } from '@/lib/validators';
 
-export default function VerifyOTPPage() {
+function VerifyOTPPageContent() {
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
@@ -183,5 +183,13 @@ export default function VerifyOTPPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function VerifyOTPPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#030014]" />}>
+      <VerifyOTPPageContent />
+    </Suspense>
   );
 }

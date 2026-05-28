@@ -73,6 +73,8 @@ export const startInterview = async (
   }
 };
 
+export const generateInterviewQuestions = startInterview;
+
 // Submit Answer (Audio or Text)
 export const submitAnswer = async (
   session_id: string,

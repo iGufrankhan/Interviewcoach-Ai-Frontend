@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { requestForgotPassword, resetForgotPassword } from '@/lib/auth/forgotPasswordApi';
@@ -8,7 +8,7 @@ import { validateEmail, validatePassword, validatePasswordMatch } from '@/lib/va
 
 type ResetStep = 'email' | 'newpassword';
 
-export default function ResetPasswordPage() {
+function ResetPasswordPageContent() {
   const [step, setStep] = useState<ResetStep>('email');
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -293,5 +293,13 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#030014]" />}>
+      <ResetPasswordPageContent />
+    </Suspense>
   );
 }

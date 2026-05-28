@@ -17,6 +17,11 @@ export interface LoginResponse {
 export interface OTPResponse {
   message: string;
   registration_token?: string;
+  data?: {
+    user_exists?: boolean;
+    registration_token?: string;
+    [key: string]: unknown;
+  };
 }
 
 export interface RegistrationResponse {
