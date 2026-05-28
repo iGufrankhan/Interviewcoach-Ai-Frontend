@@ -9,6 +9,9 @@ export default function LandingPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    router.prefetch('/login');
+    router.prefetch('/OtpSend');
+
     // Check if user is authenticated
     const token = localStorage.getItem('token');
     if (token) {
@@ -46,10 +49,10 @@ export default function LandingPage() {
           <div className="hidden md:flex gap-8 items-center text-sm font-medium text-zinc-400">
             <a href="#features" className="hover:text-white transition-colors duration-200">Features</a>
             <a href="#workflow" className="hover:text-white transition-colors duration-200">Workflow</a>
-            <Link href="/login" className="hover:text-white transition-colors duration-200">
+            <Link href="/login" prefetch className="hover:text-white transition-colors duration-200">
               Login
             </Link>
-            <Link href="/OtpSend" className="group relative inline-flex items-center justify-center px-6 py-2.5 font-medium text-white transition-all duration-200 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 hover:scale-105">
+            <Link href="/OtpSend" prefetch className="group relative inline-flex items-center justify-center px-6 py-2.5 font-medium text-white transition-all duration-200 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 hover:scale-105">
               <span>Get Started</span>
             </Link>
           </div>
@@ -77,7 +80,7 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             {/* The "Best" Premium Button */}
-            <Link href="/login" className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-300 bg-linear-to-r from-violet-600 to-indigo-600 rounded-full hover:from-violet-500 hover:to-indigo-500 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(139,92,246,0.6)] focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-[#030014]">
+            <Link href="/login" prefetch className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-300 bg-linear-to-r from-violet-600 to-indigo-600 rounded-full hover:from-violet-500 hover:to-indigo-500 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(139,92,246,0.6)] focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-[#030014]">
               <span className="absolute inset-0 w-full h-full rounded-full blur-md bg-linear-to-r from-violet-600 to-indigo-600 opacity-0 group-hover:opacity-40 transition-opacity duration-300"></span>
               <span className="relative flex items-center gap-2">
                 Start Free Analysis
