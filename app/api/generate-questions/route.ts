@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const apiUrl = `${process.env.BACKEND_URL || 'http://localhost:8000'}/interviewservice/question_gen/generate?description=${encodeURIComponent(description)}&resume_id=${resume_id}`;
+    const apiUrl = `${process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'https://interviewcoach-ai-backend.onrender.com'}/interviewservice/question_gen/generate?description=${encodeURIComponent(description)}&resume_id=${resume_id}`;
 
     const response = await fetch(apiUrl, {
       method: 'POST',

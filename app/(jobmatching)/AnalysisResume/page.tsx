@@ -47,7 +47,7 @@ export default function JobMatchingPage() {
   const fetchResumes = async () => {
     try {
       setLoadingResumes(true);
-      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://interviewcoach-ai-backend.onrender.com';
       
       const response = await fetch(
         `${API_BASE_URL}/api/resume/user-resumes`,
@@ -108,7 +108,7 @@ export default function JobMatchingPage() {
     setResult(null);
 
     try {
-      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://interviewcoach-ai-backend.onrender.com';
       const response = await fetch(
         `${API_BASE_URL}/api/jobmatching/analyseresume`,
         {

@@ -3,7 +3,7 @@
 import { getAuthHeaders } from '../utils/authHeaders';
 import { handleApiResponse } from '../utils/apiErrorHandler';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://interviewcoach-ai-backend.onrender.com';
 
 /**
  * Fetch user's resume data

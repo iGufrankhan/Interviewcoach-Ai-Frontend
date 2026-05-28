@@ -89,7 +89,7 @@ export default function TakeInterviewPage() {
       const base64Audio = await blobToBase64(blob);
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/interview/transcribe-audio`,
+        `${process.env.NEXT_PUBLIC_API_URL || 'https://interviewcoach-ai-backend.onrender.com'}/api/interview/transcribe-audio`,
         {
           method: 'POST',
           headers: {

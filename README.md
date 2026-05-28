@@ -1,26 +1,47 @@
-# Interview Coach AI - Frontend
+<div align="center">
+  <h1>🎨 Frontend Documentation <br/> Interview Coach AI</h1>
+  <p><i>AI-powered interview preparation and resume analysis system built with Next.js 14+, TypeScript, and Tailwind CSS.</i></p>
+  
+  <p>
+    <img src="https://img.shields.io/badge/Framework-Next.js_14-black?style=flat-square&logo=next.js" alt="Next.js" />
+    <img src="https://img.shields.io/badge/Language-TypeScript-blue?style=flat-square&logo=typescript" alt="TypeScript" />
+    <img src="https://img.shields.io/badge/Styling-Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css" alt="Tailwind CSS" />
+  </p>
+</div>
 
-AI-powered interview preparation and resume analysis system built with Next.js 14+, TypeScript, and Tailwind CSS.
+---
 
-## Overview
+## 🚀 Live API Connection
+
+> **Production Backend API:** [`https://interviewcoach-ai-backend.onrender.com/`](https://interviewcoach-ai-backend.onrender.com/)
+
+*Make sure your `.env.local` or `.env.production` files on Vercel point `NEXT_PUBLIC_API_URL` to this backend endpoint.*
+
+---
+
+## 🌟 Overview
 
 Interview Coach AI helps job seekers prepare for interviews with:
-- **Resume Analysis**: Analyze your resume against job descriptions for match scoring
-- **Interview Questions**: Generate AI-powered interview questions tailored to your profile
-- **Profile Management**: Store and manage your professional profile and resume
+- 📄 **Resume Analysis:** Analyze your resume against job descriptions for match scoring.
+- 🎯 **Interview Questions:** Generate AI-powered interview questions tailored to your profile.
+- 👤 **Profile Management:** Store and manage your professional profile and resume.
 
-## Tech Stack
+---
+
+## 🛠️ Tech Stack
 
 - **Framework**: Next.js 14+ with App Router
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **UI/UX**: Dark theme with gradient accents, backdrop blur effects
-- **State Management**: React Hooks (useState, useEffect)
+- **State Management**: React Hooks (`useState`, `useEffect`)
 - **Routing**: URL-based parameter passing and query strings
 
-## Project Structure
+---
 
-```
+## 📂 Project Structure
+
+```text
 frontend/
 ├── app/
 │   ├── auth/                          # Authentication pages
@@ -45,137 +66,71 @@ frontend/
 └── tailwind.config.ts                 # Tailwind configuration
 ```
 
-## Authentication Flows
+---
+
+## 🔐 Authentication Flows
 
 ### 1. Register Flow
-**Path**: Email → OTP Verify → Profile Complete
+> **Path:** Email ➡️ OTP Verify ➡️ Profile Complete
 
-1. **[/auth/otpsend](app/auth/otpsend/page.tsx)**
-   - User enters email
-   - Calls POST `/api/auth/send-otp`
-   - Redirects to `/auth/verify-otp?email={email}&type=register`
-
-2. **[/auth/verify-otp](app/auth/verify-otp/page.tsx)** (Register Mode)
-   - User enters 6-digit OTP code
-   - Calls POST `/api/auth/verify-otp`
-   - On success → redirects to `/auth/register?email={email}&verified=true`
-
-3. **[/auth/register](app/auth/register/page.tsx)**
-   - Requires `verified=true` parameter (safety gate)
-   - User enters: Full Name, Password, Confirm Password
-   - Password strength indicator (weak/medium/strong)
-   - Calls POST `/api/auth/register`
-   - On success → stores authToken in localStorage, redirects to dashboard
+1. **`/auth/otpsend`**: User enters email ➡️ Calls `POST /api/auth/send-otp` ➡️ Redirects to verification.
+2. **`/auth/verify-otp`**: User enters 6-digit OTP ➡️ Calls `POST /api/auth/verify-otp` ➡️ On success, proceeds to registration.
+3. **`/auth/register`**: Requires `verified=true` parameter. User enters details. Password strength is evaluated. Stores `authToken` and redirects to dashboard.
 
 ### 2. Login Flow
-**Path**: Direct Email/Password
+> **Path:** Direct Email/Password
 
-- **[/auth/login](app/auth/login/page.tsx)**
-  - User enters email and password
-  - Optional: Remember me checkbox
-  - Calls POST `/api/auth/login`
-  - On success → stores authToken in localStorage, redirects to dashboard
-  - Link to password reset available
+- **`/auth/login`**: User enters email and password. Calls `POST /api/auth/login`. On success, stores `authToken` and redirects to dashboard.
 
 ### 3. Password Reset Flow
-**Path**: Email → OTP Verify → New Password
+> **Path:** Email ➡️ OTP Verify ➡️ New Password
 
-1. **[/auth/reset-password](app/auth/reset-password/page.tsx)** (step=email)
-   - User enters email to reset
-   - Calls POST `/api/auth/request-reset`
-   - Redirects to `/auth/reset-password-otp?email={email}`
+1. **`/auth/reset-password` (step=email)**: User enters email. Redirects to OTP entry.
+2. **`/auth/reset-password-otp`**: User enters 6-digit reset code. Validates and proceeds.
+3. **`/auth/reset-password` (step=newpassword)**: User sets a new password. Redirects to Login on success.
 
-2. **[/auth/reset-password-otp](app/auth/reset-password-otp/page.tsx)**
-   - User enters 6-digit reset code
-   - Calls POST `/api/auth/verify-reset-otp`
-   - On success → redirects to `/auth/reset-password?email={email}&step=newpassword&verified=true`
+---
 
-3. **[/auth/reset-password](app/auth/reset-password/page.tsx)** (step=newpassword)
-   - Requires `verified=true` parameter (safety gate)
-   - User enters: New Password, Confirm Password
-   - Password strength indicator
-   - Calls POST `/api/auth/reset-password`
-   - On success → redirects to `/auth/login`
-
-## Pages
+## 🖥️ Pages
 
 ### Public Pages
-
-#### Landing Page ([app/page.tsx](app/page.tsx))
-- Hero section with value proposition
-- 3 feature cards: Resume Analysis, Interview Questions, Profile Management
-- 4-step workflow visualization
-- Call-to-action buttons linking to auth flows
-- Dark gradient background with accent colors
-
-### Authentication Pages
-See **Authentication Flows** section above.
+- **Landing Page (`app/page.tsx`)**: Hero section, 3 feature cards, 4-step workflow, and auth links. Dark gradient background.
 
 ### Protected Pages (Require authToken)
+- **Dashboard (`app/dashboard/page.tsx`)**: Main hub with statistics (resume count, jobs analyzed, avg match score).
+- **Resume Upload (`app/dashboard/resume/page.tsx`)**: Drag-drop file upload. PDF/DOCX only (max 5MB).
+- **Job Analysis (`app/dashboard/job-analysis/page.tsx`)**: Input JD, get match score, eligibility, strengths, weaknesses, and color-coded scoring (🟩/🟨/🟥).
+- **Interview Prep (`app/dashboard/interview-prep/page.tsx`)**: Expandable AI question cards and STAR method tips.
 
-#### Dashboard ([app/dashboard/page.tsx](app/dashboard/page.tsx))
-- Main hub showing quick action cards
-- Statistics: Resume count, jobs analyzed, questions generated, avg match score
-- Navigation to: Resume upload, Job analysis, Interview prep
+---
 
-#### Resume Upload ([app/dashboard/resume/page.tsx](app/dashboard/resume/page.tsx))
-- Drag-drop file upload
-- File browser upload alternative
-- Validation: PDF/DOCX only, max 5MB
-- Calls POST `/api/resume/upload`
+## 📡 API Endpoints Interfaced
 
-#### Job Analysis ([app/dashboard/job-analysis/page.tsx](app/dashboard/job-analysis/page.tsx))
-- Textarea for job description input
-- Analysis results with:
-  - Match score (0-100)
-  - Eligibility status (YES/PARTIAL/NO)
-  - Strengths list
-  - Weaknesses list
-  - Improvement suggestions
-- Color-coded scoring (green ≥80, yellow ≥60, red <60)
-- Calls POST `/api/resume/analyze`
+### Authentication
+| Method | Endpoint | Description |
+|:---:|:---|:---|
+| <kbd>POST</kbd> | `/api/auth/send-otp` | Trigger OTP for email |
+| <kbd>POST</kbd> | `/api/auth/verify-otp` | Verify registration OTP |
+| <kbd>POST</kbd> | `/api/auth/register` | Finalize user registration |
+| <kbd>POST</kbd> | `/api/auth/login` | Obtain auth token |
+| <kbd>POST</kbd> | `/api/auth/request-reset`| Request password reset |
+| <kbd>POST</kbd> | `/api/auth/reset-password`| Set new password |
 
-#### Interview Prep ([app/dashboard/interview-prep/page.tsx](app/dashboard/interview-prep/page.tsx))
-- Generates 10 interview questions
-- Expandable question cards (Q1-Q10)
-- STAR method tips section
-- Calls POST `/api/questions/generate`
+### Core Features
+| Method | Endpoint | Description |
+|:---:|:---|:---|
+| <kbd>POST</kbd> | `/api/resume/upload` | Upload resume file |
+| <kbd>POST</kbd> | `/api/resume/analyze` | Match resume vs JD |
+| <kbd>POST</kbd> | `/api/questions/generate`| Get tailored questions |
 
-## API Endpoints
+---
 
-### Authentication Endpoints
-
-| Method | Endpoint | Body | Response |
-|--------|----------|------|----------|
-| POST | `/api/auth/send-otp` | `{ email }` | `{ success: bool, message: string }` |
-| POST | `/api/auth/verify-otp` | `{ email, otp }` | `{ success: bool, message: string }` |
-| POST | `/api/auth/register` | `{ email, fullName, password }` | `{ authToken: string }` |
-| POST | `/api/auth/login` | `{ email, password }` | `{ authToken: string }` |
-| POST | `/api/auth/request-reset` | `{ email }` | `{ success: bool, message: string }` |
-| POST | `/api/auth/verify-reset-otp` | `{ email, otp }` | `{ success: bool, message: string }` |
-| POST | `/api/auth/reset-password` | `{ email, newPassword }` | `{ success: bool, message: string }` |
-
-### Resume Endpoints
-
-| Method | Endpoint | Body | Response |
-|--------|----------|------|----------|
-| POST | `/api/resume/upload` | FormData with file | `{ success: bool, resumeId: string }` |
-| POST | `/api/resume/analyze` | `{ jobDescription: string }` | `{ matchScore, eligibility, strengths, weaknesses, suggestions }` |
-
-### Questions Endpoints
-
-| Method | Endpoint | Body | Response |
-|--------|----------|------|----------|
-| POST | `/api/questions/generate` | `{}` | `{ questions: [{ id, question, tips }] }` |
-
-## Setup & Installation
+## 🚀 Setup & Installation
 
 ### Prerequisites
-- Node.js 18+ 
-- npm or yarn
+- Node.js 18+ and npm/yarn
 
-### Installation
-
+### Installation & Development
 ```bash
 # Navigate to frontend directory
 cd frontend
@@ -183,105 +138,31 @@ cd frontend
 # Install dependencies
 npm install
 
-# Set up environment variables (if needed)
-# Create a .env.local file with any required API endpoints
-```
+# Create .env.local and add the backend URL
+echo NEXT_PUBLIC_API_URL=https://interviewcoach-ai-backend.onrender.com > .env.local
 
-### Development
-
-```bash
 # Start development server
 npm run dev
-
-# Server runs on http://localhost:3000
+# Running on http://localhost:3000
 ```
 
 ### Build for Production
-
 ```bash
-# Create optimized production build
+# Make sure your deployment environment has NEXT_PUBLIC_API_URL set to the backend
 npm run build
-
-# Start production server
 npm start
 ```
 
-## Key Features
+---
 
-### Security
-- ✅ Email verification with OTP for registration
-- ✅ Separate OTP flows for registration and password reset
-- ✅ Validation gates prevent skipping auth steps
-- ✅ Auth token stored in localStorage for persistence
-- ✅ Protected routes check for valid token
+## 🎨 Design System
 
-### UI/UX
-- ✅ Dark theme with gradient design
-- ✅ Responsive layout (mobile-first)
-- ✅ Real-time password strength indicator
-- ✅ Loading states on all forms
-- ✅ Comprehensive error/success messaging
-- ✅ Backdrop blur effects for depth
-- ✅ Smooth transitions and hover effects
-
-### Form Validation
-- ✅ Email format validation
-- ✅ Password strength requirements (8+ chars, uppercase, numbers)
-- ✅ Password matching validation
-- ✅ OTP format validation (6 digits only)
-- ✅ File type validation (PDF/DOCX)
-- ✅ File size validation (5MB max)
-
-## Design System
-
-### Color Palette
-- **Primary**: Blue-400 / Cyan-400 (gradients)
-- **Background**: Slate-900 / Slate-800 / Slate-700
-- **Text**: White (primary), Slate-400 (secondary)
-- **Status**: Green-500 (success), Red-500 (error), Yellow-500 (warning)
-
-### Typography
-- **Font**: Geist Sans, Geist Mono
-- **H1**: 2xl, bold
-- **H2**: xl, semibold
-- **Body**: sm, regular
-- **Caption**: xs, regular
-
-## State Management Pattern
-
-- **Form State**: `useState` for form inputs
-- **UI State**: `useState` for loading, error, success
-- **URL State**: `useSearchParams` for multi-step flows
-- **Navigation**: `useRouter` from next/navigation
-- **Persistence**: localStorage for authToken
-
-## Future Enhancements
-
-- [ ] Backend API implementation
-- [ ] JWT token validation and refresh
-- [ ] Resume file processing and storage
-- [ ] LLM integration for analysis and question generation
-- [ ] User profile management
-- [ ] Interview history tracking
-- [ ] Analytics dashboard
-- [ ] Social sharing
-- [ ] Mobile app version
-
-## Contributing
-
-1. Follow TypeScript strict mode
-2. Use Tailwind CSS for styling (no inline CSS)
-3. Maintain consistent component structure
-4. Add proper error handling and loading states
-5. Test auth flows thoroughly
-
-## License
-
-Proprietary - Interview Coach AI
+- **Color Palette:** Primary (`Blue-400`/`Cyan-400` gradients), Background (`Slate-900`), Text (`White`/`Slate-400`). Status colors included.
+- **Typography:** `Geist Sans`, `Geist Mono`.
+- **UI Details:** Dark theme, backdrop blur effects, real-time password strength indicators, smooth transitions.
 
 ---
 
-**Need Help?**
-- Check auth flows in this README for routing questions
-- Review component files for implementation details
-- Verify API endpoint expectations before backend integration
+<div align="center">
+  <p><i>Proprietary - Interview Coach AI</i></p>
+</div>

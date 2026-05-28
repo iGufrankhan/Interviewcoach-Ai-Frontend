@@ -1,7 +1,7 @@
 import { handleApiResponse } from '../utils/apiErrorHandler';
 import { getAuthHeaders } from '../utils/authHeaders';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://interviewcoach-ai-backend.onrender.com';
 
 /**
  * Request password reset - sends OTP to email

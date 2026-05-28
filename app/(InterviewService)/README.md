@@ -1,245 +1,168 @@
-# Interview Service Frontend
-
-## Overview
-
-The Interview Service frontend provides an AI-powered interview practice platform that generates personalized interview questions based on a job description and candidate's resume.
-
-## Features
-
-### 1. **Main Interview Page** (`(InterviewService)/page.tsx`)
-- **Resume Selection**: Browse and select from uploaded resumes
-- **Job Description Input**: Paste complete job descriptions
-- **Question Generation**: Generate 10 personalized interview questions
-- **Real-time Validation**: Form validation and error handling
-- **Loading States**: User-friendly loading indicators
-
-### 2. **Interview Practice Page** (`interview-results/page.tsx`)
-- **Question Navigation**: Move between questions seamlessly
-- **Answer Tracking**: Type and save answers for each question
-- **Progress Tracking**: Visual progress bar showing completion
-- **Job Context Display**: Reference job description while answering
-- **Export Options**:
-  - Download report as `.txt`
-  - Export session as `.json` for analysis
-- **Question List**: Quick jump to any question
-- **Statistics**: Track total questions, answered questions, and current progress
-
-## Component Structure
-
-```
-Frontend/app/
-├── (InterviewService)/
-│   └── page.tsx                 # Main interview setup page
-├── interview-results/
-│   └── page.tsx                 # Interview practice & results page
-├── api/
-│   └── generate-questions/
-│       └── route.ts             # API bridge to backend
-└── layout.tsx                   # Root layout
-```
-
-## API Integration
-
-### Backend Endpoint
-```
-POST /interviewservice/question_gen/generate
-Parameters:
-  - description (string): Job description
-  - resume_id (string): Selected resume ID
+<div align="center">
+  <h1>🎨 Frontend Documentation <br/> Interview Coach AI</h1>
+  <p><i>AI-powered interview preparation and resume analysis system built with Next.js 14+, TypeScript, and Tailwind CSS.</i></p>
   
-Authorization: Bearer {JWT_TOKEN}
+  <p>
+    <img src="https://img.shields.io/badge/Framework-Next.js_14-black?style=flat-square&logo=next.js" alt="Next.js" />
+    <img src="https://img.shields.io/badge/Language-TypeScript-blue?style=flat-square&logo=typescript" alt="TypeScript" />
+    <img src="https://img.shields.io/badge/Styling-Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css" alt="Tailwind CSS" />
+  </p>
+</div>
 
-Response:
-{
-  "questions": [
-    "Question 1?",
-    "Question 2?",
-    ...
-  ]
-}
+---
+
+## 🚀 Live API Connection
+
+> **Production Backend API:** [`https://interviewcoach-ai-backend.onrender.com/`](https://interviewcoach-ai-backend.onrender.com/)
+
+*Make sure your `.env.local` or `.env.production` files on Vercel point `NEXT_PUBLIC_API_URL` to this backend endpoint.*
+
+---
+
+## 🌟 Overview
+
+Interview Coach AI helps job seekers prepare for interviews with:
+- 📄 **Resume Analysis:** Analyze your resume against job descriptions for match scoring.
+- 🎯 **Interview Questions:** Generate AI-powered interview questions tailored to your profile.
+- 👤 **Profile Management:** Store and manage your professional profile and resume.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 14+ with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI/UX**: Dark theme with gradient accents, backdrop blur effects
+- **State Management**: React Hooks (`useState`, `useEffect`)
+- **Routing**: URL-based parameter passing and query strings
+
+---
+
+## 📂 Project Structure
+
+```text
+frontend/
+├── app/
+│   ├── auth/                          # Authentication pages
+│   │   ├── otpsend/                   # Step 1: Register - Email for OTP
+│   │   ├── verify-otp/                # Step 2: Register/Reset - OTP verification
+│   │   ├── register/                  # Step 3: Register - Profile completion
+│   │   ├── login/                     # Login - Direct email/password
+│   │   ├── reset-password/            # Password reset (email & new password)
+│   │   └── reset-password-otp/        # Password reset - OTP verification
+│   ├── dashboard/                     # Protected dashboard pages
+│   │   ├── page.tsx                   # Main dashboard hub
+│   │   ├── resume/                    # Resume upload
+│   │   ├── job-analysis/              # Job matching analysis
+│   │   └── interview-prep/            # Interview questions
+│   ├── layout.tsx                     # Root layout with metadata
+│   ├── globals.css                    # Global styles
+│   └── page.tsx                       # Landing page with features
+├── public/                            # Static assets
+├── package.json                       # Dependencies
+├── tsconfig.json                      # TypeScript config
+├── next.config.ts                     # Next.js config
+└── tailwind.config.ts                 # Tailwind configuration
 ```
 
-### Frontend API Route
-```
-POST /api/generate-questions
-Body:
-{
-  "description": "Job description text",
-  "resume_id": "resume_id_123"
-}
+---
 
-Headers:
-  Authorization: Bearer {JWT_TOKEN}
-```
+## 🔐 Authentication Flows
 
-## Usage Flow
+### 1. Register Flow
+> **Path:** Email ➡️ OTP Verify ➡️ Profile Complete
 
-1. **Visit Interview Page**: Navigate to `/interview-service`
-2. **Select Resume**: Choose from uploaded resumes
-3. **Paste Job Description**: Provide the job posting details
-4. **Generate Questions**: Click "Generate Interview Questions"
-5. **Practice Answers**: Answer each question sequentially
-6. **Export Results**: Download or export your practice session
+1. **`/auth/otpsend`**: User enters email ➡️ Calls `POST /api/auth/send-otp` ➡️ Redirects to verification.
+2. **`/auth/verify-otp`**: User enters 6-digit OTP ➡️ Calls `POST /api/auth/verify-otp` ➡️ On success, proceeds to registration.
+3. **`/auth/register`**: Requires `verified=true` parameter. User enters details. Password strength is evaluated. Stores `authToken` and redirects to dashboard.
 
-## State Management
+### 2. Login Flow
+> **Path:** Direct Email/Password
 
-### Main Page State
-- `resumes`: List of user's uploaded resumes
-- `selectedResumeId`: Currently selected resume
-- `jobDescription`: Job description text input
-- `generating`: Loading state during question generation
-- `error`: Error messages
+- **`/auth/login`**: User enters email and password. Calls `POST /api/auth/login`. On success, stores `authToken` and redirects to dashboard.
 
-### Results Page State
-- `interviewData`: Generated questions and job context
-- `currentQuestionIndex`: Current question being answered
-- `userAnswers`: User's answers for each question
-- `showFeedback`: Toggle job context visibility
+### 3. Password Reset Flow
+> **Path:** Email ➡️ OTP Verify ➡️ New Password
 
-## Data Flow
+1. **`/auth/reset-password` (step=email)**: User enters email. Redirects to OTP entry.
+2. **`/auth/reset-password-otp`**: User enters 6-digit reset code. Validates and proceeds.
+3. **`/auth/reset-password` (step=newpassword)**: User sets a new password. Redirects to Login on success.
 
-```
-User Input (Resume + Job Description)
-        ↓
-Form Validation
-        ↓
-API Call to /api/generate-questions
-        ↓
-Backend Processing (FastAPI)
-        ↓
-Question Generation (LLM)
-        ↓
-Response with Questions
-        ↓
-Store in localStorage
-        ↓
-Navigate to Results Page
-        ↓
-Display & Practice Questions
-        ↓
-Export/Download Results
-```
+---
 
-## Styling
+## 🖥️ Pages
 
-- **Framework**: Tailwind CSS
-- **Theme**: Dark mode with gradient backgrounds
-- **Color Scheme**:
-  - Primary: Blue (#3B82F6)
-  - Secondary: Cyan (#06B6D4)
-  - Background: Slate (#0F172A)
-- **Components**: Custom styled with Tailwind classes
+### Public Pages
+- **Landing Page (`app/page.tsx`)**: Hero section, 3 feature cards, 4-step workflow, and auth links. Dark gradient background.
 
-## Local Storage
+### Protected Pages (Require authToken)
+- **Dashboard (`app/dashboard/page.tsx`)**: Main hub with statistics (resume count, jobs analyzed, avg match score).
+- **Resume Upload (`app/dashboard/resume/page.tsx`)**: Drag-drop file upload. PDF/DOCX only (max 5MB).
+- **Job Analysis (`app/dashboard/job-analysis/page.tsx`)**: Input JD, get match score, eligibility, strengths, weaknesses, and color-coded scoring (🟩/🟨/🟥).
+- **Interview Prep (`app/dashboard/interview-prep/page.tsx`)**: Expandable AI question cards and STAR method tips.
 
-Uses browser localStorage for:
-- `token`: JWT authentication token
-- `user_id`: Current user ID
-- `interviewQuestions`: Session data with questions and answers
+---
 
-```javascript
-{
-  questions: string[],
-  jobDescription: string,
-  timestamp: ISO string,
-  answers?: string[]
-}
+## 📡 API Endpoints Interfaced
+
+### Authentication
+| Method | Endpoint | Description |
+|:---:|:---|:---|
+| <kbd>POST</kbd> | `/api/auth/send-otp` | Trigger OTP for email |
+| <kbd>POST</kbd> | `/api/auth/verify-otp` | Verify registration OTP |
+| <kbd>POST</kbd> | `/api/auth/register` | Finalize user registration |
+| <kbd>POST</kbd> | `/api/auth/login` | Obtain auth token |
+| <kbd>POST</kbd> | `/api/auth/request-reset`| Request password reset |
+| <kbd>POST</kbd> | `/api/auth/reset-password`| Set new password |
+
+### Core Features
+| Method | Endpoint | Description |
+|:---:|:---|:---|
+| <kbd>POST</kbd> | `/api/resume/upload` | Upload resume file |
+| <kbd>POST</kbd> | `/api/resume/analyze` | Match resume vs JD |
+| <kbd>POST</kbd> | `/api/questions/generate`| Get tailored questions |
+
+---
+
+## 🚀 Setup & Installation
+
+### Prerequisites
+- Node.js 18+ and npm/yarn
+
+### Installation & Development
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Create .env.local and add the backend URL
+echo NEXT_PUBLIC_API_URL=https://interviewcoach-ai-backend.onrender.com > .env.local
+
+# Start development server
+npm run dev
+# Running on http://localhost:3000
 ```
 
-## Environment Variables
-
-Frontend needs:
+### Build for Production
+```bash
+# Make sure your deployment environment has NEXT_PUBLIC_API_URL set to the backend
+npm run build
+npm start
 ```
-BACKEND_URL=http://localhost:8000
-```
 
-## Features Breakdown
+---
 
-### Question Selection
-- Radio buttons for resume selection
-- Visual feedback for selected resume
-- Resume metadata display (name, email, skills)
+## 🎨 Design System
 
-### Job Description Input
-- Large textarea for pasting job postings
-- Character count display
-- Form validation
+- **Color Palette:** Primary (`Blue-400`/`Cyan-400` gradients), Background (`Slate-900`), Text (`White`/`Slate-400`). Status colors included.
+- **Typography:** `Geist Sans`, `Geist Mono`.
+- **UI Details:** Dark theme, backdrop blur effects, real-time password strength indicators, smooth transitions.
 
-### Answer Input
-- Persistent answers while navigating
-- Character tracking
-- Resize disabled to maintain UI consistency
+---
 
-### Progress Tracking
-- Visual progress bar
-- Question counter
-- Answered/total statistics
-- Quick question list sidebar
-
-### Export Options
-- **Text Report**: Human-readable format
-- **JSON Export**: Machine-readable for analysis
-
-## Error Handling
-
-- Missing resume selection validation
-- Empty job description validation
-- API error handling with user messages
-- Failed resume fetch handling
-- Network error recovery
-
-## Future Enhancements
-
-1. **AI Feedback**: Real-time feedback on answers
-2. **Performance Metrics**: Score and rate answers
-3. **Interview History**: Save and review past sessions
-4. **Difficulty Levels**: Easy, Medium, Hard question options
-5. **Time Tracking**: Timer for realistic interview practice
-6. **Video Answer**: Record video responses
-7. **Comparison**: Compare answers with ideal responses
-8. **Follow-up Questions**: Generate contextual follow-ups
-9. **Interview Tips**: Show tips based on question type
-10. **Multi-language Support**: Generate questions in different languages
-
-## Responsive Design
-
-- Mobile-first approach
-- Grid layout adjusts for different screen sizes
-- Sidebar collapses on mobile
-- Touch-friendly buttons and inputs
-
-## Accessibility
-
-- Semantic HTML elements
-- Proper label associations
-- Keyboard navigation support
-- ARIA labels for screen readers
-
-## Dependencies
-
-- `next`: App framework
-- `react`: UI library
-- `tailwindcss`: Styling
-- TypeScript: Type safety
-
-## Running Locally
-
-1. Ensure backend is running on `http://localhost:8000`
-2. Install dependencies: `npm install`
-3. Start dev server: `npm run dev`
-4. Navigate to `http://localhost:3000/interview-service`
-
-## Backend Requirements
-
-The backend must provide:
-1. `/resume/get/{user_id}` - Get user's resumes
-2. `/interviewservice/question_gen/generate` - Generate questions
-3. JWT authentication middleware
-4. CORS support for frontend requests
-
-## Security
-
-- JWT token validation on all requests
-- Token stored in localStorage (consider secure cookie for production)
-- XSS protection via React sanitization
-- CSRF protection via API route
+<div align="center">
+  <p><i>Proprietary - Interview Coach AI</i></p>
+</div>
