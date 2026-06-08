@@ -1,1 +1,1 @@
-export { default } from '../(auth)/OtpSend/page';
+export { default } from '../(auth)/OtpSend';
