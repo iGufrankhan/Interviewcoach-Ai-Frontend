@@ -2,7 +2,9 @@
 
 import { LoginResponse, OTPResponse, RegistrationResponse } from '../types/responses';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://interviewcoach-ai-backend.onrender.com';
+import { getApiBaseUrl } from '../config';
+
+const API_BASE_URL = getApiBaseUrl();
 
 /**
  * Login user with email and password

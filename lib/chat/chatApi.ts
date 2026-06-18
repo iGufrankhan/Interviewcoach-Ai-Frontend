@@ -2,7 +2,9 @@
 
 import { ApiResponse } from '@/lib/types/responses';
 
-const API_BASE_URL = 'http://localhost:8000/api/chat';
+import { getApiBaseUrl } from '../config';
+
+const API_BASE_URL = `${getApiBaseUrl()}/api/chat`;
 
 function getAuthHeaders(): Record<string, string> {
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;

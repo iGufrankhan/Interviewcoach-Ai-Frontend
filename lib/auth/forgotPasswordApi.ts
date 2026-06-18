@@ -1,6 +1,8 @@
 import { handleApiResponse } from '../utils/apiErrorHandler';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://interviewcoach-ai-backend.onrender.com';
+import { getApiBaseUrl } from '../config';
+
+const API_BASE_URL = getApiBaseUrl();
 
 /**
  * Request forgot password - sends OTP to email
