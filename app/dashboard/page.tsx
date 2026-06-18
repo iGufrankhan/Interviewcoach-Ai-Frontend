@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/withProtectedRoute';
+import { logout } from '@/lib/auth/authUtils';
 import ChatWidget from '@/app/chatbot/ChatWidget';
 
 export default function Dashboard() {
@@ -51,7 +52,7 @@ export default function Dashboard() {
           <div className="flex gap-4 items-center">
             <button
               onClick={() => {
-                import('@/lib/auth/authUtils').then(({ logout }) => logout());
+                logout();
               }}
               className="group relative inline-flex items-center justify-center px-6 py-2.5 font-bold text-white transition-all duration-300 bg-white/[0.03] border border-white/10 rounded-full hover:bg-red-500/10 hover:border-red-500/30 hover:text-red-400 hover:shadow-[0_0_20px_rgba(239,68,68,0.2)]"
             >

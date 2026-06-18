@@ -160,10 +160,10 @@ export default function ChatWidget() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <div className={`fixed bottom-6 right-6 z-50 flex flex-col items-end ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}>
       {/* Chat Widget Panel */}
       <div 
-        className={`mb-4 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] origin-bottom-right ${
+        className={`mb-4 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] origin-bottom-right pointer-events-auto ${
           isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-10 pointer-events-none'
         }`}
       >
@@ -289,7 +289,7 @@ export default function ChatWidget() {
         onClick={() => setIsOpen(!isOpen)}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className={`group relative flex items-center justify-center w-14 h-14 rounded-full shadow-[0_0_30px_rgba(6,182,212,0.3)] transition-all duration-300 z-50 ${
+        className={`group relative flex items-center justify-center w-14 h-14 rounded-full shadow-[0_0_30px_rgba(6,182,212,0.3)] transition-all duration-300 z-50 pointer-events-auto ${
           isOpen ? 'bg-white/10 rotate-90 scale-90 shadow-none' : 'bg-linear-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 hover:scale-105'
         }`}
         title={isOpen ? "Close Chat" : "Chat with AI Helper"}
