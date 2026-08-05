@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/withProtectedRoute';
 import { logout } from '@/lib/auth/authUtils';
 import ChatWidget from '@/app/chatbot/ChatWidget';
+import { BrainCircuit, FileText, Mic, Star, Search, BookOpen, Play, Bot, CheckCircle, LineChart, Briefcase, Lock, Lightbulb } from 'lucide-react';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -43,7 +44,7 @@ export default function Dashboard() {
           {/* Logo */}
           <div className="text-2xl font-extrabold tracking-tighter bg-linear-to-r from-white via-violet-200 to-violet-400 bg-clip-text text-transparent flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-linear-to-br from-violet-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-violet-500/20">
-              <span className="text-white text-sm"></span>
+              <BrainCircuit className="w-5 h-5 text-white" />
             </div>
             InterviewCoach<span className="text-violet-500">.ai</span>
           </div>
@@ -107,7 +108,9 @@ export default function Dashboard() {
                 <div className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-1">Total Resumes</div>
                 <div className="text-4xl font-black text-white">0</div>
               </div>
-              <div className="w-14 h-14 rounded-full bg-cyan-500/10 flex items-center justify-center border border-cyan-500/20 text-2xl group-hover:scale-110 transition-transform"></div>
+              <div className="w-14 h-14 rounded-full bg-cyan-500/10 flex items-center justify-center border border-cyan-500/20 text-2xl group-hover:scale-110 transition-transform">
+                <FileText className="w-6 h-6 text-cyan-400" />
+              </div>
             </div>
             
             <div className="group rounded-3xl bg-white/[0.02] border border-white/[0.05] p-6 flex items-center justify-between hover:bg-white/[0.04] hover:border-emerald-500/30 transition-all duration-300 relative overflow-hidden">
@@ -116,7 +119,9 @@ export default function Dashboard() {
                 <div className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-1">Interviews Taken</div>
                 <div className="text-4xl font-black text-white">0</div>
               </div>
-              <div className="w-14 h-14 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-2xl group-hover:scale-110 transition-transform"></div>
+              <div className="w-14 h-14 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-2xl group-hover:scale-110 transition-transform">
+                <Mic className="w-6 h-6 text-emerald-400" />
+              </div>
             </div>
 
             <div className="group rounded-3xl bg-white/[0.02] border border-white/[0.05] p-6 flex items-center justify-between hover:bg-white/[0.04] hover:border-yellow-500/30 transition-all duration-300 relative overflow-hidden">
@@ -125,7 +130,9 @@ export default function Dashboard() {
                 <div className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-1">Avg Score</div>
                 <div className="text-4xl font-black text-white">--</div>
               </div>
-              <div className="w-14 h-14 rounded-full bg-yellow-500/10 flex items-center justify-center border border-yellow-500/20 text-2xl group-hover:scale-110 transition-transform"></div>
+              <div className="w-14 h-14 rounded-full bg-yellow-500/10 flex items-center justify-center border border-yellow-500/20 text-2xl group-hover:scale-110 transition-transform">
+                <Star className="w-6 h-6 text-yellow-400" />
+              </div>
             </div>
           </div>
         </div>
@@ -134,15 +141,15 @@ export default function Dashboard() {
         <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           <div className="flex flex-wrap gap-4">
             <Link href="/GetResumeData" className="group flex items-center gap-3 px-6 py-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-cyan-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_20px_-10px_rgba(6,182,212,0.3)] flex-1 min-w-[200px] justify-center sm:justify-start">
-              <span className="text-xl"></span>
+              <Search className="w-5 h-5 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
               <span className="font-bold text-white group-hover:text-cyan-300 transition-colors">Analyze Job Match</span>
             </Link>
             <Link href="/GetResume" className="group flex items-center gap-3 px-6 py-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-violet-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_20px_-10px_rgba(139,92,246,0.3)] flex-1 min-w-[200px] justify-center sm:justify-start">
-              <span className="text-xl"></span>
+              <BookOpen className="w-5 h-5 text-violet-400 group-hover:text-violet-300 transition-colors" />
               <span className="font-bold text-white group-hover:text-violet-300 transition-colors">Resume Library</span>
             </Link>
             <Link href="/interviewprep" className="group flex items-center gap-3 px-6 py-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-emerald-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_20px_-10px_rgba(16,185,129,0.3)] flex-1 min-w-[200px] justify-center sm:justify-start">
-              <span className="text-xl"></span>
+              <Play className="w-5 h-5 text-emerald-400 group-hover:text-emerald-300 transition-colors" />
               <span className="font-bold text-white group-hover:text-emerald-300 transition-colors">Start Mock Interview</span>
             </Link>
           </div>
@@ -164,7 +171,7 @@ export default function Dashboard() {
             >
               <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all pointer-events-none"></div>
               <div className="w-24 h-24 rounded-[2rem] bg-linear-to-br from-emerald-500/20 to-teal-500/20 flex flex-shrink-0 items-center justify-center border border-emerald-500/30 shadow-inner group-hover:scale-110 transition-transform duration-500 relative z-10">
-                <span className="text-4xl"></span>
+                <Bot className="w-12 h-12 text-emerald-400" />
               </div>
               <div className="relative z-10 flex-1 text-center sm:text-left">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-widest mb-3 border border-emerald-500/20">
@@ -185,7 +192,7 @@ export default function Dashboard() {
               <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-cyan-500/10 rounded-full blur-2xl group-hover:bg-cyan-500/20 transition-all pointer-events-none"></div>
               <div className="relative z-10 flex-1 flex flex-col">
                 <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center border border-cyan-500/20 mb-6 shadow-inner group-hover:scale-110 transition-transform duration-500">
-                  <span className="text-2xl"></span>
+                  <CheckCircle className="w-7 h-7 text-cyan-400" />
                 </div>
                 <h3 className="text-xl font-bold mb-3 text-white group-hover:text-cyan-300 transition-colors">ATS Matching</h3>
                 <p className="text-sm text-zinc-400 leading-relaxed font-light mt-auto">
@@ -202,7 +209,7 @@ export default function Dashboard() {
               <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-500/10 rounded-full blur-3xl group-hover:bg-yellow-500/20 transition-all pointer-events-none"></div>
               <div className="relative z-10 flex-1 flex flex-col">
                 <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-yellow-500/20 to-orange-500/20 flex items-center justify-center border border-yellow-500/20 mb-6 shadow-inner group-hover:scale-110 transition-transform duration-500">
-                  <span className="text-2xl"></span>
+                  <LineChart className="w-7 h-7 text-yellow-400" />
                 </div>
                 <h3 className="text-xl font-bold mb-3 text-white group-hover:text-yellow-300 transition-colors">Performance Insights</h3>
                 <p className="text-sm text-zinc-400 leading-relaxed font-light mt-auto">
@@ -219,7 +226,7 @@ export default function Dashboard() {
               <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/20 transition-all pointer-events-none"></div>
               <div className="relative z-10 flex-1 flex flex-col">
                 <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-indigo-500/20 to-blue-500/20 flex items-center justify-center border border-indigo-500/20 mb-6 shadow-inner group-hover:scale-110 transition-transform duration-500">
-                  <span className="text-2xl"></span>
+                  <Briefcase className="w-7 h-7 text-indigo-400" />
                 </div>
                 <h3 className="text-xl font-bold mb-3 text-white group-hover:text-indigo-300 transition-colors">Top Job Matches</h3>
                 <p className="text-sm text-zinc-400 leading-relaxed font-light mt-auto">
@@ -236,7 +243,7 @@ export default function Dashboard() {
               <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl group-hover:bg-purple-500/20 transition-all pointer-events-none"></div>
               <div className="relative z-10 flex-1 flex flex-col">
                 <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-purple-500/20 to-fuchsia-500/20 flex items-center justify-center border border-purple-500/20 mb-6 shadow-inner group-hover:scale-110 transition-transform duration-500">
-                  <span className="text-2xl"></span>
+                  <Lock className="w-7 h-7 text-purple-400" />
                 </div>
                 <h3 className="text-xl font-bold mb-3 text-white group-hover:text-purple-300 transition-colors">Secure Vault</h3>
                 <p className="text-sm text-zinc-400 leading-relaxed font-light mt-auto">
@@ -255,7 +262,7 @@ export default function Dashboard() {
             <div className="flex flex-col lg:flex-row gap-8 items-center justify-between relative z-10">
               <div className="flex items-center gap-6">
                 <div className="w-16 h-16 rounded-2xl bg-yellow-500/10 flex items-center justify-center border border-yellow-500/20 shadow-inner flex-shrink-0">
-                  <span className="text-3xl animate-bounce" style={{ animationDuration: '3s' }}></span>
+                  <Lightbulb className="w-8 h-8 text-yellow-400 animate-bounce" style={{ animationDuration: '3s' }} />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">Maximize Your Success Rate</h3>
