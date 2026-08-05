@@ -53,7 +53,7 @@ export default function InterviewResultsPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-[#030014]">
         <div className="bg-white/[0.02] border border-white/[0.05] rounded-3xl p-12 text-center animate-fade-in-up">
-          <div className="w-20 h-20 mx-auto rounded-full bg-red-500/10 flex items-center justify-center text-3xl mb-6">⚠️</div>
+          <div className="w-20 h-20 mx-auto rounded-full bg-red-500/10 flex items-center justify-center text-3xl mb-6"></div>
           <h2 className="text-2xl font-bold text-white mb-4">Analysis Failed</h2>
           <p className="text-zinc-400 mb-8 max-w-md">{error}</p>
           <button
@@ -91,9 +91,9 @@ export default function InterviewResultsPage() {
   };
 
   const getScoreText = (percentage: number) => {
-    if (percentage >= 80) return { title: 'Exceptional', desc: "Outstanding performance. You're well-prepared for this role.", emoji: '🏆' };
-    if (percentage >= 60) return { title: 'Solid', desc: "Good response. A bit more preparation could elevate you to the top tier.", emoji: '👍' };
-    return { title: 'Needs Practice', desc: "Consider reviewing the role requirements and practicing more foundational concepts.", emoji: '📚' };
+    if (percentage >= 80) return { title: 'Exceptional', desc: "Outstanding performance. You're well-prepared for this role.", emoji: '' };
+    if (percentage >= 60) return { title: 'Solid', desc: "Good response. A bit more preparation could elevate you to the top tier.", emoji: '' };
+    return { title: 'Needs Practice', desc: "Consider reviewing the role requirements and practicing more foundational concepts.", emoji: '' };
   };
 
   const scoreInfo = getScoreText(result.percentage);
@@ -122,11 +122,11 @@ export default function InterviewResultsPage() {
         {/* Header */}
         <div className="text-center mb-16 animate-fade-in-up">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-cyan-300 text-sm font-medium mb-6">
-            <span className="text-lg">📊</span>
+            <span className="text-lg"></span>
             Comprehensive AI Analysis
           </div>
           <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-white via-cyan-100 to-cyan-400 bg-clip-text text-transparent mb-6 tracking-tight">
-            Interview Complete! 🎉
+            Interview Complete! 
           </h1>
           <p className="text-lg text-zinc-400 max-w-2xl mx-auto font-light leading-relaxed">
             We've analyzed your responses based on industry standards. Review your comprehensive breakdown and actionable feedback below.
@@ -187,7 +187,7 @@ export default function InterviewResultsPage() {
           <div className="lg:col-span-5 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
             <div className="bg-white/[0.02] border border-white/[0.05] rounded-3xl p-8 h-full">
               <h3 className="text-xl font-bold text-white mb-8 flex items-center gap-3">
-                <span className="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm">📈</span>
+                <span className="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm"></span>
                 Quality Breakdown
               </h3>
               
@@ -225,7 +225,7 @@ export default function InterviewResultsPage() {
         {/* Detailed Feedback Section */}
         <div className="animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
           <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
-            <span className="w-10 h-10 rounded-xl bg-violet-500/20 text-violet-400 flex items-center justify-center text-xl">📝</span>
+            <span className="w-10 h-10 rounded-xl bg-violet-500/20 text-violet-400 flex items-center justify-center text-xl"></span>
             Question-by-Question Analysis
           </h2>
           
@@ -283,7 +283,7 @@ export default function InterviewResultsPage() {
                         {/* Full Question */}
                         <div className="bg-black/30 border border-white/5 rounded-2xl p-6">
                           <h5 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-                            <span className="text-cyan-400">❓</span> The Question
+                            <span className="text-cyan-400"></span> The Question
                           </h5>
                           <p className="text-white leading-relaxed">{item.question}</p>
                         </div>
@@ -291,7 +291,7 @@ export default function InterviewResultsPage() {
                         {/* Your Answer */}
                         <div className="bg-black/30 border border-white/5 rounded-2xl p-6">
                           <h5 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-                            <span className="text-violet-400">🎙️</span> Your Response
+                            <span className="text-violet-400"></span> Your Response
                           </h5>
                           <p className="text-zinc-300 leading-relaxed italic">{item.answer || "No response provided."}</p>
                         </div>
@@ -302,7 +302,7 @@ export default function InterviewResultsPage() {
                             isPerfect ? 'bg-emerald-500' : isGood ? 'bg-cyan-500' : isAverage ? 'bg-amber-500' : 'bg-rose-500'
                           }`}></div>
                           <h5 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-                            <span className="text-yellow-400">💡</span> Expert AI Feedback
+                            <span className="text-yellow-400"></span> Expert AI Feedback
                           </h5>
                           <p className="text-white leading-relaxed whitespace-pre-wrap">{item.feedback}</p>
                         </div>

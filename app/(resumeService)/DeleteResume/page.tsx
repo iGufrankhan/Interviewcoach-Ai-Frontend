@@ -92,7 +92,7 @@ export default function DeleteResumePage() {
           </Link>
           <div className="flex gap-4 items-center">
             <Link href="/GetResume" className="text-zinc-400 hover:text-white transition-colors text-sm font-medium flex items-center gap-2">
-              <span>📂</span> My Resumes
+              <span></span> My Resumes
             </Link>
             <Link href="/dashboard" className="group relative inline-flex items-center justify-center px-4 py-2 font-medium text-white transition-all duration-300 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 hover:scale-105">
               Back to Dashboard
@@ -105,7 +105,7 @@ export default function DeleteResumePage() {
         {/* Header */}
         <div className="mb-12 text-center animate-fade-in-up">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-rose-300 text-sm font-medium mb-6">
-            <span className="text-lg">🗑️</span>
+            <span className="text-lg"></span>
             Data Management
           </div>
           <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-white via-rose-100 to-rose-400 bg-clip-text text-transparent mb-6 tracking-tight">
@@ -136,7 +136,7 @@ export default function DeleteResumePage() {
           <div className="bg-white/[0.02] border border-white/[0.05] rounded-3xl p-16 text-center animate-fade-in-up relative overflow-hidden">
             <div className="absolute inset-0 bg-linear-to-b from-rose-500/5 to-transparent pointer-events-none"></div>
             <div className="w-24 h-24 mx-auto bg-white/5 rounded-full flex items-center justify-center mb-6">
-              <span className="text-4xl text-zinc-500">✨</span>
+              <span className="text-4xl text-zinc-500"></span>
             </div>
             <h3 className="text-2xl font-bold text-white mb-4">All clean!</h3>
             <p className="text-zinc-400 mb-8 max-w-md mx-auto">No resumes to delete. Your collection is completely clean.</p>
@@ -167,7 +167,7 @@ export default function DeleteResumePage() {
                   <p className="text-white font-semibold text-lg truncate mb-2">{selectedForDelete.filename}</p>
                   {selectedForDelete.extracted_data.name && (
                     <p className="text-zinc-400 text-sm flex items-center gap-2">
-                      <span className="text-rose-400">👤</span> {selectedForDelete.extracted_data.name}
+                      <span className="text-rose-400"></span> {selectedForDelete.extracted_data.name}
                     </p>
                   )}
                 </div>
@@ -215,11 +215,11 @@ export default function DeleteResumePage() {
                       <div className="flex flex-wrap gap-4 text-xs font-medium text-zinc-500">
                         {resume.extracted_data.name && (
                           <span className="flex items-center gap-1.5 bg-white/5 px-2 py-1 rounded-md text-zinc-400">
-                            <span className="text-rose-400">👤</span> {resume.extracted_data.name}
+                            <span className="text-rose-400"></span> {resume.extracted_data.name}
                           </span>
                         )}
                         <span className="flex items-center gap-1.5 bg-white/5 px-2 py-1 rounded-md">
-                          📅 {new Date(resume.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                           {new Date(resume.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
                         </span>
                       </div>
                     </div>

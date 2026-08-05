@@ -1,28 +1,28 @@
 <div align="center">
-  <h1>🛡️ Route Protection Implementation</h1>
+  <h1> Route Protection Implementation</h1>
   <p><i>Comprehensive guide to the authentication and route security mechanisms in the Next.js frontend.</i></p>
 </div>
 
 ---
 
-## ✅ Full Route Protection Active
+##  Full Route Protection Active
 
-### 🔒 Protected Feature Routes (Require Authentication)
+###  Protected Feature Routes (Require Authentication)
 All the following routes require valid JWT authentication. Users without tokens are seamlessly redirected to `/login`:
 
 1. **Resume Service Routes**
-   - `/UploadResume` 🛡️
-   - `/GetResume` 🛡️
-   - `/DeleteResume` 🛡️
+   - `/UploadResume` 
+   - `/GetResume` 
+   - `/DeleteResume` 
 2. **Job Matching Routes**
-   - `/GetResumeData` 🛡️
-   - `/AnalysisResume` 🛡️
+   - `/GetResumeData` 
+   - `/AnalysisResume` 
 3. **Interview Service**
-   - `/dashboard` 🛡️
-   - `/InterviewService` 🛡️
-   - `/interviewprep` 🛡️
+   - `/dashboard` 
+   - `/InterviewService` 
+   - `/interviewprep` 
 
-### 🌍 Public Routes (No Authentication Required)
+###  Public Routes (No Authentication Required)
 These routes remain accessible to everyone:
 - `/` (Landing Page - *Redirects auth'd users to dashboard*)
 - `/login`, `/register`, `/OtpSend`, `/verify-otp`, `/reset-password`
@@ -30,7 +30,7 @@ These routes remain accessible to everyone:
 
 ---
 
-## 📡 API Protection & Error Handling
+##  API Protection & Error Handling
 
 All API calls now include automatic error handling via the `handleApiResponse()` wrapper.
 
@@ -42,7 +42,7 @@ All API calls now include automatic error handling via the `handleApiResponse()`
 
 ---
 
-## ⚙️ Protection Mechanisms
+##  Protection Mechanisms
 
 ### 1. Client-Side Route Protection (`useAuth`)
 The `useAuth()` hook (found in `lib/auth/withProtectedRoute.tsx`) runs on mount:
@@ -61,7 +61,7 @@ Authenticated users visiting `/` are instantly pushed to `/dashboard` to avoid f
 
 ---
 
-## 🌊 User Experience Flows
+##  User Experience Flows
 
 ### Unauthenticated User Flow
 
@@ -86,7 +86,7 @@ flowchart TD
 
 ---
 
-## 🧪 Testing Checklist
+##  Testing Checklist
 
 To verify the protection is working seamlessly, confirm that:
 
@@ -101,5 +101,5 @@ To verify the protection is working seamlessly, confirm that:
 ---
 
 <div align="center">
-  <b>All Routes Now Secured! 🔒</b>
+  <b>All Routes Now Secured! </b>
 </div>

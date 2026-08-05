@@ -178,7 +178,7 @@ export default function ChatWidget() {
             <div className="flex items-center gap-3">
               <div className="relative">
                 <div className="w-10 h-10 rounded-full bg-linear-to-tr from-cyan-500 to-blue-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-                  <span className="text-white text-lg">🤖</span>
+                  <span className="text-white text-lg"></span>
                 </div>
                 <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-[#030014] rounded-full"></div>
               </div>
@@ -205,7 +205,7 @@ export default function ChatWidget() {
             {messages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center px-4 animate-fade-in-up">
                 <div className="w-16 h-16 rounded-3xl bg-white/5 flex items-center justify-center text-3xl mb-4 border border-white/10 shadow-inner">
-                  👋
+                  
                 </div>
                 <h4 className="text-white font-bold mb-2">Welcome!</h4>
                 <p className="text-sm text-zinc-400">Ask me anything about interview preparation, resuming building, or career advice.</p>
@@ -221,7 +221,7 @@ export default function ChatWidget() {
                       <div className="flex items-end gap-2 max-w-[85%]">
                         {!isUser && (
                           <div className={`w-6 h-6 rounded-full bg-linear-to-tr from-cyan-500 to-blue-500 flex items-center justify-center flex-shrink-0 shadow-sm ${showAvatar ? 'opacity-100' : 'opacity-0'}`}>
-                            <span className="text-[10px] text-white">🤖</span>
+                            <span className="text-[10px] text-white"></span>
                           </div>
                         )}
                         <div className={`relative px-5 py-3.5 rounded-2xl text-sm leading-relaxed ${
@@ -242,7 +242,7 @@ export default function ChatWidget() {
                 {loading && (
                   <div className="flex items-start gap-2 max-w-[85%] animate-fade-in-up">
                     <div className="w-6 h-6 rounded-full bg-linear-to-tr from-cyan-500 to-blue-500 flex items-center justify-center flex-shrink-0 shadow-sm">
-                      <span className="text-[10px] text-white">🤖</span>
+                      <span className="text-[10px] text-white"></span>
                     </div>
                     <div className="px-5 py-4 rounded-2xl bg-white/10 border border-white/5 rounded-bl-sm backdrop-blur-sm flex gap-1.5 items-center">
                       <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-bounce" style={{ animationDelay: '0ms' }}></div>

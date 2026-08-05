@@ -247,7 +247,7 @@ export default function TakeInterviewPage() {
                   onClick={startAudioRecording}
                   className="flex items-center justify-center gap-2 px-4 py-2 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/50 rounded text-slate-300 transition"
                 >
-                  <span>🎤</span>
+                  <span></span>
                   Start Recording
                 </button>
               ) : (
@@ -256,7 +256,7 @@ export default function TakeInterviewPage() {
                   onClick={stopAudioRecording}
                   className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600/50 hover:bg-red-600 border border-red-500/50 rounded text-red-300 transition animate-pulse"
                 >
-                  <span>⏹️</span>
+                  <span></span>
                   Stop Recording
                 </button>
               )}
@@ -264,7 +264,7 @@ export default function TakeInterviewPage() {
 
             {/* Help Text */}
             <p className="text-xs text-slate-400">
-              💡 Tip: You can either type your answer or record audio. If audio fails, you can always type instead.
+               Tip: You can either type your answer or record audio. If audio fails, you can always type instead.
             </p>
           </div>
         </div>

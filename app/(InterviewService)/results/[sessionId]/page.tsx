@@ -83,7 +83,7 @@ export default function InterviewResultsPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-4">
-            Interview Complete! 🎉
+            Interview Complete! 
           </h1>
           <p className="text-slate-300">
             Your answers have been analyzed and scored
@@ -201,24 +201,24 @@ export default function InterviewResultsPage() {
                   </div>
                 </div>
                 <span className="text-slate-400 ml-4">
-                  {expandedIndex === index ? '▼' : '▶'}
+                  {expandedIndex === index ? '▼' : ''}
                 </span>
               </button>
 
               {expandedIndex === index && (
                 <div className="px-6 py-4 bg-slate-700/20 border-t border-slate-700/50 space-y-4">
                   <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700/30">
-                    <h4 className="text-sm font-semibold text-slate-300 mb-2">📝 Question:</h4>
+                    <h4 className="text-sm font-semibold text-slate-300 mb-2"> Question:</h4>
                     <p className="text-sm text-slate-300 leading-relaxed">{item.question}</p>
                   </div>
 
                   <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700/30">
-                    <h4 className="text-sm font-semibold text-cyan-300 mb-2">✏️ Your Answer:</h4>
+                    <h4 className="text-sm font-semibold text-cyan-300 mb-2"> Your Answer:</h4>
                     <p className="text-sm text-slate-300 leading-relaxed">{item.answer}</p>
                   </div>
 
                   <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700/30">
-                    <h4 className="text-sm font-semibold text-slate-300 mb-2">💭 AI Feedback:</h4>
+                    <h4 className="text-sm font-semibold text-slate-300 mb-2"> AI Feedback:</h4>
                     <p className="text-sm text-slate-300 leading-relaxed">{item.feedback}</p>
                   </div>
                 </div>

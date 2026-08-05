@@ -223,7 +223,7 @@ export default function TakeInterviewPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-[#030014]">
         <div className="bg-white/[0.02] border border-white/[0.05] rounded-3xl p-12 text-center animate-fade-in-up">
-          <div className="w-20 h-20 mx-auto rounded-full bg-red-500/10 flex items-center justify-center text-3xl mb-6">⚠️</div>
+          <div className="w-20 h-20 mx-auto rounded-full bg-red-500/10 flex items-center justify-center text-3xl mb-6"></div>
           <h2 className="text-2xl font-bold text-white mb-4">Interview Data Missing</h2>
           <p className="text-zinc-400 mb-8 max-w-md">We couldn't retrieve the questions for this session. Please start a new interview.</p>
           <Link

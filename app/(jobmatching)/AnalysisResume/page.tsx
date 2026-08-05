@@ -208,7 +208,7 @@ export default function JobMatchingPage() {
         {/* Header */}
         <div className="mb-12 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-cyan-300 text-sm font-medium mb-6">
-            <span className="text-lg">🎯</span>
+            <span className="text-lg"></span>
             Job Matching Analysis
           </div>
           <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-white via-cyan-100 to-cyan-400 bg-clip-text text-transparent mb-6 tracking-tight">
@@ -257,7 +257,7 @@ export default function JobMatchingPage() {
                     <div className="flex justify-between items-start">
                       <div>
                         <p className={`font-semibold ${selectedResume?.resume_id === resume.resume_id ? 'text-cyan-300' : 'text-white'} truncate flex items-center gap-2`}>
-                          📄 {resume.name}
+                           {resume.name}
                         </p>
                         {resume.email && (
                           <p className="text-xs text-zinc-500 mt-1">{resume.email}</p>
@@ -355,10 +355,10 @@ export default function JobMatchingPage() {
                   {result.overallScore}<span className="text-4xl text-white/40">/100</span>
                 </p>
                 <p className="text-zinc-300 text-lg max-w-2xl mx-auto leading-relaxed font-light">
-                  {result.overallScore >= 80 && '🎉 Exceptional fit! You possess the key qualifications to thrive in this role.'}
-                  {result.overallScore >= 60 && result.overallScore < 80 && '👍 Solid match! You have the core qualifications, with minor areas for growth.'}
-                  {result.overallScore >= 40 && result.overallScore < 60 && '⚠️ Moderate alignment. Focus on addressing the specific gaps highlighted below.'}
-                  {result.overallScore < 40 && '📚 Foundational gap. Significant upskilling recommended for this particular role.'}
+                  {result.overallScore >= 80 && ' Exceptional fit! You possess the key qualifications to thrive in this role.'}
+                  {result.overallScore >= 60 && result.overallScore < 80 && ' Solid match! You have the core qualifications, with minor areas for growth.'}
+                  {result.overallScore >= 40 && result.overallScore < 60 && ' Moderate alignment. Focus on addressing the specific gaps highlighted below.'}
+                  {result.overallScore < 40 && ' Foundational gap. Significant upskilling recommended for this particular role.'}
                 </p>
               </div>
             </div>
@@ -419,7 +419,7 @@ export default function JobMatchingPage() {
               {result.strengths && Array.isArray(result.strengths) && result.strengths.length > 0 && (
                 <div className="bg-white/[0.02] border border-white/[0.05] rounded-3xl p-8">
                   <h3 className="text-xl font-bold text-emerald-400 mb-6 flex items-center gap-3">
-                    <span className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">✅</span>
+                    <span className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center"></span>
                     Your Dominant Strengths
                   </h3>
                   <div className="space-y-4">
@@ -437,7 +437,7 @@ export default function JobMatchingPage() {
               {result.missingSkills && Array.isArray(result.missingSkills) && result.missingSkills.length > 0 && (
                 <div className="bg-white/[0.02] border border-white/[0.05] rounded-3xl p-8">
                   <h3 className="text-xl font-bold text-amber-400 mb-6 flex items-center gap-3">
-                    <span className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center">⚠️</span>
+                    <span className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center"></span>
                     Strategic Skill Gaps
                   </h3>
                   <div className="flex flex-wrap gap-2">
@@ -455,7 +455,7 @@ export default function JobMatchingPage() {
             {result.suggestions && Array.isArray(result.suggestions) && result.suggestions.length > 0 && (
               <div className="bg-white/[0.02] border border-white/[0.05] rounded-3xl p-8">
                 <h3 className="text-xl font-bold text-cyan-400 mb-8 flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center text-lg">💡</span>
+                  <span className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center text-lg"></span>
                   Actionable Recommendations
                 </h3>
                 <div className="grid md:grid-cols-2 gap-4">

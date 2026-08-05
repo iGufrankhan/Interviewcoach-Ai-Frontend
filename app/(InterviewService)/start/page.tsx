@@ -193,7 +193,7 @@ export default function StartInterviewPage() {
 
         {/* Tips */}
         <div className="mt-8 p-6 bg-blue-500/10 border border-blue-500/50 rounded-lg">
-          <h3 className="font-semibold text-blue-400 mb-2">💡 Tips</h3>
+          <h3 className="font-semibold text-blue-400 mb-2"> Tips</h3>
           <ul className="text-sm text-slate-300 space-y-1">
             <li>• You'll be asked 2 interview questions tailored to the job</li>
             <li>• Answer via audio (using your microphone) or text</li>

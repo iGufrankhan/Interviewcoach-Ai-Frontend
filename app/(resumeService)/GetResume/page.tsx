@@ -100,7 +100,7 @@ export default function GetResumePage() {
         {/* Header */}
         <div className="mb-12 text-center animate-fade-in-up">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-cyan-300 text-sm font-medium mb-6">
-            <span className="text-lg">📂</span>
+            <span className="text-lg"></span>
             Resume Management
           </div>
           <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-white via-cyan-100 to-cyan-400 bg-clip-text text-transparent mb-6 tracking-tight">
@@ -131,7 +131,7 @@ export default function GetResumePage() {
           <div className="bg-white/[0.02] border border-white/[0.05] rounded-3xl p-16 text-center animate-fade-in-up relative overflow-hidden">
             <div className="absolute inset-0 bg-linear-to-b from-cyan-500/5 to-transparent pointer-events-none"></div>
             <div className="w-24 h-24 mx-auto bg-white/5 rounded-full flex items-center justify-center mb-6">
-              <span className="text-4xl text-zinc-500">📭</span>
+              <span className="text-4xl text-zinc-500"></span>
             </div>
             <h3 className="text-2xl font-bold text-white mb-4">No resumes found</h3>
             <p className="text-zinc-400 mb-8 max-w-md mx-auto">Upload your first resume to unlock AI-powered job matching and personalized interview scenarios.</p>
@@ -172,7 +172,7 @@ export default function GetResumePage() {
                     )}
                     <div className="flex justify-between items-start mb-2">
                       <p className={`font-semibold tracking-tight truncate pr-4 ${selectedResume?.resume_id === resume.resume_id ? 'text-cyan-300' : 'text-white group-hover:text-cyan-100'}`}>
-                        📄 {resume.name || 'Unnamed Resume'}
+                         {resume.name || 'Unnamed Resume'}
                       </p>
                     </div>
                     <p className="text-xs text-zinc-500 font-medium flex items-center gap-1.5 mt-1">
@@ -204,7 +204,7 @@ export default function GetResumePage() {
                   
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/5 pb-6 mb-6">
                     <h3 className="text-2xl font-bold text-white flex items-center gap-3">
-                      <span className="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl">📋</span>
+                      <span className="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl"></span>
                       Resume Details
                     </h3>
                     
@@ -213,7 +213,7 @@ export default function GetResumePage() {
                         href="/GetResumeData"
                         className="px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-xl font-semibold transition-colors text-sm flex items-center gap-2"
                       >
-                        ✅ Match Job
+                         Match Job
                       </Link>
                       <button
                         onClick={() => handleDelete(selectedResume.resume_id)}
@@ -249,7 +249,7 @@ export default function GetResumePage() {
                     {selectedResume.skills && selectedResume.skills.length > 0 && (
                       <div>
                         <div className="flex items-center gap-2 mb-4">
-                          <span className="text-cyan-400">🛠️</span>
+                          <span className="text-cyan-400"></span>
                           <h4 className="text-zinc-300 font-semibold text-lg">Top Skills</h4>
                           <span className="px-2 py-0.5 bg-white/10 rounded-md text-xs font-medium text-zinc-400 ml-2">{selectedResume.skills.length}</span>
                         </div>
@@ -267,7 +267,7 @@ export default function GetResumePage() {
                     {selectedResume.experience && selectedResume.experience.length > 0 && (
                       <div>
                         <div className="flex items-center gap-2 mb-4">
-                          <span className="text-violet-400">💼</span>
+                          <span className="text-violet-400"></span>
                           <h4 className="text-zinc-300 font-semibold text-lg">Experience Highlight</h4>
                         </div>
                         <div className="space-y-3">
@@ -285,7 +285,7 @@ export default function GetResumePage() {
                     {selectedResume.education && selectedResume.education.length > 0 && (
                       <div>
                         <div className="flex items-center gap-2 mb-4">
-                          <span className="text-emerald-400">🎓</span>
+                          <span className="text-emerald-400"></span>
                           <h4 className="text-zinc-300 font-semibold text-lg">Education</h4>
                         </div>
                         <div className="space-y-3">
@@ -303,7 +303,7 @@ export default function GetResumePage() {
                     {selectedResume.projects && selectedResume.projects.length > 0 && (
                       <div>
                         <div className="flex items-center gap-2 mb-4">
-                          <span className="text-amber-400">🚀</span>
+                          <span className="text-amber-400"></span>
                           <h4 className="text-zinc-300 font-semibold text-lg">Key Projects</h4>
                         </div>
                         <div className="space-y-3">
@@ -321,7 +321,7 @@ export default function GetResumePage() {
               ) : (
                 <div className="bg-white/[0.02] border border-white/[0.05] rounded-3xl p-12 text-center h-full min-h-[500px] flex flex-col items-center justify-center border-dashed">
                   <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-6">
-                    <span className="text-3xl">👈</span>
+                    <span className="text-3xl"></span>
                   </div>
                   <h3 className="text-xl font-bold text-white mb-2">Select a resume</h3>
                   <p className="text-zinc-500">Choose a resume from the list to view its full details and extracted information.</p>

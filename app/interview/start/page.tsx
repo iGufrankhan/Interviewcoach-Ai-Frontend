@@ -122,7 +122,7 @@ export default function StartInterviewPage() {
         {/* Header */}
         <div className="mb-12 text-center animate-fade-in-up">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-cyan-300 text-sm font-medium mb-6">
-            <span className="text-lg">⚡</span>
+            <span className="text-lg"></span>
             Interview Setup
           </div>
           <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-white via-cyan-100 to-cyan-400 bg-clip-text text-transparent mb-6 tracking-tight">
@@ -147,7 +147,7 @@ export default function StartInterviewPage() {
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-zinc-500">
-                      💼
+                      
                     </div>
                     <input
                       type="text"
@@ -171,7 +171,7 @@ export default function StartInterviewPage() {
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-zinc-500">
-                      📄
+                      
                     </div>
                     {resumes.length > 0 ? (
                       <select
@@ -209,7 +209,7 @@ export default function StartInterviewPage() {
                   </label>
                   <div className="relative">
                     <div className="absolute top-4 left-4 pointer-events-none text-zinc-500">
-                      📝
+                      
                     </div>
                     <textarea
                       value={jobDescription}
@@ -259,7 +259,7 @@ export default function StartInterviewPage() {
             {/* Tips */}
             <div className="bg-white/[0.02] border border-white/[0.05] rounded-3xl p-8 sticky top-24">
               <h3 className="font-bold text-cyan-400 mb-6 flex items-center gap-3">
-                <span className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center text-lg">💡</span>
+                <span className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center text-lg"></span>
                 Simulation Rules
               </h3>
               <ul className="space-y-5">

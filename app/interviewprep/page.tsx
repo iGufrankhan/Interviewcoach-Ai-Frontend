@@ -77,7 +77,7 @@ export default function InterviewPrepPage() {
         {/* Header */}
         <div className="mb-16 text-center animate-fade-in-up">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-violet-300 text-sm font-medium mb-6">
-            <span className="text-lg">🎙️</span>
+            <span className="text-lg"></span>
             AI Interview Simulator
           </div>
           <h1 className="text-4xl md:text-6xl font-bold bg-linear-to-r from-white via-violet-100 to-violet-400 bg-clip-text text-transparent mb-6 tracking-tight">
@@ -94,7 +94,7 @@ export default function InterviewPrepPage() {
             <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none transition-all group-hover:bg-cyan-500/20"></div>
             <div className="relative z-10">
               <div className="w-14 h-14 rounded-2xl bg-cyan-500/20 flex items-center justify-center text-2xl mb-6 shadow-inner border border-cyan-500/30">
-                🚀
+                
               </div>
               <h3 className="text-3xl font-bold text-white mb-4 tracking-tight">Quick Start</h3>
               <p className="text-zinc-400 mb-8 leading-relaxed">
@@ -116,7 +116,7 @@ export default function InterviewPrepPage() {
             <div className="absolute top-0 right-0 w-48 h-48 bg-violet-500/10 rounded-full blur-3xl pointer-events-none transition-all group-hover:bg-violet-500/20"></div>
             <div className="relative z-10">
               <div className="w-14 h-14 rounded-2xl bg-violet-500/20 flex items-center justify-center text-2xl mb-6 shadow-inner border border-violet-500/30">
-                📊
+                
               </div>
               <h3 className="text-3xl font-bold text-white mb-6 tracking-tight">How It Works</h3>
               <ul className="space-y-4">
@@ -202,7 +202,7 @@ export default function InterviewPrepPage() {
         {!loading && completedInterviews.length > 0 && (
           <div className="mb-16 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
             <div className="flex items-center gap-3 mb-8">
-              <span className="text-2xl">✅</span>
+              <span className="text-2xl"></span>
               <h2 className="text-2xl font-bold text-white tracking-tight">
                 Completed <span className="text-zinc-500 text-lg font-medium ml-2">({completedInterviews.length})</span>
               </h2>
@@ -256,7 +256,7 @@ export default function InterviewPrepPage() {
         {!loading && interviews.length === 0 && (
           <div className="text-center py-24 bg-white/[0.01] border border-white/5 rounded-3xl animate-fade-in-up">
             <div className="w-20 h-20 mx-auto rounded-full bg-white/5 flex items-center justify-center text-4xl mb-6">
-              🎙️
+              
             </div>
             <h3 className="text-3xl font-bold text-white mb-4">No interviews yet</h3>
             <p className="text-zinc-400 mb-8 max-w-md mx-auto">Take your first interview to get AI-powered feedback and dramatically improve your chances.</p>
@@ -273,7 +273,7 @@ export default function InterviewPrepPage() {
         <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
           <div className="bg-white/[0.02] border border-white/[0.05] rounded-3xl p-8 hover:bg-white/[0.04] transition-colors">
             <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 flex items-center justify-center text-2xl mb-6 shadow-inner border border-cyan-500/30">
-              🎯
+              
             </div>
             <h4 className="font-bold text-white text-xl mb-3">Job-Specific</h4>
             <p className="text-zinc-400 leading-relaxed font-light">Questions are dynamically generated and hyper-tailored to the specific job description you provide.</p>
@@ -281,7 +281,7 @@ export default function InterviewPrepPage() {
 
           <div className="bg-white/[0.02] border border-white/[0.05] rounded-3xl p-8 hover:bg-white/[0.04] transition-colors">
             <div className="w-12 h-12 rounded-2xl bg-violet-500/20 flex items-center justify-center text-2xl mb-6 shadow-inner border border-violet-500/30">
-              🔊
+              
             </div>
             <h4 className="font-bold text-white text-xl mb-3">Audio Support</h4>
             <p className="text-zinc-400 leading-relaxed font-light">Answer via realistic audio recording or text—whichever modality works best for your practice.</p>
@@ -289,7 +289,7 @@ export default function InterviewPrepPage() {
 
           <div className="bg-white/[0.02] border border-white/[0.05] rounded-3xl p-8 hover:bg-white/[0.04] transition-colors">
             <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center text-2xl mb-6 shadow-inner border border-emerald-500/30">
-              💡
+              
             </div>
             <h4 className="font-bold text-white text-xl mb-3">AI Analysis</h4>
             <p className="text-zinc-400 leading-relaxed font-light">Get granular, qualitative feedback on each answer with structural and content improvement tips.</p>

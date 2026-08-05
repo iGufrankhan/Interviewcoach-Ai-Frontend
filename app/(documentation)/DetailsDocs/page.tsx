@@ -29,7 +29,7 @@ export default function DocumentationPage() {
         {/* Main Features */}
         <section className="space-y-6">
           <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-6">
-            <h2 className="text-2xl font-bold text-blue-400 mb-3">📊 Resume-Job Matching</h2>
+            <h2 className="text-2xl font-bold text-blue-400 mb-3"> Resume-Job Matching</h2>
             <p className="text-slate-300 mb-3">
               Analyze how well your resume matches a job description with scoring and improvement suggestions.
             </p>
@@ -42,7 +42,7 @@ export default function DocumentationPage() {
           </div>
 
           <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-6">
-            <h2 className="text-2xl font-bold text-blue-400 mb-3">🎯 Question Generation</h2>
+            <h2 className="text-2xl font-bold text-blue-400 mb-3"> Question Generation</h2>
             <p className="text-slate-300 mb-3">
               Get 10 personalized interview questions based on your resume and the job description.
             </p>
@@ -55,7 +55,7 @@ export default function DocumentationPage() {
           </div>
 
           <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-6">
-            <h2 className="text-2xl font-bold text-blue-400 mb-3">📈 Answer Analysis & Performance Scoring</h2>
+            <h2 className="text-2xl font-bold text-blue-400 mb-3"> Answer Analysis & Performance Scoring</h2>
             <p className="text-slate-300 mb-3">
               Receive performance scoring and detailed feedback on your interview answers.
             </p>
@@ -68,7 +68,7 @@ export default function DocumentationPage() {
           </div>
 
           <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-6">
-            <h2 className="text-2xl font-bold text-blue-400 mb-3">⚡ Tech Stack</h2>
+            <h2 className="text-2xl font-bold text-blue-400 mb-3"> Tech Stack</h2>
             <div className="space-y-3">
               <div>
                 <p className="text-cyan-400 font-semibold text-sm">Frontend:</p>
@@ -90,7 +90,7 @@ export default function DocumentationPage() {
           </div>
 
           <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-6">
-            <h2 className="text-2xl font-bold text-blue-400 mb-3">🔒 Security & Privacy</h2>
+            <h2 className="text-2xl font-bold text-blue-400 mb-3"> Security & Privacy</h2>
             <ul className="text-slate-300 text-sm space-y-2">
               <li>✓ Encrypted data transmission (HTTPS/TLS)</li>
               <li>✓ Secure API key management</li>
@@ -101,7 +101,7 @@ export default function DocumentationPage() {
           </div>
 
           <div className="bg-slate-700/30 border border-slate-600/50 rounded-xl p-6">
-            <h2 className="text-2xl font-bold text-blue-400 mb-3">⚙️ Performance Metrics</h2>
+            <h2 className="text-2xl font-bold text-blue-400 mb-3"> Performance Metrics</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-green-400 font-semibold text-sm mb-2">Response Times</p>

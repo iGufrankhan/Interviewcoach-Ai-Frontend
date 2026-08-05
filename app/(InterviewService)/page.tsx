@@ -78,7 +78,7 @@ export default function Dashboard() {
             href="/UploadResume"
             className="group bg-linear-to-br from-slate-800 to-slate-900 border border-slate-700/50 hover:border-blue-500/50 rounded-lg p-8 transition duration-300 hover:shadow-lg hover:shadow-blue-500/20 cursor-pointer"
           >
-            <div className="mb-4 text-4xl">📄</div>
+            <div className="mb-4 text-4xl"></div>
             <h3 className="text-xl font-bold mb-2 group-hover:text-blue-400 transition">Add Resume</h3>
             <p className="text-slate-400">Upload and parse your resume to get started with analysis</p>
           </Link>
@@ -88,7 +88,7 @@ export default function Dashboard() {
             href="/GetResumeData"
             className="group bg-linear-to-br from-slate-800 to-slate-900 border border-slate-700/50 hover:border-cyan-500/50 rounded-lg p-8 transition duration-300 hover:shadow-lg hover:shadow-cyan-500/20 cursor-pointer"
           >
-            <div className="mb-4 text-4xl">🔍</div>
+            <div className="mb-4 text-4xl"></div>
             <h3 className="text-xl font-bold mb-2 group-hover:text-cyan-400 transition">Analyze Resume</h3>
             <p className="text-slate-400">Match your resume with job descriptions and get insights</p>
           </Link>
@@ -98,7 +98,7 @@ export default function Dashboard() {
             href="/GetResume"
             className="group bg-linear-to-br from-slate-800 to-slate-900 border border-slate-700/50 hover:border-purple-500/50 rounded-lg p-8 transition duration-300 hover:shadow-lg hover:shadow-purple-500/20 cursor-pointer"
           >
-            <div className="mb-4 text-4xl">📋</div>
+            <div className="mb-4 text-4xl"></div>
             <h3 className="text-xl font-bold mb-2 group-hover:text-purple-400 transition">My Resumes</h3>
             <p className="text-slate-400">View and manage all your uploaded resumes</p>
           </Link>
@@ -108,7 +108,7 @@ export default function Dashboard() {
             href="/interview/start"
             className="group bg-linear-to-br from-slate-800 to-slate-900 border border-slate-700/50 hover:border-green-500/50 rounded-lg p-8 transition duration-300 hover:shadow-lg hover:shadow-green-500/20 cursor-pointer"
           >
-            <div className="mb-4 text-4xl">🎤</div>
+            <div className="mb-4 text-4xl"></div>
             <h3 className="text-xl font-bold mb-2 group-hover:text-green-400 transition">Practice Interview</h3>
             <p className="text-slate-400">Practice interview questions with audio support</p>
           </Link>
@@ -118,7 +118,7 @@ export default function Dashboard() {
             href="/interview-results"
             className="group bg-linear-to-br from-slate-800 to-slate-900 border border-slate-700/50 hover:border-yellow-500/50 rounded-lg p-8 transition duration-300 hover:shadow-lg hover:shadow-yellow-500/20 cursor-pointer"
           >
-            <div className="mb-4 text-4xl">📊</div>
+            <div className="mb-4 text-4xl"></div>
             <h3 className="text-xl font-bold mb-2 group-hover:text-yellow-400 transition">Interview Results</h3>
             <p className="text-slate-400">Review your interview performance and feedback</p>
           </Link>
@@ -128,7 +128,7 @@ export default function Dashboard() {
             href="/AnalysisResume"
             className="group bg-linear-to-br from-slate-800 to-slate-900 border border-slate-700/50 hover:border-indigo-500/50 rounded-lg p-8 transition duration-300 hover:shadow-lg hover:shadow-indigo-500/20 cursor-pointer"
           >
-            <div className="mb-4 text-4xl">💼</div>
+            <div className="mb-4 text-4xl"></div>
             <h3 className="text-xl font-bold mb-2 group-hover:text-indigo-400 transition">Job Matches</h3>
             <p className="text-slate-400">View your job matching analysis results</p>
           </Link>

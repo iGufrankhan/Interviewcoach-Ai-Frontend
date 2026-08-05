@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>🎨 Frontend Documentation <br/> Interview Coach AI</h1>
+  <h1> Frontend Documentation <br/> Interview Coach AI</h1>
   <p><i>AI-powered interview preparation and resume analysis system built with Next.js 14+, TypeScript, and Tailwind CSS.</i></p>
   
   <p>
@@ -11,7 +11,7 @@
 
 ---
 
-## 🚀 Live API Connection
+##  Live API Connection
 
 > **Production Backend API:** [`https://interviewcoach-ai-backend.onrender.com/`](https://interviewcoach-ai-backend.onrender.com/)
 
@@ -19,16 +19,16 @@
 
 ---
 
-## 🌟 Overview
+##  Overview
 
 Interview Coach AI helps job seekers prepare for interviews with:
-- 📄 **Resume Analysis:** Analyze your resume against job descriptions for match scoring.
-- 🎯 **Interview Questions:** Generate AI-powered interview questions tailored to your profile.
-- 👤 **Profile Management:** Store and manage your professional profile and resume.
+-  **Resume Analysis:** Analyze your resume against job descriptions for match scoring.
+-  **Interview Questions:** Generate AI-powered interview questions tailored to your profile.
+-  **Profile Management:** Store and manage your professional profile and resume.
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Framework**: Next.js 14+ with App Router
 - **Language**: TypeScript
@@ -39,7 +39,7 @@ Interview Coach AI helps job seekers prepare for interviews with:
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 ```text
 frontend/
@@ -68,13 +68,13 @@ frontend/
 
 ---
 
-## 🔐 Authentication Flows
+##  Authentication Flows
 
 ### 1. Register Flow
-> **Path:** Email ➡️ OTP Verify ➡️ Profile Complete
+> **Path:** Email  OTP Verify  Profile Complete
 
-1. **`/auth/otpsend`**: User enters email ➡️ Calls `POST /api/auth/send-otp` ➡️ Redirects to verification.
-2. **`/auth/verify-otp`**: User enters 6-digit OTP ➡️ Calls `POST /api/auth/verify-otp` ➡️ On success, proceeds to registration.
+1. **`/auth/otpsend`**: User enters email  Calls `POST /api/auth/send-otp`  Redirects to verification.
+2. **`/auth/verify-otp`**: User enters 6-digit OTP  Calls `POST /api/auth/verify-otp`  On success, proceeds to registration.
 3. **`/auth/register`**: Requires `verified=true` parameter. User enters details. Password strength is evaluated. Stores `authToken` and redirects to dashboard.
 
 ### 2. Login Flow
@@ -83,7 +83,7 @@ frontend/
 - **`/auth/login`**: User enters email and password. Calls `POST /api/auth/login`. On success, stores `authToken` and redirects to dashboard.
 
 ### 3. Password Reset Flow
-> **Path:** Email ➡️ OTP Verify ➡️ New Password
+> **Path:** Email  OTP Verify  New Password
 
 1. **`/auth/reset-password` (step=email)**: User enters email. Redirects to OTP entry.
 2. **`/auth/reset-password-otp`**: User enters 6-digit reset code. Validates and proceeds.
@@ -91,7 +91,7 @@ frontend/
 
 ---
 
-## 🖥️ Pages
+##  Pages
 
 ### Public Pages
 - **Landing Page (`app/page.tsx`)**: Hero section, 3 feature cards, 4-step workflow, and auth links. Dark gradient background.
@@ -99,12 +99,12 @@ frontend/
 ### Protected Pages (Require authToken)
 - **Dashboard (`app/dashboard/page.tsx`)**: Main hub with statistics (resume count, jobs analyzed, avg match score).
 - **Resume Upload (`app/dashboard/resume/page.tsx`)**: Drag-drop file upload. PDF/DOCX only (max 5MB).
-- **Job Analysis (`app/dashboard/job-analysis/page.tsx`)**: Input JD, get match score, eligibility, strengths, weaknesses, and color-coded scoring (🟩/🟨/🟥).
+- **Job Analysis (`app/dashboard/job-analysis/page.tsx`)**: Input JD, get match score, eligibility, strengths, weaknesses, and color-coded scoring (//).
 - **Interview Prep (`app/dashboard/interview-prep/page.tsx`)**: Expandable AI question cards and STAR method tips.
 
 ---
 
-## 📡 API Endpoints Interfaced
+##  API Endpoints Interfaced
 
 ### Authentication
 | Method | Endpoint | Description |
@@ -125,7 +125,7 @@ frontend/
 
 ---
 
-## 🚀 Setup & Installation
+##  Setup & Installation
 
 ### Prerequisites
 - Node.js 18+ and npm/yarn
@@ -155,7 +155,7 @@ npm start
 
 ---
 
-## 🎨 Design System
+##  Design System
 
 - **Color Palette:** Primary (`Blue-400`/`Cyan-400` gradients), Background (`Slate-900`), Text (`White`/`Slate-400`). Status colors included.
 - **Typography:** `Geist Sans`, `Geist Mono`.

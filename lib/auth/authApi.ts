@@ -34,27 +34,27 @@ export const loginUser = async (
       throw new Error(data.message || data.detail || 'Login failed');
     }
 
-    console.log('📝 Login response:', data);
+    console.log(' Login response:', data);
 
     // Extract from nested response structure
     const responseData = data.data || data;
     const userInfo = responseData.user || {};
     const token = responseData.access_token;
 
-    console.log('🔑 Extracted token:', token ? `${token.substring(0, 20)}...` : 'MISSING');
-    console.log('👤 User info:', userInfo);
+    console.log(' Extracted token:', token ? `${token.substring(0, 20)}...` : 'MISSING');
+    console.log(' User info:', userInfo);
 
     // Store token and user info
     if (token) {
       localStorage.setItem('token', token);
-      console.log('✅ Token stored in localStorage');
+      console.log(' Token stored in localStorage');
     } else {
-      console.error('❌ No access_token in response!');
+      console.error(' No access_token in response!');
     }
 
     if (userInfo.email) {
       localStorage.setItem('user_id', userInfo.email);
-      console.log('✅ User ID (email) stored in localStorage:', userInfo.email);
+      console.log(' User ID (email) stored in localStorage:', userInfo.email);
     }
 
     if (userInfo.email) {
@@ -198,16 +198,16 @@ export const completeRegistration = async (
       throw new Error(data.message || data.detail || 'Registration failed');
     }
 
-    console.log('✅ Registration successful:', data);
+    console.log(' Registration successful:', data);
 
     // Store token and user info from nested data object
     if (data.data?.access_token) {
       localStorage.setItem('token', data.data.access_token);
-      console.log('✅ Token stored');
+      console.log(' Token stored');
     }
     if (data.data?.user_id) {
       localStorage.setItem('user_id', data.data.user_id);
-      console.log('✅ User ID stored');
+      console.log(' User ID stored');
     }
     if (data.data?.user?.email) {
       localStorage.setItem('user_email', data.data.user.email);

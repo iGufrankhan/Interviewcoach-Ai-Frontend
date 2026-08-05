@@ -142,7 +142,7 @@ export default function UploadResumePage() {
         {/* Header */}
         <div className="mb-12 text-center animate-fade-in-up">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-cyan-300 text-sm font-medium mb-6">
-            <span className="text-lg">📄</span>
+            <span className="text-lg"></span>
             Resume Upload
           </div>
           <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-white via-cyan-100 to-cyan-400 bg-clip-text text-transparent mb-6 tracking-tight">
@@ -201,9 +201,9 @@ export default function UploadResumePage() {
                   fileName.endsWith('.docx') ? 'bg-blue-500/20 text-blue-400' :
                   'bg-zinc-500/20 text-zinc-400'
                 }`}>
-                  {fileName.endsWith('.pdf') && '📄'}
-                  {fileName.endsWith('.docx') && '📝'}
-                  {fileName.endsWith('.txt') && '📃'}
+                  {fileName.endsWith('.pdf') && ''}
+                  {fileName.endsWith('.docx') && ''}
+                  {fileName.endsWith('.txt') && ''}
                 </div>
                 <div>
                   <p className="font-semibold text-white tracking-tight">{fileName}</p>
@@ -271,7 +271,7 @@ export default function UploadResumePage() {
                 
                 {uploadResponse.data.extracted_data.name && (
                   <div className="flex items-start gap-3">
-                    <span className="text-zinc-500 mt-0.5">👤</span>
+                    <span className="text-zinc-500 mt-0.5"></span>
                     <div>
                       <span className="text-xs text-zinc-500 block mb-0.5">Full Name</span>
                       <span className="text-white font-medium">{uploadResponse.data.extracted_data.name}</span>
@@ -281,7 +281,7 @@ export default function UploadResumePage() {
                 
                 {uploadResponse.data.extracted_data.email && (
                   <div className="flex items-start gap-3">
-                    <span className="text-zinc-500 mt-0.5">📧</span>
+                    <span className="text-zinc-500 mt-0.5"></span>
                     <div>
                       <span className="text-xs text-zinc-500 block mb-0.5">Email Address</span>
                       <span className="text-white font-medium">{uploadResponse.data.extracted_data.email}</span>
