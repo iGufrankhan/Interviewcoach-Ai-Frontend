@@ -37,6 +37,8 @@ export async function handleApiResponse(response: Response) {
           .join('; ');
       } else if (typeof errorData.detail === 'string') {
         errorMessage = errorData.detail;
+      } else if (typeof errorData.detail === 'object' && errorData.detail !== null && errorData.detail.message) {
+        errorMessage = errorData.detail.message;
       }
     }
     

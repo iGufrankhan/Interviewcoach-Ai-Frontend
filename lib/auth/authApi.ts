@@ -31,7 +31,12 @@ export const loginUser = async (
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || data.detail || 'Login failed');
+      let errorMessage = 'Login failed';
+      if (data.message && typeof data.message === 'string') errorMessage = data.message;
+      else if (data.detail && typeof data.detail === 'string') errorMessage = data.detail;
+      else if (data.detail && data.detail.message) errorMessage = data.detail.message;
+      
+      throw new Error(errorMessage);
     }
 
     console.log(' Login response:', data);
@@ -92,7 +97,12 @@ export const sendOTP = async (email: string): Promise<OTPResponse> => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || data.detail || 'Failed to send OTP');
+      let errorMessage = 'Failed to send OTP';
+      if (data.message && typeof data.message === 'string') errorMessage = data.message;
+      else if (data.detail && typeof data.detail === 'string') errorMessage = data.detail;
+      else if (data.detail && data.detail.message) errorMessage = data.detail.message;
+      
+      throw new Error(errorMessage);
     }
 
     return data;
@@ -127,7 +137,12 @@ export const verifyOTP = async (
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || data.detail || 'OTP verification failed');
+      let errorMessage = 'OTP verification failed';
+      if (data.message && typeof data.message === 'string') errorMessage = data.message;
+      else if (data.detail && typeof data.detail === 'string') errorMessage = data.detail;
+      else if (data.detail && data.detail.message) errorMessage = data.detail.message;
+      
+      throw new Error(errorMessage);
     }
 
     return data;
@@ -156,7 +171,12 @@ export const resendOTP = async (email: string): Promise<OTPResponse> => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || data.detail || 'Failed to resend OTP');
+      let errorMessage = 'Failed to resend OTP';
+      if (data.message && typeof data.message === 'string') errorMessage = data.message;
+      else if (data.detail && typeof data.detail === 'string') errorMessage = data.detail;
+      else if (data.detail && data.detail.message) errorMessage = data.detail.message;
+      
+      throw new Error(errorMessage);
     }
 
     return data;
@@ -195,7 +215,12 @@ export const completeRegistration = async (
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || data.detail || 'Registration failed');
+      let errorMessage = 'Registration failed';
+      if (data.message && typeof data.message === 'string') errorMessage = data.message;
+      else if (data.detail && typeof data.detail === 'string') errorMessage = data.detail;
+      else if (data.detail && data.detail.message) errorMessage = data.detail.message;
+      
+      throw new Error(errorMessage);
     }
 
     console.log(' Registration successful:', data);
