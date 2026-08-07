@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { submitAnswer, getInterviewSession, submitInterview } from '@/lib/interview/interviewApi';
 import { useAuth } from '@/lib/auth/withProtectedRoute';
+import { getApiBaseUrl } from '@/lib/config';
 
 export default function TakeInterviewPage() {
   const router = useRouter();
@@ -79,7 +80,7 @@ export default function TakeInterviewPage() {
       const base64Audio = await blobToBase64(blob);
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || 'https://interviewcoach-ai-backend.onrender.com'}/api/interview/transcribe-audio`,
+        `${getApiBaseUrl()}/api/interview/transcribe-audio`,
         {
           method: 'POST',
           headers: {

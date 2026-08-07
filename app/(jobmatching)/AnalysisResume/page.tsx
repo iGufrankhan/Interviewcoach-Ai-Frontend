@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth/withProtectedRoute';
 import { validateJobDescription } from '@/lib/validators';
+import { getApiBaseUrl } from '@/lib/config';
 
 interface Resume {
   resume_id: string;
@@ -47,7 +48,7 @@ export default function JobMatchingPage() {
   const fetchResumes = async () => {
     try {
       setLoadingResumes(true);
-      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://interviewcoach-ai-backend.onrender.com';
+      const API_BASE_URL = getApiBaseUrl();
       
       const response = await fetch(
         `${API_BASE_URL}/api/resume/user-resumes`,
@@ -108,7 +109,7 @@ export default function JobMatchingPage() {
     setResult(null);
 
     try {
-      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://interviewcoach-ai-backend.onrender.com';
+      const API_BASE_URL = getApiBaseUrl();
       const response = await fetch(
         `${API_BASE_URL}/api/jobmatching/analyseresume`,
         {
