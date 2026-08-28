@@ -220,7 +220,7 @@ export default function Dashboard() {
 
             {/* Feature 4 - Small */}
             <Link
-              href="/AnalysisResume"
+              href="/smart-search"
               className="group md:col-span-1 rounded-3xl p-8 bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-indigo-500/30 hover:shadow-[0_0_50px_-15px_rgba(99,102,241,0.3)] transition-all duration-500 relative overflow-hidden flex flex-col"
             >
               <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/20 transition-all pointer-events-none"></div>
@@ -228,9 +228,9 @@ export default function Dashboard() {
                 <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-indigo-500/20 to-blue-500/20 flex items-center justify-center border border-indigo-500/20 mb-6 shadow-inner group-hover:scale-110 transition-transform duration-500">
                   <Briefcase className="w-7 h-7 text-indigo-400" />
                 </div>
-                <h3 className="text-xl font-bold mb-3 text-white group-hover:text-indigo-300 transition-colors">Top Job Matches</h3>
+                <h3 className="text-xl font-bold mb-3 text-white group-hover:text-indigo-300 transition-colors">Agentic Job Search</h3>
                 <p className="text-sm text-zinc-400 leading-relaxed font-light mt-auto">
-                  Our algorithm scans the market to suggest the most lucrative and suitable positions based purely on your parsed profile.
+                  Our AI Agent searches live jobs and instantly matches them to your resume to uncover skill gaps.
                 </p>
               </div>
             </Link>
