@@ -12,6 +12,29 @@ export default function Dashboard() {
   const router = useRouter();
   const { user, isLoading } = useAuth();
 
+  const [stats, setStats] = useState({ total_resumes: 0, interviews_taken: 0, avg_score: '--' });
+
+  useEffect(() => {
+    if (user && !isLoading) {
+      const fetchStats = async () => {
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/interview/dashboard-stats`, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          });
+          const data = await response.json();
+          if (response.ok) {
+            setStats(data.data);
+          }
+        } catch (error) {
+          console.error("Failed to fetch stats", error);
+        }
+      };
+      fetchStats();
+    }
+  }, [user, isLoading]);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#030014]">
@@ -106,7 +129,7 @@ export default function Dashboard() {
               <div className="absolute right-0 top-0 w-32 h-full bg-linear-to-l from-cyan-500/10 to-transparent pointer-events-none"></div>
               <div>
                 <div className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-1">Total Resumes</div>
-                <div className="text-4xl font-black text-white">0</div>
+                <div className="text-4xl font-black text-white">{stats.total_resumes}</div>
               </div>
               <div className="w-14 h-14 rounded-full bg-cyan-500/10 flex items-center justify-center border border-cyan-500/20 text-2xl group-hover:scale-110 transition-transform">
                 <FileText className="w-6 h-6 text-cyan-400" />
@@ -117,7 +140,7 @@ export default function Dashboard() {
               <div className="absolute right-0 top-0 w-32 h-full bg-linear-to-l from-emerald-500/10 to-transparent pointer-events-none"></div>
               <div>
                 <div className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-1">Interviews Taken</div>
-                <div className="text-4xl font-black text-white">0</div>
+                <div className="text-4xl font-black text-white">{stats.interviews_taken}</div>
               </div>
               <div className="w-14 h-14 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-2xl group-hover:scale-110 transition-transform">
                 <Mic className="w-6 h-6 text-emerald-400" />
@@ -128,7 +151,7 @@ export default function Dashboard() {
               <div className="absolute right-0 top-0 w-32 h-full bg-linear-to-l from-yellow-500/10 to-transparent pointer-events-none"></div>
               <div>
                 <div className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-1">Avg Score</div>
-                <div className="text-4xl font-black text-white">--</div>
+                <div className="text-4xl font-black text-white">{stats.avg_score}</div>
               </div>
               <div className="w-14 h-14 rounded-full bg-yellow-500/10 flex items-center justify-center border border-yellow-500/20 text-2xl group-hover:scale-110 transition-transform">
                 <Star className="w-6 h-6 text-yellow-400" />
@@ -140,6 +163,10 @@ export default function Dashboard() {
         {/* Quick Access Pills */}
         <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           <div className="flex flex-wrap gap-4">
+            <Link href="/smart-search" className="group flex items-center gap-3 px-6 py-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-indigo-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_20px_-10px_rgba(99,102,241,0.3)] flex-1 min-w-[200px] justify-center sm:justify-start">
+              <Briefcase className="w-5 h-5 text-indigo-400 group-hover:text-indigo-300 transition-colors" />
+              <span className="font-bold text-white group-hover:text-indigo-300 transition-colors">Agentic Job Search</span>
+            </Link>
             <Link href="/GetResumeData" className="group flex items-center gap-3 px-6 py-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-cyan-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_20px_-10px_rgba(6,182,212,0.3)] flex-1 min-w-[200px] justify-center sm:justify-start">
               <Search className="w-5 h-5 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
               <span className="font-bold text-white group-hover:text-cyan-300 transition-colors">Analyze Job Match</span>

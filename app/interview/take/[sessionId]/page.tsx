@@ -81,25 +81,25 @@ export default function TakeInterviewPage() {
     });
   };
 
-  // Transcribe audio
   const transcribeAudio = async (blob: Blob) => {
     try {
       setIsTranscribing(true);
       setError('');
 
-      const base64Audio = await blobToBase64(blob);
+      const formData = new FormData();
+      formData.append('audio', blob, 'recording.webm');
+
+      const headers: any = {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      };
+      // Do NOT set Content-Type header for FormData, the browser handles it automatically
 
       const response = await fetch(
         `${getApiBaseUrl()}/api/interview/transcribe-audio`,
         {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            audio_data: base64Audio,
-          }),
+          headers: headers,
+          body: formData,
         }
       );
 
